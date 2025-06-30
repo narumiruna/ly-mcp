@@ -18,6 +18,19 @@ This MCP server uses the [Legislative Yuan API v2](https://ly.govapi.tw/v2) as i
 
 ## Installation & Usage
 
+### PyPI
+
+```json
+{
+  "mcpServers": {
+    "lymcp": {
+      "command": "uvx",
+      "args": ["lymcp@latest"]
+    }
+  }
+}
+```
+
 ### GitHub
 
 ```json
@@ -30,19 +43,6 @@ This MCP server uses the [Legislative Yuan API v2](https://ly.govapi.tw/v2) as i
         "git+https://github.com/narumiruna/ly-mcp",
         "lymcp"
       ]
-    }
-  }
-}
-```
-
-### PyPI
-
-```json
-{
-  "mcpServers": {
-    "lymcp": {
-      "command": "uvx",
-      "args": ["lymcp@latest"]
     }
   }
 }
