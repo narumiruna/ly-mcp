@@ -7,7 +7,7 @@ from mcp.types import TextContent
 
 @pytest.fixture
 def server_params() -> StdioServerParameters:
-    return StdioServerParameters(command="uv", args=["run", "lyapimcp"])
+    return StdioServerParameters(command="uv", args=["run", "lymcp"])
 
 
 @pytest.mark.asyncio

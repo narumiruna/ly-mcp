@@ -1,5 +1,5 @@
 [project]
-name = "lyapimcp"
+name = "lymcp"
 version = "0.1.0"
 description = ""
 readme = "README.md"
@@ -8,7 +8,7 @@ requires-python = ">=3.12"
 dependencies = ["httpx>=0.28.1", "loguru>=0.7.3", "mcp[cli]>=1.6.0"]
 
 [project.scripts]
-lyapimcp = "lyapimcp.server:main"
+lymcp = "lymcp.server:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -41,6 +41,7 @@ select = [
     "UP",  # pyupgrade
     "W",   # pycodestyle warnings
 ]
+ignore = ["C901"]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401", "F403"]

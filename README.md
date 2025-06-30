@@ -1,4 +1,4 @@
-# lyapi-mcp
+# ly-mcp
 
 A Model Context Protocol (MCP) server for Taiwan's Legislative Yuan API v2, providing bill search, detailed information, related documents, and meeting records.
 
@@ -23,12 +23,12 @@ This MCP server uses the [Legislative Yuan API v2](https://ly.govapi.tw/v2) as i
 ```json
 {
   "mcpServers": {
-    "lyapimcp": {
+    "lymcp": {
       "command": "uvx",
       "args": [
         "--from",
-        "git+https://github.com/narumiruna/lyapi-mcp",
-        "lyapimcp"
+        "git+https://github.com/narumiruna/ly-mcp",
+        "lymcp"
       ]
     }
   }
@@ -40,9 +40,9 @@ This MCP server uses the [Legislative Yuan API v2](https://ly.govapi.tw/v2) as i
 ```json
 {
   "mcpServers": {
-    "lyapimcp": {
+    "lymcp": {
       "command": "uvx",
-      "args": ["lyapimcp@latest"]
+      "args": ["lymcp@latest"]
     }
   }
 }
@@ -53,13 +53,13 @@ This MCP server uses the [Legislative Yuan API v2](https://ly.govapi.tw/v2) as i
 ```json
 {
   "mcpServers": {
-    "lyapimcp": {
+    "lymcp": {
       "command": "uv",
       "args": [
         "run",
         "--directory",
-        "/home/<user>/workspace/lyapi-mcp",
-        "lyapimcp"
+        "/home/<user>/workspace/ly-mcp",
+        "lymcp"
       ]
     }
   }
