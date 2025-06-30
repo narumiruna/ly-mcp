@@ -1,16 +1,16 @@
-# mcp-server-template
+# lyapi-mcp
 
 ### GitHub
 
 ```json
 {
   "mcpServers": {
-    "mcpservertemplate": {
+    "lyapimcp": {
       "command": "uvx",
       "args": [
         "--from",
-        "git+https://github.com/narumiruna/mcp-server-template",
-        "mcpservertemplate"
+        "git+https://github.com/narumiruna/lyapi-mcp",
+        "lyapimcp"
       ]
     }
   }
@@ -22,9 +22,9 @@
 ```json
 {
   "mcpServers": {
-    "mcpservertemplate": {
+    "lyapimcp": {
       "command": "uvx",
-      "args": ["mcpservertemplate@latest"]
+      "args": ["lyapimcp@latest"]
     }
   }
 }
@@ -35,13 +35,13 @@
 ```json
 {
   "mcpServers": {
-    "mcpservertemplate": {
+    "lyapimcp": {
       "command": "uv",
       "args": [
         "run",
         "--directory",
-        "/home/<user>/workspace/mcp-server-template",
-        "mcpservertemplate"
+        "/home/<user>/workspace/lyapi-mcp",
+        "lyapimcp"
       ]
     }
   }
