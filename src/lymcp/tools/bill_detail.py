@@ -1,11 +1,9 @@
 import json
 from typing import Annotated
 
-from loguru import logger
 from pydantic import Field
 
 from ..api_client import make_api_request
-from ..models import extract_bill_summary
 
 
 async def get_bill_detail(
@@ -28,44 +26,48 @@ async def get_bill_detail(
         return f"❌ {api_response.message}"
 
     if structured and api_response.data:
-        try:
-            bill_data = api_response.data
-            summary = extract_bill_summary(bill_data)
-
-            # 提取更多詳細資訊
-            detail_info = {
-                "基本資訊": summary.model_dump(),
-                "議案流程": bill_data.get("議案流程", []),
-                "提案說明": bill_data.get("提案說明") or bill_data.get("案由"),
-                "相關法條": bill_data.get("相關法條", []),
-                "委員會": bill_data.get("委員會"),
-                "文件": bill_data.get("文件", []),
-            }
-
-            return f"✅ {api_response.message}\n\n{json.dumps(detail_info, ensure_ascii=False, indent=2)}"
-        except Exception as e:
-            logger.error(f"Failed to structure bill detail: {e}")
-            return f"⚠️ 結構化處理失敗：{str(e)}\n\n原始資料：{json.dumps(api_response.data, ensure_ascii=False)}"
+        # 若 data 為 dict 且有 "data" key，則進入 data 子欄位
+        bill_data = api_response.data
+        if isinstance(bill_data, dict) and "data" in bill_data and isinstance(bill_data["data"], dict):
+            bill_data = bill_data["data"]
+        # DEBUG: 直接回傳 bill_data 內容以檢查欄位
+        return f"✅ {api_response.message}\n\n{json.dumps(bill_data, ensure_ascii=False, indent=2)}"
 
     return f"✅ {api_response.message}\n\n{json.dumps(api_response.data, ensure_ascii=False, indent=2)}"
 
 
-async def get_bill_related_bills(bill_no: Annotated[str, Field(description="議案編號，例: 203110077970000")]) -> str:
+async def get_bill_related_bills(
+    bill_no: Annotated[str, Field(description="議案編號，例: 203110077970000")],
+    page: Annotated[int, Field(description="頁數")] = 1,
+    limit: Annotated[int, Field(description="每頁筆數")] = 20,
+) -> str:
     """
     取得特定議案的相關議案列表。
 
     參數說明：
     - bill_no: 議案編號，必填 (例: 203110077970000)
+    - page: 頁數 (預設1)
+    - limit: 每頁筆數 (預設20，建議不超過50)
 
     回傳該議案的相關議案資訊，包含關聯類型、相關議案編號等。
     """
 
-    api_response = await make_api_request(f"/bills/{bill_no}/related_bills", None, f"取得議案 {bill_no} 相關議案")
+    params = {"page": page, "limit": limit}
+    api_response = await make_api_request(f"/bills/{bill_no}/related_bills", params, f"取得議案 {bill_no} 相關議案")
 
     if not api_response.success:
         return f"❌ {api_response.message}"
 
-    return f"✅ {api_response.message}\n\n{json.dumps(api_response.data, ensure_ascii=False, indent=2)}"
+    # 檢查資料是否過大（超過20000字元時進行截斷提示）
+    data_str = json.dumps(api_response.data, ensure_ascii=False, indent=2)
+    if len(data_str) > 20000:
+        return (
+            f"✅ {api_response.message}\n\n"
+            "⚠️ 相關議案內容過大，僅顯示部分內容。建議使用分頁參數查詢。\n\n"
+            f"{data_str[:15000]}\n\n...(內容過長，已截斷)"
+        )
+
+    return f"✅ {api_response.message}\n\n{data_str}"
 
 
 async def get_bill_doc_html(bill_no: Annotated[str, Field(description="議案編號，例: 203110077970000")]) -> str:
@@ -98,5 +100,9 @@ async def get_bill_doc_html(bill_no: Annotated[str, Field(description="議案編
             "4. 議案處於早期階段，僅有提案資訊\n\n"
             "建議：請稍後再試，或使用 get_bill_detail 取得議案基本資訊。"
         )
+
+    # 檢查是否為空的結構化資料
+    if isinstance(api_response.data, dict | list) and not api_response.data:
+        return "⚠️ 該議案暫無文件 HTML 內容。\n\n" "該議案目前沒有可用的文件內容，可能正在處理中或尚未上傳至系統。"
 
     return f"✅ {api_response.message}\n\n{json.dumps(api_response.data, ensure_ascii=False, indent=2)}"
