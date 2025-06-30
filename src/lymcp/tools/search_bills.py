@@ -15,9 +15,11 @@ async def search_bills(
     bill_category: Annotated[str | None, Field(description="議案類別，例: 法律案")] = None,
     proposer: Annotated[str | None, Field(description="提案人，例: 徐欣瑩")] = None,
     cosigner: Annotated[str | None, Field(description="連署人，例: 林德福")] = None,
-    bill_status: Annotated[str | None, Field(description="議案目前所處狀態，例: 交付審查")] = None,
+    bill_status: Annotated[str | None, Field(description="議案目前所處狀態，例: 交付審查、三讀、排入院會")] = None,
     proposal_source: Annotated[str | None, Field(description="議案的提案來源屬性，例: 委員提案")] = None,
     bill_no: Annotated[str | None, Field(description="議案編號，例: 202110068550000")] = None,
+    proposal_date_start: Annotated[str | None, Field(description="提案日期起始，格式: YYYY-MM-DD")] = None,
+    proposal_date_end: Annotated[str | None, Field(description="提案日期結束，格式: YYYY-MM-DD")] = None,
     page: Annotated[int, Field(description="頁數")] = 1,
     limit: Annotated[int, Field(description="每頁筆數")] = 20,
     structured: Annotated[bool, Field(description="是否回傳結構化摘要資訊")] = False,
@@ -31,9 +33,11 @@ async def search_bills(
     - bill_category: 議案類別，如「法律案」、「預算案」
     - proposer: 提案人姓名
     - cosigner: 連署人姓名
-    - bill_status: 議案狀態，如「交付審查」、「一讀」
+    - bill_status: 議案狀態，如「交付審查」、「三讀」、「排入院會」、「委員會抽出逕付二讀(交付協商)」
     - proposal_source: 提案來源，如「委員提案」、「政府提案」
     - bill_no: 特定議案編號
+    - proposal_date_start: 提案日期起始，格式: YYYY-MM-DD
+    - proposal_date_end: 提案日期結束，格式: YYYY-MM-DD
     - page: 頁數 (預設1)
     - limit: 每頁筆數 (預設20，建議不超過100)
     - structured: 是否回傳結構化摘要 (預設False，回傳完整JSON)
@@ -41,6 +45,12 @@ async def search_bills(
     回傳格式：
     - structured=False: 完整 JSON 資料
     - structured=True: 結構化摘要，包含議案編號、標題、類別、提案人、狀態等主要資訊
+
+    常見議案狀態說明：
+    - 「三讀」: 已完成立法程序
+    - 「排入院會」: 等待院會審議
+    - 「交付審查」: 送交委員會審查
+    - 「委員會抽出逕付二讀(交付協商)」: 委員會審查完成，進入協商程序
     """
 
     params: dict[str, Any] = {"page": page, "limit": limit}
@@ -61,6 +71,10 @@ async def search_bills(
         params["提案來源"] = proposal_source
     if bill_no:
         params["議案編號"] = bill_no
+    if proposal_date_start:
+        params["提案日期起始"] = proposal_date_start
+    if proposal_date_end:
+        params["提案日期結束"] = proposal_date_end
 
     # 使用統一的 API 請求處理
     api_response = await make_api_request("/bills", params, "搜尋議案列表")
