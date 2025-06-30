@@ -30,8 +30,52 @@ async def get_bill_detail(
         bill_data = api_response.data
         if isinstance(bill_data, dict) and "data" in bill_data and isinstance(bill_data["data"], dict):
             bill_data = bill_data["data"]
-        # DEBUG: 直接回傳 bill_data 內容以檢查欄位
-        return f"✅ {api_response.message}\n\n{json.dumps(bill_data, ensure_ascii=False, indent=2)}"
+
+        # 格式化結構化摘要
+        if isinstance(bill_data, dict):
+            structured_summary = "## 議案詳細資訊摘要\n\n"
+
+            # 基本資訊
+            structured_summary += "### 📋 基本資訊\n"
+            structured_summary += f"- **議案編號**: {bill_data.get('議案編號', 'N/A')}\n"
+            structured_summary += f"- **屆期**: 第{bill_data.get('屆', 'N/A')}屆第{bill_data.get('會期', 'N/A')}會期\n"
+            structured_summary += f"- **提案日期**: {bill_data.get('提案日期', 'N/A')}\n"
+            structured_summary += f"- **最新進度日期**: {bill_data.get('最新進度日期', 'N/A')}\n"
+            structured_summary += f"- **目前狀態**: {bill_data.get('狀態', 'N/A')}\n\n"
+
+            # 法律相關
+            if bill_data.get("法律編號:str"):
+                structured_summary += "### ⚖️ 相關法律\n"
+                for law in bill_data.get("法律編號:str", []):
+                    structured_summary += f"- {law}\n"
+                structured_summary += "\n"
+
+            # 議案流程
+            if bill_data.get("議案流程"):
+                structured_summary += "### 🔄 議案流程\n"
+                for process in bill_data.get("議案流程", []):
+                    if isinstance(process, dict):
+                        status = process.get("狀態", "N/A")
+                        dates = process.get("日期", [])
+                        if dates:
+                            date_str = ", ".join(dates) if isinstance(dates, list) else str(dates)
+                            structured_summary += f"- **{status}**: {date_str}\n"
+                        else:
+                            structured_summary += f"- **{status}**\n"
+                structured_summary += "\n"
+
+            # 相關附件
+            if bill_data.get("相關附件"):
+                structured_summary += "### 📎 相關附件\n"
+                for attachment in bill_data.get("相關附件", []):
+                    if isinstance(attachment, dict):
+                        name = attachment.get("名稱", "N/A")
+                        structured_summary += f"- {name}\n"
+                structured_summary += "\n"
+
+            return f"✅ {api_response.message}\n\n{structured_summary}"
+        else:
+            return f"✅ {api_response.message}\n\n{json.dumps(bill_data, ensure_ascii=False, indent=2)}"
 
     return f"✅ {api_response.message}\n\n{json.dumps(api_response.data, ensure_ascii=False, indent=2)}"
 
