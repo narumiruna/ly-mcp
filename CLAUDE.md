@@ -26,7 +26,7 @@ uv run pytest -v -s   # Run tests with verbose output
 ### Code Quality
 ```bash
 make lint              # Run ruff linter
-make type              # Run mypy type checking
+make type              # Run mypy type checking with auto-install
 uv run ruff check .    # Direct ruff usage
 uv run mypy .          # Direct mypy usage
 ```
@@ -58,6 +58,7 @@ The server provides the following tools for accessing Legislative Yuan data:
 2. **get_bill_detail**: Get detailed information for a specific bill by bill number (returns complete JSON)
 3. **get_bill_related_bills**: Get related bills for a specific bill
 4. **get_bill_meets**: Get meeting records related to a specific bill
+5. **get_bill_doc_html**: Retrieve HTML document content for specific bills
 
 ## Tool Development
 
@@ -71,11 +72,11 @@ MCP tools are implemented as decorated functions in `server.py`:
 
 ## API Response Handling
 
-The server uses a unified `APIResponse` model for consistent error handling:
-- All API calls go through `make_api_request()` function
-- Handles HTTP errors (404, 429, 500, etc.) with user-friendly Chinese messages
-- Includes timeout and connection error handling
-- Supports pagination information extraction
+The server implements direct API request handling through Pydantic models:
+- Each API operation has its own request model (e.g., `SearchBillRequest`, `GetBillDetailRequest`)
+- Uses httpx.AsyncClient with 30-second timeout for all API calls
+- Error handling is done at the tool level with try/catch blocks
+- All responses are returned as JSON strings with proper Chinese character encoding
 
 ## Testing MCP Tools
 
