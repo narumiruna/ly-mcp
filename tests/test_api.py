@@ -1,6 +1,6 @@
 import pytest
 
-from src.lymcp import api
+from lymcp import api
 
 
 @pytest.mark.asyncio
