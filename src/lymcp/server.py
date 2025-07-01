@@ -1,7 +1,3 @@
-"""
-立法院 MCP 伺服器 - 統一的伺服器和工具實作
-"""
-
 import json
 from typing import Annotated
 from typing import Any
@@ -10,6 +6,8 @@ import httpx
 from loguru import logger
 from mcp.server.fastmcp import FastMCP
 from pydantic import Field
+
+from .types import SearchBillParameters
 
 BASE_URL = "https://ly.govapi.tw/v2"
 
@@ -21,12 +19,12 @@ mcp = FastMCP("立法院 API v2 MCP Server", log_level="ERROR")
 async def search_bills(
     term: Annotated[int | None, Field(description="議案所屬屆期，例: 11")] = None,
     session: Annotated[int | None, Field(description="議案所屬會期，例: 2")] = None,
-    bill_category: Annotated[str | None, Field(description="議案類別，例: 法律案")] = None,
+    bill_type: Annotated[str | None, Field(description="議案類別，例: 法律案")] = None,
     proposer: Annotated[str | None, Field(description="提案人，例: 徐欣瑩")] = None,
     cosigner: Annotated[str | None, Field(description="連署人，例: 林德福")] = None,
     bill_status: Annotated[str | None, Field(description="議案目前所處狀態，例: 交付審查、三讀、排入院會")] = None,
     proposal_source: Annotated[str | None, Field(description="議案的提案來源屬性，例: 委員提案")] = None,
-    bill_no: Annotated[str | None, Field(description="議案編號，例: 202110068550000")] = None,
+    bill_number: Annotated[str | None, Field(description="議案編號，例: 202110068550000")] = None,
     proposal_date_start: Annotated[str | None, Field(description="提案日期起始，格式: YYYY-MM-DD")] = None,
     proposal_date_end: Annotated[str | None, Field(description="提案日期結束，格式: YYYY-MM-DD")] = None,
     page: Annotated[int, Field(description="頁數")] = 1,
@@ -38,7 +36,7 @@ async def search_bills(
     參數說明：
     - term: 屆期，如第11屆
     - session: 會期，如第2會期
-    - bill_category: 議案類別，如「法律案」、「預算案」
+    - bill_type: 議案類別，如「法律案」、「預算案」
     - proposer: 提案人姓名
     - cosigner: 連署人姓名
     - bill_status: 議案狀態，如「交付審查」、「三讀」、「排入院會」、「委員會抽出逕付二讀(交付協商)」
@@ -56,72 +54,27 @@ async def search_bills(
     - 「委員會抽出逕付二讀(交付協商)」: 委員會審查完成，進入協商程序
     """
     try:
-        # 建構查詢參數
-        params: dict[str, Any] = {"page": page, "limit": limit}
+        req = SearchBillParameters(
+            term=term,
+            session=session,
+            bill_type=bill_type,
+            proposer=proposer,
+            co_proposer=cosigner,
+            bill_status=bill_status,
+            proposal_source=proposal_source,
+            bill_number=bill_number,
+            proposal_date=proposal_date_start,
+            page=page,
+            limit=limit,
+        )
 
-        if term is not None:
-            params["屆"] = term
-        if session is not None:
-            params["會期"] = session
-        if bill_category is not None:
-            params["議案類別"] = bill_category
-        if proposer is not None:
-            params["提案人"] = proposer
-        if cosigner is not None:
-            params["連署人"] = cosigner
-        if bill_status is not None:
-            params["議案狀態"] = bill_status
-        if proposal_source is not None:
-            params["提案來源"] = proposal_source
-        if bill_no is not None:
-            params["議案編號"] = bill_no
-        if proposal_date_start is not None:
-            params["提案日期"] = proposal_date_start
-        # Note: API 只支援單一提案日期欄位，不支援日期範圍查詢
-
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            response = await client.get(f"{BASE_URL}/bills", params=params)
-            response.raise_for_status()
-
-            data = response.json()
-            if isinstance(data, dict) and "bills" in data:
-                bills_data = data["bills"]
-            elif isinstance(data, dict) and "data" in data:
-                bills_data = data["data"]
-            else:
-                bills_data = data if isinstance(data, list) else []
-
-            # 直接回傳原始資料
-            result = {
-                "data": bills_data,
-                "total": len(bills_data),
-                "page": page,
-                "limit": limit,
-            }
-
-            return f"✅ 查詢成功\n\n{json.dumps(result, ensure_ascii=False, indent=2)}"
-
-    except httpx.HTTPStatusError as e:
-        error_msg = f"API 請求失敗：HTTP {e.response.status_code}"
-        if e.response.status_code == 404:
-            error_msg = "查無資料：所查詢的資源不存在 (404)。請檢查參數是否正確。"
-        elif e.response.status_code == 429:
-            error_msg = "請求過於頻繁 (429)。請稍後再試。"
-        elif e.response.status_code == 500:
-            error_msg = "伺服器內部錯誤 (500)。API 服務可能暫時不可用。"
-
-        logger.error(f"HTTP error {e.response.status_code}: {error_msg}")
-        return f"❌ {error_msg}"
-
-    except httpx.TimeoutException:
-        return "❌ 請求逾時。API 服務可能繁忙，請稍後再試。"
-
-    except httpx.ConnectError:
-        return "❌ 連線錯誤。請檢查網路連線或 API 服務是否正常。"
+        resp = await req.do()
+        return str(resp)
 
     except Exception as e:
-        logger.error(f"Unexpected error in search_bills: {e}")
-        return f"❌ 未預期的錯誤：{str(e)}"
+        msg = f"Failed to search bills, got: {e}"
+        logger.error(msg)
+        return msg
 
 
 @mcp.tool()
