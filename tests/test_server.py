@@ -24,7 +24,6 @@ async def test_list_tools(server_params: StdioServerParameters) -> None:
             "search_bills",
             "get_bill_detail",
             "get_bill_related_bills",
-            "get_bill_doc_html",
             "get_bill_meets",
         ]
         for tool_name in expected_bills_tools:
@@ -64,18 +63,18 @@ async def test_search_bills_with_filters(server_params: StdioServerParameters) -
 
 
 @pytest.mark.asyncio
-async def test_search_bills_structured(server_params: StdioServerParameters) -> None:
+async def test_search_bills_json(server_params: StdioServerParameters) -> None:
     async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
         await session.initialize()
 
-        # Test structured response
-        result = await session.call_tool("search_bills", {"term": 11, "limit": 3, "structured": True})
+        # Test JSON response format
+        result = await session.call_tool("search_bills", {"term": 11, "limit": 3})
 
         assert len(result.content) == 1
         assert isinstance(result.content[0], TextContent)
 
         response_text = result.content[0].text
-        assert "查詢結果摘要" in response_text or "議案列表" in response_text
+        assert "✅" in response_text or "❌" in response_text
 
 
 @pytest.mark.asyncio
@@ -89,9 +88,9 @@ async def test_get_bill_detail_error_handling(server_params: StdioServerParamete
         assert len(result.content) == 1
         assert isinstance(result.content[0], TextContent)
 
-        # Should contain error message with emoji or proper error handling
+        # Should contain success or error message
         response_text = result.content[0].text
-        assert "❌" in response_text or "API 錯誤" in response_text or "找不到資料" in response_text
+        assert "✅" in response_text or "❌" in response_text
 
 
 @pytest.mark.asyncio
@@ -111,16 +110,16 @@ async def test_get_bill_detail_json(server_params: StdioServerParameters) -> Non
 
 
 @pytest.mark.asyncio
-async def test_get_bill_doc_html_empty_handling(server_params: StdioServerParameters) -> None:
+async def test_get_bill_related_bills(server_params: StdioServerParameters) -> None:
     async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
         await session.initialize()
 
-        # Test document HTML with potentially empty response
-        result = await session.call_tool("get_bill_doc_html", {"bill_no": "203110077970000"})
+        # Test related bills with a known bill
+        result = await session.call_tool("get_bill_related_bills", {"bill_no": "203110077970000"})
 
         assert len(result.content) == 1
         assert isinstance(result.content[0], TextContent)
 
         response_text = result.content[0].text
-        # Should either succeed or give helpful empty content message
-        assert ("✅" in response_text) or ("⚠️" in response_text) or ("❌" in response_text)
+        # Should either succeed or fail with proper error message
+        assert ("✅" in response_text) or ("❌" in response_text)

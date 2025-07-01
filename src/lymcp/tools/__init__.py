@@ -1,1 +1,1 @@
-# MCP Tools package
+# New version of tools using improved API structure

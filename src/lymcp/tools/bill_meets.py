@@ -1,10 +1,8 @@
-import json
 from typing import Annotated
-from typing import Any
 
 from pydantic import Field
 
-from ..api_client import make_api_request
+from .direct_api import get_bill_meets_json
 
 
 async def get_bill_meets(
@@ -30,21 +28,13 @@ async def get_bill_meets(
 
     回傳該議案在各個會議中的審議紀錄，包含會議資訊、審議結果、發言紀錄等。
     """
-
-    params: dict[str, Any] = {"page": page, "limit": limit}
-
-    if term is not None:
-        params["屆"] = term
-    if session is not None:
-        params["會期"] = session
-    if meeting_type:
-        params["會議種類"] = meeting_type
-    if date:
-        params["日期"] = date
-
-    api_response = await make_api_request(f"/bills/{bill_no}/meets", params, f"取得議案 {bill_no} 相關會議")
-
-    if not api_response.success:
-        return f"❌ {api_response.message}"
-
-    return f"✅ {api_response.message}\n\n{json.dumps(api_response.data, ensure_ascii=False, indent=2)}"
+    # 使用新的結構化 API 直接取得資料
+    return await get_bill_meets_json(
+        bill_no=bill_no,
+        term=term,
+        session=session,
+        meeting_type=meeting_type,
+        date=date,
+        page=page,
+        limit=limit,
+    )

@@ -1,12 +1,9 @@
 import json
 from typing import Annotated
-from typing import Any
 
-from loguru import logger
 from pydantic import Field
 
-from ..api_client import make_api_request
-from ..models import extract_bill_summary
+from ..api_client import api_client
 
 
 async def search_bills(
@@ -22,7 +19,6 @@ async def search_bills(
     proposal_date_end: Annotated[str | None, Field(description="提案日期結束，格式: YYYY-MM-DD")] = None,
     page: Annotated[int, Field(description="頁數")] = 1,
     limit: Annotated[int, Field(description="每頁筆數")] = 20,
-    structured: Annotated[bool, Field(description="是否回傳結構化摘要資訊")] = False,
 ) -> str:
     """
     搜尋立法院議案列表。可依據屆期、會期、議案類別、提案人等條件進行篩選。
@@ -40,11 +36,8 @@ async def search_bills(
     - proposal_date_end: 提案日期結束，格式: YYYY-MM-DD
     - page: 頁數 (預設1)
     - limit: 每頁筆數 (預設20，建議不超過100)
-    - structured: 是否回傳結構化摘要 (預設False，回傳完整JSON)
 
-    回傳格式：
-    - structured=False: 完整 JSON 資料
-    - structured=True: 結構化摘要，包含議案編號、標題、類別、提案人、狀態等主要資訊
+    回傳結構化議案摘要資訊，包含議案編號、標題、類別、提案人、狀態等主要資訊。
 
     常見議案狀態說明：
     - 「三讀」: 已完成立法程序
@@ -52,59 +45,22 @@ async def search_bills(
     - 「交付審查」: 送交委員會審查
     - 「委員會抽出逕付二讀(交付協商)」: 委員會審查完成，進入協商程序
     """
-
-    params: dict[str, Any] = {"page": page, "limit": limit}
-
-    if term is not None:
-        params["屆"] = term
-    if session is not None:
-        params["會期"] = session
-    if bill_category:
-        params["議案類別"] = bill_category
-    if proposer:
-        params["提案人"] = proposer
-    if cosigner:
-        params["連署人"] = cosigner
-    if bill_status:
-        params["議案狀態"] = bill_status
-    if proposal_source:
-        params["提案來源"] = proposal_source
-    if bill_no:
-        params["議案編號"] = bill_no
-    if proposal_date_start:
-        params["提案日期起始"] = proposal_date_start
-    if proposal_date_end:
-        params["提案日期結束"] = proposal_date_end
-
-    # 使用統一的 API 請求處理
-    api_response = await make_api_request("/bills", params, "搜尋議案列表")
+    api_response = await api_client.search_bills(
+        term=term,
+        session=session,
+        bill_category=bill_category,
+        proposer=proposer,
+        cosigner=cosigner,
+        bill_status=bill_status,
+        proposal_source=proposal_source,
+        bill_no=bill_no,
+        proposal_date_start=proposal_date_start,
+        proposal_date_end=proposal_date_end,
+        page=page,
+        limit=limit,
+    )
 
     if not api_response.success:
         return f"❌ {api_response.message}"
 
-    if structured and api_response.data:
-        try:
-            # 提取結構化摘要
-            bills_data = api_response.data
-            if isinstance(bills_data, dict) and "bills" in bills_data:
-                bills = bills_data["bills"]
-                summaries = [extract_bill_summary(bill) for bill in bills]
-
-                result = {
-                    "查詢結果摘要": {
-                        "總筆數": api_response.total,
-                        "目前頁數": api_response.page,
-                        "每頁筆數": api_response.limit,
-                        "本頁筆數": len(summaries),
-                    },
-                    "議案列表": [summary.model_dump() for summary in summaries],
-                }
-                return f"✅ {api_response.message}\n\n{json.dumps(result, ensure_ascii=False, indent=2)}"
-            else:
-                return "⚠️ 資料格式異常：無法提取議案列表"
-        except Exception as e:
-            logger.error(f"Failed to structure bills data: {e}")
-            return f"⚠️ 結構化處理失敗：{str(e)}\n\n原始資料：{json.dumps(api_response.data, ensure_ascii=False)}"
-
-    # 回傳完整 JSON
     return f"✅ {api_response.message}\n\n{json.dumps(api_response.data, ensure_ascii=False, indent=2)}"
