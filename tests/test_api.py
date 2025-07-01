@@ -63,3 +63,52 @@ async def test_bill_doc_html_request_real():
     except Exception:
         # 若回傳非 JSON 或 404，允許通過
         assert True
+
+
+@pytest.mark.asyncio
+async def test_list_committees_request_real():
+    req = api.ListCommitteesRequest(limit=1)
+    resp = await req.do()
+    # 回傳資料可能在 'committees'、'data'、'results'
+    assert any(k in resp for k in ("committees", "data", "results"))
+
+
+@pytest.mark.asyncio
+async def test_get_committee_request_real():
+    # 先查一個 comt_cd
+    search = api.ListCommitteesRequest(limit=1)
+    search_resp = await search.do()
+    # 取第一個委員會代號
+    comt_cd = None
+    for k in ("committees", "data", "results"):
+        if k in search_resp and search_resp[k]:
+            comt_cd = search_resp[k][0].get("委員會代號") or search_resp[k][0].get("comtCd")
+            if comt_cd is not None:
+                comt_cd = str(comt_cd)
+            break
+    assert comt_cd
+    req = api.GetCommitteeRequest(comt_cd=comt_cd)
+    resp = await req.do()
+    # 應有委員會代號
+    data = resp.get("data", resp)
+    data_comt_cd = data.get("委員會代號") or data.get("comtCd")
+    assert str(data_comt_cd) == comt_cd
+
+
+@pytest.mark.asyncio
+async def test_committee_meets_request_real():
+    # 先查一個 comt_cd
+    search = api.ListCommitteesRequest(limit=1)
+    search_resp = await search.do()
+    comt_cd = None
+    for k in ("committees", "data", "results"):
+        if k in search_resp and search_resp[k]:
+            comt_cd = search_resp[k][0].get("委員會代號") or search_resp[k][0].get("comtCd")
+            if comt_cd is not None:
+                comt_cd = str(comt_cd)
+            break
+    assert comt_cd
+    req = api.CommitteeMeetsRequest(comt_cd=comt_cd, limit=1)
+    resp = await req.do()
+    # 會議資料可能在 'meets'、'data'、'results'
+    assert any(k in resp for k in ("meets", "data", "results"))
