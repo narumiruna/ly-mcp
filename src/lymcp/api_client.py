@@ -73,6 +73,9 @@ class LegislativeYuanAPIClient:
                 success=False,
                 message=f"API 請求失敗：{str(e)}",
                 data=None,
+                total=None,
+                page=None,
+                limit=None,
             )
 
     async def get_bill_detail(self, bill_no: str) -> APIResponse:
@@ -88,6 +91,9 @@ class LegislativeYuanAPIClient:
                 success=True,
                 message="查詢成功",
                 data=bill_data,
+                total=None,
+                page=None,
+                limit=None,
             )
 
         except Exception as e:
@@ -96,16 +102,15 @@ class LegislativeYuanAPIClient:
                 success=False,
                 message=f"API 請求失敗：{str(e)}",
                 data=None,
+                total=None,
+                page=None,
+                limit=None,
             )
 
-    async def get_bill_related_bills(
-        self, bill_no: str, page: int = 1, limit: int = 20
-    ) -> APIResponse:
+    async def get_bill_related_bills(self, bill_no: str, page: int = 1, limit: int = 20) -> APIResponse:
         """取得相關議案"""
         try:
-            request = GetBillRelatedBillsRequest(
-                bill_no=bill_no, page=page, limit=limit
-            )
+            request = GetBillRelatedBillsRequest(bill_no=bill_no, page=page, limit=limit)
             related_response = await request.async_do()
 
             # 將 BillRelatedBillsResponse 轉換為 APIResponse 以保持向後相容性
@@ -127,12 +132,18 @@ class LegislativeYuanAPIClient:
                 success=False,
                 message="請求逾時。API 服務可能繁忙，請稍後再試。",
                 data=None,
+                total=None,
+                page=None,
+                limit=None,
             )
         except httpx.ConnectError:
             return APIResponse(
                 success=False,
                 message="連線錯誤。請檢查網路連線或 API 服務是否正常。",
                 data=None,
+                total=None,
+                page=None,
+                limit=None,
             )
         except Exception as e:
             logger.error(f"Unexpected error in get_bill_related_bills: {e}")
@@ -140,6 +151,9 @@ class LegislativeYuanAPIClient:
                 success=False,
                 message=f"未預期的錯誤：{str(e)}",
                 data=None,
+                total=None,
+                page=None,
+                limit=None,
             )
 
     async def get_bill_meets(
@@ -184,12 +198,18 @@ class LegislativeYuanAPIClient:
                 success=False,
                 message="請求逾時。API 服務可能繁忙，請稍後再試。",
                 data=None,
+                total=None,
+                page=None,
+                limit=None,
             )
         except httpx.ConnectError:
             return APIResponse(
                 success=False,
                 message="連線錯誤。請檢查網路連線或 API 服務是否正常。",
                 data=None,
+                total=None,
+                page=None,
+                limit=None,
             )
         except Exception as e:
             logger.error(f"Unexpected error in get_bill_meets: {e}")
@@ -197,6 +217,9 @@ class LegislativeYuanAPIClient:
                 success=False,
                 message=f"未預期的錯誤：{str(e)}",
                 data=None,
+                total=None,
+                page=None,
+                limit=None,
             )
 
     def _handle_http_error(self, error: httpx.HTTPStatusError) -> APIResponse:
@@ -218,6 +241,9 @@ class LegislativeYuanAPIClient:
             success=False,
             message=message,
             data=None,
+            total=None,
+            page=None,
+            limit=None,
         )
 
 
@@ -267,4 +293,7 @@ async def make_api_request(
             success=False,
             message=f"不支援的 API endpoint: {endpoint}",
             data=None,
+            total=None,
+            page=None,
+            limit=None,
         )

@@ -2,6 +2,7 @@
 直接使用結構化 API 回應的工具
 這些工具直接回傳 Pydantic 模型，提供更好的類型提示
 """
+
 import json
 from typing import Annotated
 
@@ -95,9 +96,7 @@ async def get_bill_related_bills_direct(
         print(f"相關議案：{related.related_bill_no} ({related.relation_type})")
     ```
     """
-    request = GetBillRelatedBillsRequest(
-        bill_no=bill_no, page=page, limit=limit
-    )
+    request = GetBillRelatedBillsRequest(bill_no=bill_no, page=page, limit=limit)
     return await request.async_do()
 
 

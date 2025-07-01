@@ -40,9 +40,7 @@ async def get_bill_related_bills(
 
     回傳該議案的相關議案資訊，包含關聯類型、相關議案編號等。
     """
-    api_response = await api_client.get_bill_related_bills(
-        bill_no=bill_no, page=page, limit=limit
-    )
+    api_response = await api_client.get_bill_related_bills(bill_no=bill_no, page=page, limit=limit)
 
     if not api_response.success:
         return f"❌ {api_response.message}"
