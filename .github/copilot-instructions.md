@@ -1,6 +1,6 @@
-# CLAUDE.md
+# copilot-instructions.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to GitHub Copilot when working with code in this repository.
 
 ## Project Overview
 
@@ -18,12 +18,14 @@ This is an MCP (Model Context Protocol) server for accessing Taiwan Legislative 
 ## Key Development Commands
 
 ### Testing
+
 ```bash
 make test              # Run full test suite with coverage
 uv run pytest -v -s   # Run tests with verbose output
 ```
 
 ### Code Quality
+
 ```bash
 make lint              # Run ruff linter
 make type              # Run mypy type checking with auto-install
@@ -32,11 +34,13 @@ uv run mypy .          # Direct mypy usage
 ```
 
 ### Development Server
+
 ```bash
 uv run lymcp           # Run the Legislative Yuan MCP server locally
 ```
 
 ### Building and Publishing
+
 ```bash
 make publish           # Build wheel and publish to PyPI
 uv build -f wheel      # Build wheel only
@@ -44,11 +48,11 @@ uv build -f wheel      # Build wheel only
 
 ## MCP Integration
 
-The server can be integrated into Claude Desktop or other MCP clients using these configurations:
+The server can be integrated into MCP clients using these configurations:
 
-- **GitHub**: Uses `uvx --from git+https://github.com/narumiruna/ly-mcp lymcp`
-- **PyPI**: Uses `uvx lymcp@latest`
-- **Local development**: Uses `uv run --directory <path> lymcp`
+- **GitHub**: `uvx --from git+https://github.com/narumiruna/ly-mcp lymcp`
+- **PyPI**: `uvx lymcp@latest`
+- **Local development**: `uv run --directory <path> lymcp`
 
 ## Available MCP Tools
 
@@ -63,6 +67,7 @@ The server provides the following tools for accessing Legislative Yuan data:
 ## Tool Development
 
 MCP tools are implemented as decorated functions in `server.py`:
+
 - Use `@mcp.tool()` decorator
 - Use Pydantic `Field` for parameter descriptions with Chinese descriptions
 - All tools return strings (JSON formatted for structured data)
@@ -73,6 +78,7 @@ MCP tools are implemented as decorated functions in `server.py`:
 ## API Response Handling
 
 The server implements direct API request handling through Pydantic models:
+
 - Each API operation has its own request model (e.g., `SearchBillRequest`, `GetBillDetailRequest`)
 - Uses httpx.AsyncClient with 30-second timeout for all API calls
 - Error handling is done at the tool level with try/catch blocks
@@ -81,6 +87,7 @@ The server implements direct API request handling through Pydantic models:
 ## Testing MCP Tools
 
 Tests use the MCP client SDK to integration test tools:
+
 - Set up `StdioServerParameters` with `uv run lymcp`
 - Use `stdio_client` and `ClientSession` for testing
 - Test both tool listing and tool execution
