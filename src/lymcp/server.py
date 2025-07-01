@@ -39,27 +39,33 @@ async def search_bills(
     ] = None,
 ) -> str:
     """
-    搜尋立法院議案列表。可依據屆期、會期、議案類別、提案人等條件進行篩選。
+    搜尋立法院議案列表。
 
-    參數說明（與 SearchBillParameters 完全對齊）：
-    - term: 屆（例：11）
-    - session: 會期（例：2）
-    - bill_flow_status: 議案流程狀態（如：交付審查、三讀）
-    - bill_type: 議案類別（如：「法律案」、「預算案」）
-    - proposer: 提案人姓名
-    - cosigner: 連署人姓名
-    - law_number: 法律編號
-    - bill_status: 議案狀態（如：「交付審查」、「三讀」、「排入院會」等）
-    - meeting_code: 會議代碼
-    - proposal_source: 提案來源（如：「委員提案」、「政府提案」）
-    - bill_number: 議案編號
-    - proposal_number: 提案編號
-    - reference_number: 字號
-    - article_number: 法條編號
-    - proposal_date: 提案日期（格式：YYYY-MM-DD）
-    - page: 頁數（預設1）
-    - limit: 每頁筆數（預設20，建議不超過100）
-    - output_fields: 自訂回傳欄位（如需指定欄位，請填寫欄位名稱列表）
+    Args:
+        term: 屆，例：11
+        session: 會期，例：2
+        bill_flow_status: 議案流程狀態，如：交付審查、三讀
+        bill_type: 議案類別，如：法律案、預算案
+        proposer: 提案人姓名
+        cosigner: 連署人姓名
+        law_number: 法律編號
+        bill_status: 議案狀態，如：交付審查、三讀、排入院會
+        meeting_code: 會議代碼
+        proposal_source: 提案來源，如：委員提案、政府提案
+        bill_number: 議案編號
+        proposal_number: 提案編號
+        reference_number: 字號
+        article_number: 法條編號
+        proposal_date: 提案日期，格式：YYYY-MM-DD
+        page: 頁數，預設1
+        limit: 每頁筆數，預設20，建議不超過100
+        output_fields: 自訂回傳欄位（如需指定欄位，請填寫欄位名稱列表）
+
+    Returns:
+        str: JSON 格式的議案查詢結果。
+
+    Raises:
+        例外時回傳中文錯誤訊息字串。
     """
     try:
         req = SearchBillRequest(
@@ -99,10 +105,14 @@ async def get_bill_detail(
     """
     取得特定議案的詳細資訊。
 
-    參數說明：
-    - bill_no: 議案編號，必填 (例: 203110077970000)
+    Args:
+        bill_no: 議案編號，必填，例：203110077970000
 
-    回傳內容包含議案基本資料、提案人資訊、議案流程、相關法條等詳細資訊。
+    Returns:
+        str: JSON 格式，包含議案基本資料、提案人資訊、議案流程、相關法條等詳細資訊。
+
+    Raises:
+        例外時回傳中文錯誤訊息字串。
     """
     try:
         req = GetBillDetailRequest(bill_no=bill_no)
@@ -123,12 +133,16 @@ async def get_bill_related_bills(
     """
     取得特定議案的相關議案列表。
 
-    參數說明：
-    - bill_no: 議案編號，必填 (例: 203110077970000)
-    - page: 頁數 (預設1)
-    - limit: 每頁筆數 (預設20，建議不超過50)
+    Args:
+        bill_no: 議案編號，必填，例：203110077970000
+        page: 頁數，預設1
+        limit: 每頁筆數，預設20，建議不超過50
 
-    回傳該議案的相關議案資訊，包含關聯類型、相關議案編號等。
+    Returns:
+        str: JSON 格式，包含該議案的相關議案資訊（關聯類型、相關議案編號等）。
+
+    Raises:
+        例外時回傳中文錯誤訊息字串。
     """
     try:
         req = BillRelatedBillsRequest(bill_no=bill_no, page=page, limit=limit)
@@ -153,16 +167,20 @@ async def get_bill_meets(
     """
     取得特定議案的相關會議列表。
 
-    參數說明：
-    - bill_no: 議案編號，必填 (例: 203110077970000)
-    - term: 屆期篩選 (例: 11)
-    - session: 會期篩選 (例: 2)
-    - meeting_type: 會議種類篩選 (例: 院會、委員會)
-    - date: 會議日期篩選 (格式: YYYY-MM-DD)
-    - page: 頁數 (預設1)
-    - limit: 每頁筆數 (預設20)
+    Args:
+        bill_no: 議案編號，必填，例：203110077970000
+        term: 屆期篩選，例：11
+        session: 會期篩選，例：2
+        meeting_type: 會議種類篩選，例：院會、委員會
+        date: 會議日期篩選，格式：YYYY-MM-DD
+        page: 頁數，預設1
+        limit: 每頁筆數，預設20
 
-    回傳該議案在各個會議中的審議紀錄，包含會議資訊、審議結果、發言紀錄等。
+    Returns:
+        str: JSON 格式，包含該議案在各會議中的審議紀錄（會議資訊、審議結果、發言紀錄等）。
+
+    Raises:
+        例外時回傳中文錯誤訊息字串。
     """
     try:
         req = BillMeetsRequest(
@@ -189,14 +207,18 @@ async def get_bill_doc_html(
     """
     取得特定議案的文件 HTML 內容列表。
 
-    參數說明：
-    - bill_no: 議案編號，必填 (例: 203110077970000)
+    Args:
+        bill_no: 議案編號，必填，例：203110077970000
 
-    回傳該議案的所有相關文件 HTML 內容，包含議案本文、附件、修正對照表等。
+    Returns:
+        str: JSON 格式，包含該議案的所有相關文件 HTML 內容（議案本文、附件、修正對照表等）。
 
-    注意事項：
-    - 若回傳空白內容，可能原因包含：該議案尚無正式文件、文件尚未數位化、或 API 資料延遲更新
-    - 建議先使用 get_bill_detail 確認議案存在後再查詢文件內容
+    Notes:
+        若回傳空白內容，可能原因包含：該議案尚無正式文件、文件尚未數位化、或 API 資料延遲更新。
+        建議先使用 get_bill_detail 確認議案存在後再查詢文件內容。
+
+    Raises:
+        例外時回傳中文錯誤訊息字串。
     """
     try:
         req = BillDocHtmlRequest(bill_no=bill_no)
