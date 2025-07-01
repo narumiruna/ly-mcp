@@ -7,7 +7,7 @@ from loguru import logger
 from mcp.server.fastmcp import FastMCP
 from pydantic import Field
 
-from .types import SearchBillParameters
+from .types import SearchBillRequest
 
 BASE_URL = "https://ly.govapi.tw/v2"
 
@@ -66,7 +66,7 @@ async def search_bills(
     - 「委員會抽出逕付二讀(交付協商)」: 委員會審查完成，進入協商程序
     """
     try:
-        req = SearchBillParameters(
+        req = SearchBillRequest(
             session=session,
             term=term,
             bill_flow_status=bill_flow_status,

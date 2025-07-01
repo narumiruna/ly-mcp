@@ -8,7 +8,7 @@ from pydantic import Field
 BASE_URL: Final[str] = "https://ly.govapi.tw/v2"
 
 
-class SearchBillParameters(BaseModel):
+class SearchBillRequest(BaseModel):
     session: int | None = Field(default=None, serialization_alias="屆")
     term: int | None = Field(default=None, serialization_alias="會期")
     bill_flow_status: str | None = Field(default=None, serialization_alias="議案流程.狀態")
