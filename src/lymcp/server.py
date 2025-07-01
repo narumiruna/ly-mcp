@@ -1,15 +1,15 @@
 import json
 from typing import Annotated
-from typing import Any
 
-import httpx
 from loguru import logger
 from mcp.server.fastmcp import FastMCP
 from pydantic import Field
 
-from .types import SearchBillRequest
-
-BASE_URL = "https://ly.govapi.tw/v2"
+from .api import BillDocHtmlRequest
+from .api import BillMeetsRequest
+from .api import BillRelatedBillsRequest
+from .api import GetBillDetailRequest
+from .api import SearchBillRequest
 
 # https://github.com/jlowin/fastmcp/issues/81#issuecomment-2714245145
 mcp = FastMCP("立法院 API v2 MCP Server", log_level="ERROR")
@@ -88,7 +88,7 @@ async def search_bills(
         )
 
         resp = await req.do()
-        return str(resp)
+        return json.dumps(resp, ensure_ascii=False, indent=2)
 
     except Exception as e:
         msg = f"Failed to search bills, got: {e}"
@@ -109,38 +109,13 @@ async def get_bill_detail(
     回傳內容包含議案基本資料、提案人資訊、議案流程、相關法條等詳細資訊。
     """
     try:
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            response = await client.get(f"{BASE_URL}/bills/{bill_no}")
-            response.raise_for_status()
-
-            data = response.json()
-            if isinstance(data, dict) and "data" in data:
-                data = data["data"]
-
-            # 直接回傳原始資料
-            return f"✅ 查詢成功\n\n{json.dumps(data, ensure_ascii=False, indent=2)}"
-
-    except httpx.HTTPStatusError as e:
-        error_msg = f"API 請求失敗：HTTP {e.response.status_code}"
-        if e.response.status_code == 404:
-            error_msg = "查無資料：所查詢的議案不存在 (404)。請檢查議案編號是否正確。"
-        elif e.response.status_code == 429:
-            error_msg = "請求過於頻繁 (429)。請稍後再試。"
-        elif e.response.status_code == 500:
-            error_msg = "伺服器內部錯誤 (500)。API 服務可能暫時不可用。"
-
-        logger.error(f"HTTP error {e.response.status_code}: {error_msg}")
-        return f"❌ {error_msg}"
-
-    except httpx.TimeoutException:
-        return "❌ 請求逾時。API 服務可能繁忙，請稍後再試。"
-
-    except httpx.ConnectError:
-        return "❌ 連線錯誤。請檢查網路連線或 API 服務是否正常。"
-
+        req = GetBillDetailRequest(bill_no=bill_no)
+        resp = await req.do()
+        return json.dumps(resp, ensure_ascii=False, indent=2)
     except Exception as e:
-        logger.error(f"Unexpected error in get_bill_detail: {e}")
-        return f"❌ 未預期的錯誤：{str(e)}"
+        msg = f"Failed to get bill detail, got: {e}"
+        logger.error(msg)
+        return msg
 
 
 @mcp.tool()
@@ -160,50 +135,13 @@ async def get_bill_related_bills(
     回傳該議案的相關議案資訊，包含關聯類型、相關議案編號等。
     """
     try:
-        params = {"page": page, "limit": limit}
-
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            response = await client.get(f"{BASE_URL}/bills/{bill_no}/related_bills", params=params)
-            response.raise_for_status()
-
-            data = response.json()
-            if isinstance(data, dict) and "data" in data:
-                related_data = data["data"]
-            else:
-                related_data = data if isinstance(data, list) else []
-
-            # 直接回傳原始資料
-            result = {
-                "related_bills": related_data,
-                "total": len(related_data),
-                "page": page,
-                "limit": limit,
-                "bill_no": bill_no,
-            }
-
-            return f"✅ 查詢成功\n\n{json.dumps(result, ensure_ascii=False, indent=2)}"
-
-    except httpx.HTTPStatusError as e:
-        error_msg = f"API 請求失敗：HTTP {e.response.status_code}"
-        if e.response.status_code == 404:
-            error_msg = "查無資料：所查詢的議案不存在或無相關議案 (404)。請檢查議案編號是否正確。"
-        elif e.response.status_code == 429:
-            error_msg = "請求過於頻繁 (429)。請稍後再試。"
-        elif e.response.status_code == 500:
-            error_msg = "伺服器內部錯誤 (500)。API 服務可能暫時不可用。"
-
-        logger.error(f"HTTP error {e.response.status_code}: {error_msg}")
-        return f"❌ {error_msg}"
-
-    except httpx.TimeoutException:
-        return "❌ 請求逾時。API 服務可能繁忙，請稍後再試。"
-
-    except httpx.ConnectError:
-        return "❌ 連線錯誤。請檢查網路連線或 API 服務是否正常。"
-
+        req = BillRelatedBillsRequest(bill_no=bill_no, page=page, limit=limit)
+        resp = await req.do()
+        return json.dumps(resp, ensure_ascii=False, indent=2)
     except Exception as e:
-        logger.error(f"Unexpected error in get_bill_related_bills: {e}")
-        return f"❌ 未預期的錯誤：{str(e)}"
+        msg = f"Failed to get bill related bills, got: {e}"
+        logger.error(msg)
+        return msg
 
 
 @mcp.tool()
@@ -231,59 +169,21 @@ async def get_bill_meets(
     回傳該議案在各個會議中的審議紀錄，包含會議資訊、審議結果、發言紀錄等。
     """
     try:
-        params: dict[str, Any] = {"page": page, "limit": limit}
-
-        if term is not None:
-            params["屆"] = str(term)
-        if session is not None:
-            params["會期"] = str(session)
-        if meeting_type is not None:
-            params["會議種類"] = meeting_type
-        if date is not None:
-            params["日期"] = date
-
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            response = await client.get(f"{BASE_URL}/bills/{bill_no}/meets", params=params)
-            response.raise_for_status()
-
-            data = response.json()
-            if isinstance(data, dict) and "data" in data:
-                meets_data = data["data"]
-            else:
-                meets_data = data if isinstance(data, list) else []
-
-            # 直接回傳原始資料
-            result = {
-                "meetings": meets_data,
-                "total": len(meets_data),
-                "page": page,
-                "limit": limit,
-                "bill_no": bill_no,
-            }
-
-            return f"✅ 查詢成功\n\n{json.dumps(result, ensure_ascii=False, indent=2)}"
-
-    except httpx.HTTPStatusError as e:
-        error_msg = f"API 請求失敗：HTTP {e.response.status_code}"
-        if e.response.status_code == 404:
-            error_msg = "查無資料：所查詢的議案不存在或無相關會議 (404)。請檢查議案編號是否正確。"
-        elif e.response.status_code == 429:
-            error_msg = "請求過於頻繁 (429)。請稍後再試。"
-        elif e.response.status_code == 500:
-            error_msg = "伺服器內部錯誤 (500)。API 服務可能暫時不可用。"
-
-        logger.error(f"HTTP error {e.response.status_code}: {error_msg}")
-        return f"❌ {error_msg}"
-
-    except httpx.TimeoutException:
-        return "❌ 請求逾時。API 服務可能繁忙，請稍後再試。"
-
-    except httpx.ConnectError:
-        return "❌ 連線錯誤。請檢查網路連線或 API 服務是否正常。"
-
+        req = BillMeetsRequest(
+            bill_no=bill_no,
+            term=term,
+            session=session,
+            meeting_type=meeting_type,
+            date=date,
+            page=page,
+            limit=limit,
+        )
+        resp = await req.do()
+        return json.dumps(resp, ensure_ascii=False, indent=2)
     except Exception as e:
-        logger.error(f"Unexpected error in get_bill_meets: {e}")
-        return f"❌ 未預期的錯誤：{str(e)}"
+        msg = f"Failed to get bill meets, got: {e}"
+        logger.error(msg)
+        return msg
 
 
 @mcp.tool()
@@ -303,37 +203,14 @@ async def get_bill_doc_html(
     - 建議先使用 get_bill_detail 確認議案存在後再查詢文件內容
     """
     try:
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            response = await client.get(f"{BASE_URL}/bills/{bill_no}/doc_html")
-            response.raise_for_status()
-
-            data = response.json()
-
-            # 直接回傳 API 資料
-            return f"✅ 查詢成功\n\n{json.dumps(data, ensure_ascii=False, indent=2)}"
-
-    except httpx.HTTPStatusError as e:
-        error_msg = f"API 請求失敗：HTTP {e.response.status_code}"
-        if e.response.status_code == 404:
-            error_msg = "查無資料：所查詢的議案不存在或無文件內容 (404)。請檢查議案編號是否正確。"
-        elif e.response.status_code == 429:
-            error_msg = "請求過於頻繁 (429)。請稍後再試。"
-        elif e.response.status_code == 500:
-            error_msg = "伺服器內部錯誤 (500)。API 服務可能暫時不可用。"
-
-        logger.error(f"HTTP error {e.response.status_code}: {error_msg}")
-        return f"❌ {error_msg}"
-
-    except httpx.TimeoutException:
-        return "❌ 請求逾時。API 服務可能繁忙，請稍後再試。"
-
-    except httpx.ConnectError:
-        return "❌ 連線錯誤。請檢查網路連線或 API 服務是否正常。"
-
+        req = BillDocHtmlRequest(bill_no=bill_no)
+        resp = await req.do()
+        return json.dumps(resp, ensure_ascii=False, indent=2)
     except Exception as e:
-        logger.error(f"Unexpected error in get_bill_doc_html: {e}")
-        return f"❌ 未預期的錯誤：{str(e)}"
+        msg = f"Failed to get bill doc html, got: {e}"
+        logger.error(msg)
+        return msg
 
 
-def main():
+def main() -> None:
     mcp.run()
