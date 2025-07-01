@@ -17,35 +17,47 @@ mcp = FastMCP("立法院 API v2 MCP Server", log_level="ERROR")
 
 @mcp.tool()
 async def search_bills(
-    term: Annotated[int | None, Field(description="議案所屬屆期，例: 11")] = None,
-    session: Annotated[int | None, Field(description="議案所屬會期，例: 2")] = None,
-    bill_type: Annotated[str | None, Field(description="議案類別，例: 法律案")] = None,
-    proposer: Annotated[str | None, Field(description="提案人，例: 徐欣瑩")] = None,
-    cosigner: Annotated[str | None, Field(description="連署人，例: 林德福")] = None,
-    bill_status: Annotated[str | None, Field(description="議案目前所處狀態，例: 交付審查、三讀、排入院會")] = None,
-    proposal_source: Annotated[str | None, Field(description="議案的提案來源屬性，例: 委員提案")] = None,
-    bill_number: Annotated[str | None, Field(description="議案編號，例: 202110068550000")] = None,
-    proposal_date_start: Annotated[str | None, Field(description="提案日期起始，格式: YYYY-MM-DD")] = None,
-    proposal_date_end: Annotated[str | None, Field(description="提案日期結束，格式: YYYY-MM-DD")] = None,
+    session: Annotated[int | None, Field(description="屆")] = None,
+    term: Annotated[int | None, Field(description="會期")] = None,
+    bill_flow_status: Annotated[str | None, Field(description="議案流程.狀態")] = None,
+    bill_type: Annotated[str | None, Field(description="議案類別")] = None,
+    proposer: Annotated[str | None, Field(description="提案人")] = None,
+    co_proposer: Annotated[str | None, Field(description="連署人")] = None,
+    law_number: Annotated[str | None, Field(description="法律編號")] = None,
+    bill_status: Annotated[str | None, Field(description="議案狀態")] = None,
+    meeting_code: Annotated[str | None, Field(description="會議代碼")] = None,
+    proposal_source: Annotated[str | None, Field(description="提案來源")] = None,
+    bill_number: Annotated[str | None, Field(description="議案編號")] = None,
+    proposal_number: Annotated[str | None, Field(description="提案編號")] = None,
+    reference_number: Annotated[str | None, Field(description="字號")] = None,
+    article_number: Annotated[str | None, Field(description="法條編號")] = None,
+    proposal_date: Annotated[str | None, Field(description="提案日期")] = None,
     page: Annotated[int, Field(description="頁數")] = 1,
     limit: Annotated[int, Field(description="每頁筆數")] = 20,
+    output_fields: Annotated[list[str] | None, Field(description="自訂回傳欄位")] = None,
 ) -> str:
     """
     搜尋立法院議案列表。可依據屆期、會期、議案類別、提案人等條件進行篩選。
 
-    參數說明：
-    - term: 屆期，如第11屆
-    - session: 會期，如第2會期
-    - bill_type: 議案類別，如「法律案」、「預算案」
+    參數說明（與 SearchBillParameters 完全對齊）：
+    - session: 屆期（例：11）
+    - term: 會期（例：2）
+    - bill_flow_status: 議案流程狀態
+    - bill_type: 議案類別（例：「法律案」、「預算案」）
     - proposer: 提案人姓名
-    - cosigner: 連署人姓名
-    - bill_status: 議案狀態，如「交付審查」、「三讀」、「排入院會」、「委員會抽出逕付二讀(交付協商)」
-    - proposal_source: 提案來源，如「委員提案」、「政府提案」
-    - bill_no: 特定議案編號
-    - proposal_date_start: 提案日期起始，格式: YYYY-MM-DD
-    - proposal_date_end: 提案日期結束，格式: YYYY-MM-DD
-    - page: 頁數 (預設1)
-    - limit: 每頁筆數 (預設20，建議不超過100)
+    - co_proposer: 連署人姓名
+    - law_number: 法律編號
+    - bill_status: 議案狀態（例：「交付審查」、「三讀」、「排入院會」等）
+    - meeting_code: 會議代碼
+    - proposal_source: 提案來源（例：「委員提案」、「政府提案」）
+    - bill_number: 議案編號
+    - proposal_number: 提案編號
+    - reference_number: 字號
+    - article_number: 法條編號
+    - proposal_date: 提案日期（格式：YYYY-MM-DD）
+    - page: 頁數（預設1）
+    - limit: 每頁筆數（預設20，建議不超過100）
+    - output_fields: 自訂回傳欄位（list）
 
     常見議案狀態說明：
     - 「三讀」: 已完成立法程序
@@ -55,17 +67,24 @@ async def search_bills(
     """
     try:
         req = SearchBillParameters(
-            term=term,
             session=session,
+            term=term,
+            bill_flow_status=bill_flow_status,
             bill_type=bill_type,
             proposer=proposer,
-            co_proposer=cosigner,
+            co_proposer=co_proposer,
+            law_number=law_number,
             bill_status=bill_status,
+            meeting_code=meeting_code,
             proposal_source=proposal_source,
             bill_number=bill_number,
-            proposal_date=proposal_date_start,
+            proposal_number=proposal_number,
+            reference_number=reference_number,
+            article_number=article_number,
+            proposal_date=proposal_date,
             page=page,
             limit=limit,
+            output_fields=output_fields or [],
         )
 
         resp = await req.do()
