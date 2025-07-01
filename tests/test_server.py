@@ -95,19 +95,19 @@ async def test_get_bill_detail_error_handling(server_params: StdioServerParamete
 
 
 @pytest.mark.asyncio
-async def test_get_bill_detail_structured(server_params: StdioServerParameters) -> None:
+async def test_get_bill_detail_json(server_params: StdioServerParameters) -> None:
     async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
         await session.initialize()
 
-        # Test structured response with a known bill
-        result = await session.call_tool("get_bill_detail", {"bill_no": "203110077970000", "structured": True})
+        # Test JSON response with a known bill
+        result = await session.call_tool("get_bill_detail", {"bill_no": "203110077970000"})
 
         assert len(result.content) == 1
         assert isinstance(result.content[0], TextContent)
 
         response_text = result.content[0].text
-        # Should either succeed with structured data or fail with proper error message
-        assert ("基本資訊" in response_text) or ("❌" in response_text)
+        # Should either succeed with JSON data or fail with proper error message
+        assert ("✅" in response_text) or ("❌" in response_text)
 
 
 @pytest.mark.asyncio

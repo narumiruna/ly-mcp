@@ -55,10 +55,9 @@ The server can be integrated into Claude Desktop or other MCP clients using thes
 The server provides the following tools for accessing Legislative Yuan data:
 
 1. **search_bills**: Search legislative bills by term, session, category, proposer, etc.
-2. **get_bill_detail**: Get detailed information for a specific bill by bill number
+2. **get_bill_detail**: Get detailed information for a specific bill by bill number (returns complete JSON)
 3. **get_bill_related_bills**: Get related bills for a specific bill
-4. **get_bill_doc_html**: Get HTML document content for a specific bill
-5. **get_bill_meets**: Get meeting records related to a specific bill
+4. **get_bill_meets**: Get meeting records related to a specific bill
 
 ## Tool Development
 
@@ -67,7 +66,8 @@ MCP tools are implemented as decorated functions in `server.py`:
 - Use Pydantic `Field` for parameter descriptions with Chinese descriptions
 - All tools return strings (JSON formatted for structured data)
 - Include comprehensive error handling with Chinese error messages
-- Support both structured and raw JSON response formats
+- Return JSON formatted data for all tools
+- Simplified APIs - removed complex structured formatting options for cleaner implementation
 
 ## API Response Handling
 

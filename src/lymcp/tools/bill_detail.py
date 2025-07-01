@@ -8,14 +8,12 @@ from ..api_client import make_api_request
 
 async def get_bill_detail(
     bill_no: Annotated[str, Field(description="議案編號，例: 203110077970000")],
-    structured: Annotated[bool, Field(description="是否回傳結構化摘要資訊")] = False,
 ) -> str:
     """
     取得特定議案的詳細資訊。
 
     參數說明：
     - bill_no: 議案編號，必填 (例: 203110077970000)
-    - structured: 是否回傳結構化摘要 (預設False，回傳完整JSON)
 
     回傳內容包含議案基本資料、提案人資訊、議案流程、相關法條等詳細資訊。
     """
@@ -24,58 +22,6 @@ async def get_bill_detail(
 
     if not api_response.success:
         return f"❌ {api_response.message}"
-
-    if structured and api_response.data:
-        # 若 data 為 dict 且有 "data" key，則進入 data 子欄位
-        bill_data = api_response.data
-        if isinstance(bill_data, dict) and "data" in bill_data and isinstance(bill_data["data"], dict):
-            bill_data = bill_data["data"]
-
-        # 格式化結構化摘要
-        if isinstance(bill_data, dict):
-            structured_summary = "## 議案詳細資訊摘要\n\n"
-
-            # 基本資訊
-            structured_summary += "### 📋 基本資訊\n"
-            structured_summary += f"- **議案編號**: {bill_data.get('議案編號', 'N/A')}\n"
-            structured_summary += f"- **屆期**: 第{bill_data.get('屆', 'N/A')}屆第{bill_data.get('會期', 'N/A')}會期\n"
-            structured_summary += f"- **提案日期**: {bill_data.get('提案日期', 'N/A')}\n"
-            structured_summary += f"- **最新進度日期**: {bill_data.get('最新進度日期', 'N/A')}\n"
-            structured_summary += f"- **目前狀態**: {bill_data.get('狀態', 'N/A')}\n\n"
-
-            # 法律相關
-            if bill_data.get("法律編號:str"):
-                structured_summary += "### ⚖️ 相關法律\n"
-                for law in bill_data.get("法律編號:str", []):
-                    structured_summary += f"- {law}\n"
-                structured_summary += "\n"
-
-            # 議案流程
-            if bill_data.get("議案流程"):
-                structured_summary += "### 🔄 議案流程\n"
-                for process in bill_data.get("議案流程", []):
-                    if isinstance(process, dict):
-                        status = process.get("狀態", "N/A")
-                        dates = process.get("日期", [])
-                        if dates:
-                            date_str = ", ".join(dates) if isinstance(dates, list) else str(dates)
-                            structured_summary += f"- **{status}**: {date_str}\n"
-                        else:
-                            structured_summary += f"- **{status}**\n"
-                structured_summary += "\n"
-
-            # 相關附件
-            if bill_data.get("相關附件"):
-                structured_summary += "### 📎 相關附件\n"
-                for attachment in bill_data.get("相關附件", []):
-                    if isinstance(attachment, dict):
-                        name = attachment.get("名稱", "N/A")
-                        structured_summary += f"- {name}\n"
-                structured_summary += "\n"
-
-            return f"✅ {api_response.message}\n\n{structured_summary}"
-        else:
-            return f"✅ {api_response.message}\n\n{json.dumps(bill_data, ensure_ascii=False, indent=2)}"
 
     return f"✅ {api_response.message}\n\n{json.dumps(api_response.data, ensure_ascii=False, indent=2)}"
 
