@@ -5,14 +5,14 @@ from loguru import logger
 from mcp.server.fastmcp import FastMCP
 from pydantic import Field
 
-from .api import BillDocHtmlRequest
-from .api import BillMeetsRequest
-from .api import BillRelatedBillsRequest
-from .api import CommitteeMeetsRequest
-from .api import GetBillDetailRequest
-from .api import GetCommitteeRequest
-from .api import ListCommitteesRequest
-from .api import SearchBillRequest
+from lymcp.api import BillDocHtmlRequest
+from lymcp.api import BillMeetsRequest
+from lymcp.api import BillRelatedBillsRequest
+from lymcp.api import CommitteeMeetsRequest
+from lymcp.api import GetBillDetailRequest
+from lymcp.api import GetCommitteeRequest
+from lymcp.api import ListCommitteesRequest
+from lymcp.api import SearchBillRequest
 
 # https://github.com/jlowin/fastmcp/issues/81#issuecomment-2714245145
 mcp = FastMCP("立法院 API v2 MCP Server", log_level="ERROR")
