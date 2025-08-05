@@ -117,6 +117,18 @@ uv run ruff check .
 uv run mypy .
 ```
 
+### To-Do List
+
+- [x] Stat
+- [x] Bill
+- [x] Committee
+- [ ] Gazette
+- [ ] Interpellation
+- [ ] Ivod
+- [ ] Law
+- [ ] Legislator
+- [ ] Meet
+
 ## License
 
 MIT
