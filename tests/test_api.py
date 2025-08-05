@@ -4,6 +4,18 @@ from lymcp import api
 
 
 @pytest.mark.asyncio
+async def test_stat_request():
+    req = api.StatRequest()
+    resp = await req.do()
+    assert "bill" in resp
+    assert "gazette" in resp
+    assert "ivod" in resp
+    assert "legislator" in resp
+    assert "meet" in resp
+    assert isinstance(resp["bill"], dict)
+    assert len(resp["bill"]) > 0
+
+@pytest.mark.asyncio
 async def test_search_bill_request_real():
     req = api.SearchBillRequest(session=11, bill_type="法律案", limit=1)
     resp = await req.do()

@@ -8,6 +8,13 @@ from pydantic import Field
 BASE_URL: Final[str] = "https://ly.govapi.tw/v2"
 HTTPX_TIMEOUT: Final[float] = 30.0
 
+class StatRequest(BaseModel):
+    async def do(self) -> dict:
+        async with httpx.AsyncClient(timeout=HTTPX_TIMEOUT) as client:
+            logger.info("Getting statistics")
+            resp = await client.get(f"{BASE_URL}/stat")
+            resp.raise_for_status()
+            return resp.json()
 
 class SearchBillRequest(BaseModel):
     session: int | None = Field(default=None, serialization_alias="屆")

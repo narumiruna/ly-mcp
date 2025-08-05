@@ -17,6 +17,26 @@ from lymcp.api import SearchBillRequest
 # https://github.com/jlowin/fastmcp/issues/81#issuecomment-2714245145
 mcp = FastMCP("立法院 API v2 MCP Server", log_level="ERROR")
 
+@mcp.tool()
+async def stat() -> str:
+    """
+    取得立法院 API 的統計資訊。
+
+    Returns:
+        str: JSON 格式的統計資訊。
+
+    Raises:
+        例外時回傳中文錯誤訊息字串。
+    """
+    try:
+        from lymcp.api import StatRequest
+        req = StatRequest()
+        resp = await req.do()
+        return json.dumps(resp, ensure_ascii=False, indent=2)
+    except Exception as e:
+        msg = f"Failed to get statistics, got: {e}"
+        logger.error(msg)
+        return msg
 
 @mcp.tool()
 async def search_bills(
