@@ -5,6 +5,8 @@ from loguru import logger
 from pydantic import BaseModel
 from pydantic import Field
 
+from .translate import translate
+
 BASE_URL: Final[str] = "https://ly.govapi.tw/v2"
 HTTPX_TIMEOUT: Final[float] = 30.0
 
@@ -17,21 +19,21 @@ class StatRequest(BaseModel):
             return resp.json()
 
 class SearchBillRequest(BaseModel):
-    session: int | None = Field(default=None, serialization_alias="屆")
-    term: int | None = Field(default=None, serialization_alias="會期")
-    bill_flow_status: str | None = Field(default=None, serialization_alias="議案流程.狀態")
-    bill_type: str | None = Field(default=None, serialization_alias="議案類別")
-    proposer: str | None = Field(default=None, serialization_alias="提案人")
-    co_proposer: str | None = Field(default=None, serialization_alias="連署人")
-    law_number: str | None = Field(default=None, serialization_alias="法律編號")
-    bill_status: str | None = Field(default=None, serialization_alias="議案狀態")
-    meeting_code: str | None = Field(default=None, serialization_alias="會議代碼")
-    proposal_source: str | None = Field(default=None, serialization_alias="提案來源")
-    bill_number: str | None = Field(default=None, serialization_alias="議案編號")
-    proposal_number: str | None = Field(default=None, serialization_alias="提案編號")
-    reference_number: str | None = Field(default=None, serialization_alias="字號")
-    article_number: str | None = Field(default=None, serialization_alias="法條編號")
-    proposal_date: str | None = Field(default=None, serialization_alias="提案日期")
+    session: int | None = Field(default=None, serialization_alias=translate["session"])
+    term: int | None = Field(default=None, serialization_alias=translate["term"])
+    bill_flow_status: str | None = Field(default=None, serialization_alias=translate["bill_flow_status"])
+    bill_type: str | None = Field(default=None, serialization_alias=translate["bill_type"])
+    proposer: str | None = Field(default=None, serialization_alias=translate["proposer"])
+    co_proposer: str | None = Field(default=None, serialization_alias=translate["co_proposer"])
+    law_number: str | None = Field(default=None, serialization_alias=translate["law_number"])
+    bill_status: str | None = Field(default=None, serialization_alias=translate["bill_status"])
+    meeting_code: str | None = Field(default=None, serialization_alias=translate["meeting_code"])
+    proposal_source: str | None = Field(default=None, serialization_alias=translate["proposal_source"])
+    bill_number: str | None = Field(default=None, serialization_alias=translate["bill_number"])
+    proposal_number: str | None = Field(default=None, serialization_alias=translate["proposal_number"])
+    reference_number: str | None = Field(default=None, serialization_alias=translate["reference_number"])
+    article_number: str | None = Field(default=None, serialization_alias=translate["article_number"])
+    proposal_date: str | None = Field(default=None, serialization_alias=translate["proposal_date"])
     page: int = 1
     limit: int = 20
     output_fields: list[str] = Field(default_factory=list)
@@ -48,7 +50,7 @@ class SearchBillRequest(BaseModel):
 
 
 class GetBillDetailRequest(BaseModel):
-    bill_no: str = Field(..., serialization_alias="議案編號")
+    bill_no: str = Field(..., serialization_alias=translate["bill_no"])
 
     async def do(self) -> dict:
         async with httpx.AsyncClient(timeout=HTTPX_TIMEOUT) as client:
@@ -59,11 +61,11 @@ class GetBillDetailRequest(BaseModel):
 
 
 class BillMeetsRequest(BaseModel):
-    bill_no: str = Field(..., serialization_alias="議案編號")
-    term: int | None = Field(default=None, serialization_alias="屆")
-    session: int | None = Field(default=None, serialization_alias="會期")
-    meeting_type: str | None = Field(default=None, serialization_alias="會議種類")
-    date: str | None = Field(default=None, serialization_alias="日期")
+    bill_no: str = Field(..., serialization_alias=translate["bill_no"])
+    term: int | None = Field(default=None, serialization_alias=translate["session"])
+    session: int | None = Field(default=None, serialization_alias=translate["term"])
+    meeting_type: str | None = Field(default=None, serialization_alias=translate["meeting_type"])
+    date: str | None = Field(default=None, serialization_alias=translate["date"])
     page: int = 1
     limit: int = 20
 
@@ -77,7 +79,7 @@ class BillMeetsRequest(BaseModel):
 
 
 class BillRelatedBillsRequest(BaseModel):
-    bill_no: str = Field(..., serialization_alias="議案編號")
+    bill_no: str = Field(..., serialization_alias=translate["bill_no"])
     page: int = 1
     limit: int = 20
 
@@ -91,7 +93,7 @@ class BillRelatedBillsRequest(BaseModel):
 
 
 class BillDocHtmlRequest(BaseModel):
-    bill_no: str = Field(..., serialization_alias="議案編號")
+    bill_no: str = Field(..., serialization_alias=translate["bill_no"])
 
     async def do(self) -> dict:
         async with httpx.AsyncClient(timeout=HTTPX_TIMEOUT) as client:
@@ -102,8 +104,8 @@ class BillDocHtmlRequest(BaseModel):
 
 
 class ListCommitteesRequest(BaseModel):
-    committee_type: str | None = Field(default=None, serialization_alias="委員會類別")
-    comt_cd: str | None = Field(default=None, serialization_alias="委員會代號")
+    committee_type: str | None = Field(default=None, serialization_alias=translate["committee_type"])
+    comt_cd: str | None = Field(default=None, serialization_alias=translate["comt_cd"])
     page: int = 1
     limit: int = 20
     output_fields: list[str] = Field(default_factory=list)
@@ -118,7 +120,7 @@ class ListCommitteesRequest(BaseModel):
 
 
 class GetCommitteeRequest(BaseModel):
-    comt_cd: str = Field(..., serialization_alias="委員會代號")
+    comt_cd: str = Field(..., serialization_alias=translate["comt_cd"])
 
     async def do(self) -> dict:
         async with httpx.AsyncClient(timeout=HTTPX_TIMEOUT) as client:
@@ -129,17 +131,17 @@ class GetCommitteeRequest(BaseModel):
 
 
 class CommitteeMeetsRequest(BaseModel):
-    comt_cd: str = Field(..., serialization_alias="委員會代號")
-    term: int | None = Field(default=None, serialization_alias="屆")
-    meeting_code: str | None = Field(default=None, serialization_alias="會議代碼")
-    session: int | None = Field(default=None, serialization_alias="會期")
-    meeting_type: str | None = Field(default=None, serialization_alias="會議種類")
-    member: str | None = Field(default=None, serialization_alias="會議資料.出席委員")
-    date: str | None = Field(default=None, serialization_alias="日期")
-    committee_code: str | None = Field(default=None, serialization_alias="委員會代號")
-    meet_id: str | None = Field(default=None, serialization_alias="會議資料.會議編號")
-    bill_no: str | None = Field(default=None, serialization_alias="議事網資料.關係文書.議案.議案編號")
-    law_number: str | None = Field(default=None, serialization_alias="議事網資料.關係文書.議案.法律編號")
+    comt_cd: str = Field(..., serialization_alias=translate["comt_cd"])
+    term: int | None = Field(default=None, serialization_alias=translate["session"])
+    meeting_code: str | None = Field(default=None, serialization_alias=translate["meeting_code"])
+    session: int | None = Field(default=None, serialization_alias=translate["term"])
+    meeting_type: str | None = Field(default=None, serialization_alias=translate["meeting_type"])
+    member: str | None = Field(default=None, serialization_alias=translate["member"])
+    date: str | None = Field(default=None, serialization_alias=translate["date"])
+    committee_code: str | None = Field(default=None, serialization_alias=translate["committee_code"])
+    meet_id: str | None = Field(default=None, serialization_alias=translate["meet_id"])
+    bill_no: str | None = Field(default=None, serialization_alias=translate["bill_no_nested"])
+    law_number: str | None = Field(default=None, serialization_alias=translate["law_number_nested"])
     page: int = 1
     limit: int = 20
     output_fields: list[str] = Field(default_factory=list)
