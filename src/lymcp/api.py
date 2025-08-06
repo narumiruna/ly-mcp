@@ -19,8 +19,8 @@ class StatRequest(BaseModel):
             return resp.json()
 
 class SearchBillRequest(BaseModel):
-    session: int | None = Field(default=None, serialization_alias=translate["session"])
     term: int | None = Field(default=None, serialization_alias=translate["term"])
+    session: int | None = Field(default=None, serialization_alias=translate["session"])
     bill_flow_status: str | None = Field(default=None, serialization_alias=translate["bill_flow_status"])
     bill_type: str | None = Field(default=None, serialization_alias=translate["bill_type"])
     proposer: str | None = Field(default=None, serialization_alias=translate["proposer"])
@@ -62,8 +62,8 @@ class GetBillDetailRequest(BaseModel):
 
 class BillMeetsRequest(BaseModel):
     bill_no: str = Field(..., serialization_alias=translate["bill_no"])
-    term: int | None = Field(default=None, serialization_alias=translate["session"])
-    session: int | None = Field(default=None, serialization_alias=translate["term"])
+    term: int | None = Field(default=None, serialization_alias=translate["term"])
+    session: int | None = Field(default=None, serialization_alias=translate["session"])
     meeting_type: str | None = Field(default=None, serialization_alias=translate["meeting_type"])
     date: str | None = Field(default=None, serialization_alias=translate["date"])
     page: int = 1
@@ -132,9 +132,9 @@ class GetCommitteeRequest(BaseModel):
 
 class CommitteeMeetsRequest(BaseModel):
     comt_cd: str = Field(..., serialization_alias=translate["comt_cd"])
-    term: int | None = Field(default=None, serialization_alias=translate["session"])
+    term: int | None = Field(default=None, serialization_alias=translate["term"])
     meeting_code: str | None = Field(default=None, serialization_alias=translate["meeting_code"])
-    session: int | None = Field(default=None, serialization_alias=translate["term"])
+    session: int | None = Field(default=None, serialization_alias=translate["session"])
     meeting_type: str | None = Field(default=None, serialization_alias=translate["meeting_type"])
     member: str | None = Field(default=None, serialization_alias=translate["member"])
     date: str | None = Field(default=None, serialization_alias=translate["date"])

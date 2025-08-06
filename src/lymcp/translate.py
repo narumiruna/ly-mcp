@@ -27,6 +27,6 @@ translate: dict[str, str] = {
     "proposal_source": "提案來源",
     "proposer": "提案人",
     "reference_number": "字號",
-    "session": "屆",
-    "term": "會期",
+    "session": "會期",
+    "term": "屆",
 }
