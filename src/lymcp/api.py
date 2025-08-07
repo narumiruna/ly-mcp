@@ -49,7 +49,7 @@ class ListBillRequest(BaseModel):
             return resp.json()
 
 
-class GetBillDetailRequest(BaseModel):
+class GetBillRequest(BaseModel):
     bill_no: str = Field(..., serialization_alias=translate["bill_no"])
 
     async def do(self) -> dict:

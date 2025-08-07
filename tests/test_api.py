@@ -25,12 +25,12 @@ async def test_search_bill_request_real():
 
 
 @pytest.mark.asyncio
-async def test_get_bill_detail_request_real():
+async def test_get_bill_request_real():
     # 先查一個 bill_no
     search = api.ListBillRequest(term=11, limit=1)
     search_resp = await search.do()
     bill_no = search_resp["bills"][0]["議案編號"]
-    req = api.GetBillDetailRequest(bill_no=bill_no)
+    req = api.GetBillRequest(bill_no=bill_no)
     resp = await req.do()
     # 正確取出 data 裡的 key
     data = resp.get("data", {})

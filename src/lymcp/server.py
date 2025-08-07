@@ -9,7 +9,7 @@ from lymcp.api import BillDocHtmlRequest
 from lymcp.api import BillMeetsRequest
 from lymcp.api import BillRelatedBillsRequest
 from lymcp.api import CommitteeMeetsRequest
-from lymcp.api import GetBillDetailRequest
+from lymcp.api import GetBillRequest
 from lymcp.api import GetCommitteeRequest
 from lymcp.api import GetStatRequest
 from lymcp.api import ListBillRequest
@@ -122,7 +122,7 @@ async def list_bills(
 
 
 @mcp.tool()
-async def get_bill_detail(
+async def get_bill(
     bill_no: Annotated[str, Field(description="議案編號，必填，例: 203110077970000")],
 ) -> str:
     """
@@ -138,7 +138,7 @@ async def get_bill_detail(
         例外時回傳中文錯誤訊息字串。
     """
     try:
-        req = GetBillDetailRequest(bill_no=bill_no)
+        req = GetBillRequest(bill_no=bill_no)
         resp = await req.do()
         return json.dumps(resp, ensure_ascii=False, indent=2)
     except Exception as e:

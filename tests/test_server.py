@@ -23,7 +23,7 @@ async def test_list_tools(server_params: StdioServerParameters) -> None:
         expected_bills_tools = [
             "get_stat",
             "list_bills",
-            "get_bill_detail",
+            "get_bill",
             "get_bill_related_bills",
             "get_bill_meets",
             "get_bill_doc_html",
