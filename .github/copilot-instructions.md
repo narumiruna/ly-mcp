@@ -31,6 +31,7 @@ All tools:
 
 ## API Calls
 
+- Source API specification is defined in `swagger.yaml`. Follow the same naming conventions as in the API spec
 - Use `httpx.AsyncClient(timeout=30.0)` for API requests
 - API requests and data models are defined in `src/lymcp/api.py`, each tool has a corresponding request model
 
