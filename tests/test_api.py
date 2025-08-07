@@ -4,8 +4,8 @@ from lymcp import api
 
 
 @pytest.mark.asyncio
-async def test_stat_request():
-    req = api.StatRequest()
+async def test_get_stat_request():
+    req = api.GetStatRequest()
     resp = await req.do()
     assert "bill" in resp
     assert "gazette" in resp

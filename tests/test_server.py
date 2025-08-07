@@ -21,6 +21,7 @@ async def test_list_tools(server_params: StdioServerParameters) -> None:
         # Check that bills tools are available
         tool_names = [tool.name for tool in result.tools]
         expected_bills_tools = [
+            "get_stat",
             "list_bills",
             "get_bill_detail",
             "get_bill_related_bills",

@@ -10,7 +10,7 @@ from .translate import translate
 BASE_URL: Final[str] = "https://ly.govapi.tw/v2"
 HTTPX_TIMEOUT: Final[float] = 30.0
 
-class StatRequest(BaseModel):
+class GetStatRequest(BaseModel):
     async def do(self) -> dict:
         async with httpx.AsyncClient(timeout=HTTPX_TIMEOUT) as client:
             logger.info("Getting statistics")

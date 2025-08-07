@@ -11,6 +11,7 @@ from lymcp.api import BillRelatedBillsRequest
 from lymcp.api import CommitteeMeetsRequest
 from lymcp.api import GetBillDetailRequest
 from lymcp.api import GetCommitteeRequest
+from lymcp.api import GetStatRequest
 from lymcp.api import ListBillRequest
 from lymcp.api import ListCommitteesRequest
 
@@ -18,7 +19,7 @@ from lymcp.api import ListCommitteesRequest
 mcp = FastMCP("立法院 API v2 MCP Server", log_level="ERROR")
 
 @mcp.tool()
-async def stat() -> str:
+async def get_stat() -> str:
     """
     取得立法院 API 的統計資訊。
 
@@ -29,8 +30,7 @@ async def stat() -> str:
         例外時回傳中文錯誤訊息字串。
     """
     try:
-        from lymcp.api import StatRequest
-        req = StatRequest()
+        req = GetStatRequest()
         resp = await req.do()
         return json.dumps(resp, ensure_ascii=False, indent=2)
     except Exception as e:
