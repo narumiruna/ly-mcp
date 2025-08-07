@@ -6,7 +6,7 @@ A Model Context Protocol (MCP) server for Taiwan's Legislative Yuan API v2, prov
 
 This MCP server provides the following tools:
 
-- **search_bills**: Search bills by term, session, category, proposer, and other criteria
+- **list_bills**: List bills with optional filters by term, session, category, proposer, and other criteria
 - **get_bill_detail**: Get comprehensive information about specific bills (returns complete JSON)
 - **get_bill_related_bills**: Query related bills and their associations
 - **get_bill_doc_html**: Retrieve HTML document content for specific bills

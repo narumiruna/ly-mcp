@@ -17,7 +17,7 @@ async def test_stat_request():
 
 @pytest.mark.asyncio
 async def test_search_bill_request_real():
-    req = api.SearchBillRequest(term=11, bill_type="法律案", limit=1)
+    req = api.ListBillRequest(term=11, bill_type="法律案", limit=1)
     resp = await req.do()
     assert "bills" in resp
     assert isinstance(resp["bills"], list)
@@ -27,7 +27,7 @@ async def test_search_bill_request_real():
 @pytest.mark.asyncio
 async def test_get_bill_detail_request_real():
     # 先查一個 bill_no
-    search = api.SearchBillRequest(term=11, limit=1)
+    search = api.ListBillRequest(term=11, limit=1)
     search_resp = await search.do()
     bill_no = search_resp["bills"][0]["議案編號"]
     req = api.GetBillDetailRequest(bill_no=bill_no)
@@ -40,7 +40,7 @@ async def test_get_bill_detail_request_real():
 @pytest.mark.asyncio
 async def test_bill_meets_request_real():
     # 先查一個 bill_no
-    search = api.SearchBillRequest(term=11, limit=1)
+    search = api.ListBillRequest(term=11, limit=1)
     search_resp = await search.do()
     bill_no = search_resp["bills"][0]["議案編號"]
     req = api.BillMeetsRequest(bill_no=bill_no)
@@ -52,7 +52,7 @@ async def test_bill_meets_request_real():
 @pytest.mark.asyncio
 async def test_bill_related_bills_request_real():
     # 先查一個 bill_no
-    search = api.SearchBillRequest(term=11, limit=1)
+    search = api.ListBillRequest(term=11, limit=1)
     search_resp = await search.do()
     bill_no = search_resp["bills"][0]["議案編號"]
     req = api.BillRelatedBillsRequest(bill_no=bill_no)
@@ -64,7 +64,7 @@ async def test_bill_related_bills_request_real():
 @pytest.mark.asyncio
 async def test_bill_doc_html_request_real():
     # 先查一個 bill_no
-    search = api.SearchBillRequest(term=11, limit=1)
+    search = api.ListBillRequest(term=11, limit=1)
     search_resp = await search.do()
     bill_no = search_resp["bills"][0]["議案編號"]
     req = api.BillDocHtmlRequest(bill_no=bill_no)

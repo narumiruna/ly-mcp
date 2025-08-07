@@ -11,8 +11,8 @@ from lymcp.api import BillRelatedBillsRequest
 from lymcp.api import CommitteeMeetsRequest
 from lymcp.api import GetBillDetailRequest
 from lymcp.api import GetCommitteeRequest
+from lymcp.api import ListBillRequest
 from lymcp.api import ListCommitteesRequest
-from lymcp.api import SearchBillRequest
 
 # https://github.com/jlowin/fastmcp/issues/81#issuecomment-2714245145
 mcp = FastMCP("立法院 API v2 MCP Server", log_level="ERROR")
@@ -39,7 +39,7 @@ async def stat() -> str:
         return msg
 
 @mcp.tool()
-async def search_bills(
+async def list_bills(
     term: Annotated[int | None, Field(description="屆，例：11")] = None,
     session: Annotated[int | None, Field(description="會期，例：2")] = None,
     bill_flow_status: Annotated[str | None, Field(description="議案流程狀態，如：交付審查、三讀")] = None,
@@ -62,7 +62,7 @@ async def search_bills(
     ] = None,
 ) -> str:
     """
-    搜尋立法院議案列表。
+    列出立法院議案列表。
 
     Args:
         term: 屆，例：11
@@ -91,7 +91,7 @@ async def search_bills(
         例外時回傳中文錯誤訊息字串。
     """
     try:
-        req = SearchBillRequest(
+        req = ListBillRequest(
             session=session,
             term=term,
             bill_flow_status=bill_flow_status,
@@ -116,7 +116,7 @@ async def search_bills(
         return json.dumps(resp, ensure_ascii=False, indent=2)
 
     except Exception as e:
-        msg = f"Failed to search bills, got: {e}"
+        msg = f"Failed to list bills, got: {e}"
         logger.error(msg)
         return msg
 
@@ -264,7 +264,7 @@ async def list_committees(
     ] = None,
 ) -> str:
     """
-    取得委員會列表。
+    列出委員會列表。
 
     Args:
         committee_type: 委員會類別

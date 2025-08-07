@@ -18,7 +18,7 @@ class StatRequest(BaseModel):
             resp.raise_for_status()
             return resp.json()
 
-class SearchBillRequest(BaseModel):
+class ListBillRequest(BaseModel):
     term: int | None = Field(default=None, serialization_alias=translate["term"])
     session: int | None = Field(default=None, serialization_alias=translate["session"])
     bill_flow_status: str | None = Field(default=None, serialization_alias=translate["bill_flow_status"])
@@ -41,7 +41,7 @@ class SearchBillRequest(BaseModel):
     async def do(self) -> dict:
         async with httpx.AsyncClient(timeout=HTTPX_TIMEOUT) as client:
             params = self.model_dump(exclude_none=True, by_alias=True)
-            logger.info("Searching bills with parameters: {}", params)
+            logger.info("Listing bills with parameters: {}", params)
 
             resp = await client.get(f"{BASE_URL}/bills", params=params)
             resp.raise_for_status()

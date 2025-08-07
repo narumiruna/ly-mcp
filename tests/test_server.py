@@ -21,7 +21,7 @@ async def test_list_tools(server_params: StdioServerParameters) -> None:
         # Check that bills tools are available
         tool_names = [tool.name for tool in result.tools]
         expected_bills_tools = [
-            "search_bills",
+            "list_bills",
             "get_bill_detail",
             "get_bill_related_bills",
             "get_bill_meets",
@@ -32,12 +32,12 @@ async def test_list_tools(server_params: StdioServerParameters) -> None:
 
 
 @pytest.mark.asyncio
-async def test_search_bills(server_params: StdioServerParameters) -> None:
+async def test_list_bills(server_params: StdioServerParameters) -> None:
     async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
         await session.initialize()
 
         # Test basic search with pagination
-        result = await session.call_tool("search_bills", {"page": 1, "limit": 5})
+        result = await session.call_tool("list_bills", {"page": 1, "limit": 5})
 
         assert len(result.content) == 1
         assert isinstance(result.content[0], TextContent)
@@ -48,12 +48,12 @@ async def test_search_bills(server_params: StdioServerParameters) -> None:
 
 
 @pytest.mark.asyncio
-async def test_search_bills_with_filters(server_params: StdioServerParameters) -> None:
+async def test_list_bills_with_filters(server_params: StdioServerParameters) -> None:
     async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
         await session.initialize()
 
         # Test search with specific filters
-        result = await session.call_tool("search_bills", {"term": 11, "bill_type": "法律案", "limit": 3})
+        result = await session.call_tool("list_bills", {"term": 11, "bill_type": "法律案", "limit": 3})
 
         assert len(result.content) == 1
         assert isinstance(result.content[0], TextContent)
@@ -64,7 +64,7 @@ async def test_search_bills_with_filters(server_params: StdioServerParameters) -
 
 
 @pytest.mark.asyncio
-async def test_search_bills_json(server_params: StdioServerParameters) -> None:
+async def test_list_bills_json(server_params: StdioServerParameters) -> None:
     async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
         await session.initialize()
 
@@ -76,7 +76,6 @@ async def test_search_bills_json(server_params: StdioServerParameters) -> None:
 
         response_text = result.content[0].text
         assert isinstance(response_text, str)
-
 
 @pytest.mark.asyncio
 async def test_get_bill_detail_error_handling(server_params: StdioServerParameters) -> None:

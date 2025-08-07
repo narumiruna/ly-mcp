@@ -17,7 +17,7 @@ This repository implements an MCP (Model Context Protocol) server for accessing 
 
 ## MCP Tools (see `src/lymcp/server.py`)
 
-- `search_bills`: Search bills with multiple filters
+- `list_bills`: Search bills with multiple filters
 - `get_bill_detail`: Get detailed information for a specific bill
 - `get_bill_related_bills`: Query related bills
 - `get_bill_meets`: Query bill-related meeting records
