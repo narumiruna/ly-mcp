@@ -31,6 +31,20 @@ async def test_list_tools(server_params: StdioServerParameters) -> None:
         for tool_name in expected_bills_tools:
             assert tool_name in tool_names
 
+@pytest.mark.asyncio
+async def test_get_stat(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test basic statistics retrieval
+        result = await session.call_tool("get_stat", {})
+
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+        # Check response is string
+        response_text = result.content[0].text
+        assert isinstance(response_text, str)
 
 @pytest.mark.asyncio
 async def test_list_bills(server_params: StdioServerParameters) -> None:
