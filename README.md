@@ -28,6 +28,11 @@ This MCP server provides the following tools:
 - **list_gazette_agendas**: List all gazette agendas with optional filters by term, meeting date, etc.
 - **get_gazette_agenda**: Get detailed information about specific gazette agenda items
 
+### Interpellations (質詢)
+- **list_interpellations**: List interpellations with optional filters by member, term, session, and meeting code
+- **get_interpellation**: Get detailed information about specific interpellations
+- **get_legislator_interpellations**: Get interpellations where a specific legislator is the questioning member
+
 ## API Source
 
 This MCP server uses the [Legislative Yuan API v2](https://ly.govapi.tw/v2) as its data source, providing information about Taiwan's Legislative Yuan bills and proceedings.
@@ -139,7 +144,7 @@ uv run mypy .
 - [x] Bill
 - [x] Committee
 - [x] Gazette
-- [ ] Interpellation
+- [x] Interpellation
 - [ ] Ivod
 - [ ] Law
 - [ ] Legislator
