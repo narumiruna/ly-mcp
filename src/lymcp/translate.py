@@ -33,4 +33,6 @@ translate: dict[str, str] = {
     "gazette_agenda_id": "公報議程編號",
     "meeting_date": "會議日期",
     "volume": "卷",
+    "interpellation_member": "質詢委員",
+    "interpellation_id": "質詢編號",
 }
