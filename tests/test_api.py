@@ -43,7 +43,7 @@ async def test_bill_meets_request_real():
     search = api.ListBillRequest(term=11, limit=1)
     search_resp = await search.do()
     bill_no = search_resp["bills"][0]["議案編號"]
-    req = api.BillMeetsRequest(bill_no=bill_no)
+    req = api.GetBillMeetsRequest(bill_no=bill_no)
     resp = await req.do()
     # 會議資料可能在 'meets'、'data' 或 'bills'
     assert any(k in resp for k in ("meets", "data", "bills"))
@@ -55,7 +55,7 @@ async def test_bill_related_bills_request_real():
     search = api.ListBillRequest(term=11, limit=1)
     search_resp = await search.do()
     bill_no = search_resp["bills"][0]["議案編號"]
-    req = api.BillRelatedBillsRequest(bill_no=bill_no)
+    req = api.GetBillRelatedBillsRequest(bill_no=bill_no)
     resp = await req.do()
     # 相關議案資料可能在 'related_bills'、'data' 或 'bills'
     assert any(k in resp for k in ("related_bills", "data", "bills"))
@@ -67,7 +67,7 @@ async def test_bill_doc_html_request_real():
     search = api.ListBillRequest(term=11, limit=1)
     search_resp = await search.do()
     bill_no = search_resp["bills"][0]["議案編號"]
-    req = api.BillDocHtmlRequest(bill_no=bill_no)
+    req = api.GetBillDocHtmlRequest(bill_no=bill_no)
     try:
         resp = await req.do()
         # 文件資料可能在 'doc_html'、'html'、'data'，或回傳 bills
@@ -120,7 +120,7 @@ async def test_committee_meets_request_real():
                 comt_cd = str(comt_cd)
             break
     assert comt_cd
-    req = api.CommitteeMeetsRequest(comt_cd=comt_cd, limit=1)
+    req = api.GetCommitteeMeetsRequest(comt_cd=comt_cd, limit=1)
     resp = await req.do()
     # 會議資料可能在 'meets'、'data'、'results'
     assert any(k in resp for k in ("meets", "data", "results"))

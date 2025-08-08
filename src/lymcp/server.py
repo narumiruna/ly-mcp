@@ -5,10 +5,10 @@ from loguru import logger
 from mcp.server.fastmcp import FastMCP
 from pydantic import Field
 
-from lymcp.api import BillDocHtmlRequest
-from lymcp.api import BillMeetsRequest
-from lymcp.api import BillRelatedBillsRequest
-from lymcp.api import CommitteeMeetsRequest
+from lymcp.api import GetBillDocHtmlRequest
+from lymcp.api import GetBillMeetsRequest
+from lymcp.api import GetBillRelatedBillsRequest
+from lymcp.api import GetCommitteeMeetsRequest
 from lymcp.api import GetBillRequest
 from lymcp.api import GetCommitteeRequest
 from lymcp.api import GetStatRequest
@@ -168,7 +168,7 @@ async def get_bill_related_bills(
         例外時回傳中文錯誤訊息字串。
     """
     try:
-        req = BillRelatedBillsRequest(bill_no=bill_no, page=page, limit=limit)
+        req = GetBillRelatedBillsRequest(bill_no=bill_no, page=page, limit=limit)
         resp = await req.do()
         return json.dumps(resp, ensure_ascii=False, indent=2)
     except Exception as e:
@@ -206,7 +206,7 @@ async def get_bill_meets(
         例外時回傳中文錯誤訊息字串。
     """
     try:
-        req = BillMeetsRequest(
+        req = GetBillMeetsRequest(
             bill_no=bill_no,
             term=term,
             session=session,
@@ -244,7 +244,7 @@ async def get_bill_doc_html(
         例外時回傳中文錯誤訊息字串。
     """
     try:
-        req = BillDocHtmlRequest(bill_no=bill_no)
+        req = GetBillDocHtmlRequest(bill_no=bill_no)
         resp = await req.do()
         return json.dumps(resp, ensure_ascii=False, indent=2)
     except Exception as e:
@@ -366,7 +366,7 @@ async def get_committee_meets(
         例外時回傳中文錯誤訊息字串。
     """
     try:
-        req = CommitteeMeetsRequest(
+        req = GetCommitteeMeetsRequest(
             comt_cd=comt_cd,
             term=term,
             meeting_code=meeting_code,

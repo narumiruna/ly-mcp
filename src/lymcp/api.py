@@ -64,7 +64,7 @@ class GetBillRequest(BaseModel):
             url=f"{BASE_URL}/bills/{self.bill_no}",
         )
 
-class BillMeetsRequest(BaseModel):
+class GetBillMeetsRequest(BaseModel):
     bill_no: str = Field(..., serialization_alias=translate["bill_no"])
     term: int | None = Field(default=None, serialization_alias=translate["term"])
     session: int | None = Field(default=None, serialization_alias=translate["session"])
@@ -81,7 +81,7 @@ class BillMeetsRequest(BaseModel):
             params=params,
         )
 
-class BillRelatedBillsRequest(BaseModel):
+class GetBillRelatedBillsRequest(BaseModel):
     bill_no: str = Field(..., serialization_alias=translate["bill_no"])
     page: int = 1
     limit: int = 20
@@ -94,7 +94,7 @@ class BillRelatedBillsRequest(BaseModel):
             params=params,
         )
 
-class BillDocHtmlRequest(BaseModel):
+class GetBillDocHtmlRequest(BaseModel):
     bill_no: str = Field(..., serialization_alias=translate["bill_no"])
 
     async def do(self) -> dict:
@@ -127,7 +127,7 @@ class GetCommitteeRequest(BaseModel):
             url=f"{BASE_URL}/committees/{self.comt_cd}",
         )
 
-class CommitteeMeetsRequest(BaseModel):
+class GetCommitteeMeetsRequest(BaseModel):
     comt_cd: str = Field(..., serialization_alias=translate["comt_cd"])
     term: int | None = Field(default=None, serialization_alias=translate["term"])
     meeting_code: str | None = Field(default=None, serialization_alias=translate["meeting_code"])
