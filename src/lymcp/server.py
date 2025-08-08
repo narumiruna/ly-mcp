@@ -17,6 +17,7 @@ from lymcp.api import GetGazetteRequest
 from lymcp.api import GetInterpellationRequest
 from lymcp.api import GetIvodRequest
 from lymcp.api import GetLawBillsRequest
+from lymcp.api import GetLawContentRequest
 from lymcp.api import GetLawProgressRequest
 from lymcp.api import GetLawRequest
 from lymcp.api import GetLawVersionsRequest
@@ -29,6 +30,7 @@ from lymcp.api import ListGazetteAgendasRequest
 from lymcp.api import ListGazettesRequest
 from lymcp.api import ListInterpellationsRequest
 from lymcp.api import ListIvodsRequest
+from lymcp.api import ListLawContentsRequest
 from lymcp.api import ListLawsRequest
 
 # https://github.com/jlowin/fastmcp/issues/81#issuecomment-2714245145
@@ -1119,6 +1121,86 @@ async def get_law_versions(
         return json.dumps(resp, ensure_ascii=False, indent=2)
     except Exception as e:
         msg = f"Failed to get law versions, got: {e}"
+        logger.error(msg)
+        return msg
+
+
+@mcp.tool()
+async def list_law_contents(
+    law_number: Annotated[str | None, Field(description="法律編號，例：90481")] = None,
+    version_id: Annotated[str | None, Field(description="版本編號，例：90481:90481:1944-02-29-制定:1")] = None,
+    order: Annotated[int | None, Field(description="順序，例：1")] = None,
+    article_number: Annotated[str | None, Field(description="條號，例：第一條")] = None,
+    current_version_status: Annotated[str | None, Field(description="現行版，可選值：現行、非現行")] = None,
+    version_tracking: Annotated[str | None, Field(description="版本追蹤，例：new")] = None,
+    page: Annotated[int, Field(description="頁數，預設1")] = 1,
+    limit: Annotated[int, Field(description="每頁筆數，預設20")] = 20,
+    output_fields: Annotated[
+        list[str] | None, Field(description="自訂回傳欄位（如需指定欄位，請填寫欄位名稱列表）")
+    ] = None,
+) -> str:
+    """
+    列出法條資料。
+
+    Args:
+        law_number: 法律編號，例：90481
+        version_id: 版本編號，例：90481:90481:1944-02-29-制定:1
+        order: 順序，例：1
+        article_number: 條號，例：第一條
+        current_version_status: 現行版，可選值：現行、非現行
+        version_tracking: 版本追蹤，例：new
+        page: 頁數，預設1
+        limit: 每頁筆數，預設20
+        output_fields: 自訂回傳欄位（如需指定欄位，請填寫欄位名稱列表）
+
+    Returns:
+        str: JSON 格式的法條列表。
+
+    Raises:
+        例外時回傳中文錯誤訊息字串。
+    """
+    try:
+        req = ListLawContentsRequest(
+            law_number=law_number,
+            version_id=version_id,
+            order=order,
+            article_number=article_number,
+            current_version_status=current_version_status,
+            version_tracking=version_tracking,
+            page=page,
+            limit=limit,
+            output_fields=output_fields or [],
+        )
+        resp = await req.do()
+        return json.dumps(resp, ensure_ascii=False, indent=2)
+    except Exception as e:
+        msg = f"Failed to list law contents, got: {e}"
+        logger.error(msg)
+        return msg
+
+
+@mcp.tool()
+async def get_law_content(
+    law_content_id: Annotated[str, Field(description="法條編號，例：90481:90481:1944-02-29-制定:0")]
+) -> str:
+    """
+    取得特定法條的詳細資訊。
+
+    Args:
+        law_content_id: 法條編號，例：90481:90481:1944-02-29-制定:0
+
+    Returns:
+        str: JSON 格式，包含該法條的詳細資訊。
+
+    Raises:
+        例外時回傳中文錯誤訊息字串。
+    """
+    try:
+        req = GetLawContentRequest(law_content_id=law_content_id)
+        resp = await req.do()
+        return json.dumps(resp, ensure_ascii=False, indent=2)
+    except Exception as e:
+        msg = f"Failed to get law content, got: {e}"
         logger.error(msg)
         return msg
 

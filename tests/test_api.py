@@ -339,3 +339,43 @@ async def test_get_law_request_with_real_data():
         data = resp.get("data", resp)
         data_law_id = data.get("法律編號") or data.get("lawId")
         assert str(data_law_id) == law_id
+
+
+@pytest.mark.asyncio
+async def test_list_law_contents_request():
+    req = api.ListLawContentsRequest(limit=5)
+    resp = await req.do()
+    # 檢查回應結構
+    assert "lawcontents" in resp
+    assert isinstance(resp["lawcontents"], list)
+    assert len(resp["lawcontents"]) > 0
+    # 檢查基本的分頁資訊
+    assert "total" in resp
+    assert "page" in resp
+    assert "limit" in resp
+
+
+@pytest.mark.asyncio
+async def test_list_law_contents_with_filters_request():
+    req = api.ListLawContentsRequest(
+        law_number="90481",
+        current_version_status="現行",
+        limit=3
+    )
+    resp = await req.do()
+    # 檢查回應中有資料
+    assert "lawcontents" in resp
+    assert isinstance(resp["lawcontents"], list)
+    # 檢查篩選參數有被正確應用
+    assert "filter" in resp
+
+
+@pytest.mark.asyncio
+async def test_get_law_content_request():
+    # 測試取得特定法條資訊
+    # 使用swagger.yaml中的範例ID
+    req = api.GetLawContentRequest(law_content_id="90481:90481:1944-02-29-制定:0")
+    resp = await req.do()
+    # 法條資料應該有內容
+    assert resp is not None
+    assert isinstance(resp, dict)

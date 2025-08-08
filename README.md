@@ -44,6 +44,8 @@ This MCP server provides the following tools:
 - **get_law_progress**: Get undecided progress list for specific laws
 - **get_law_bills**: Get bills related to specific laws with optional filters
 - **get_law_versions**: Get historical version records for specific laws including changes, proposers, and progress
+- **list_law_contents**: List law articles/contents with optional filters by law number, version ID, article number, current version status, and version tracking
+- **get_law_content**: Get detailed information about specific law articles/contents using law content ID
 
 ## API Source
 

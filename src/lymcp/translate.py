@@ -53,4 +53,11 @@ translate: dict[str, str] = {
     "main_proposer": "歷程.主提案",
     "progress": "歷程.進度",
     "current_version": "現行版本",
+    # Law contents API translations
+    "law_content_id": "法條編號",
+    "version_id": "版本編號",
+    "order": "順序",
+    "law_article_number": "條號",
+    "current_version_status": "現行版",
+    "version_tracking": "版本追蹤",
 }

@@ -418,3 +418,33 @@ class GetLawVersionsRequest(BaseModel):
             url=f"{BASE_URL}/laws/{self.law_id}/versions",
             params=params,
         )
+
+
+class ListLawContentsRequest(BaseModel):
+    law_number: str | None = Field(default=None, serialization_alias=translate["law_number"])
+    version_id: str | None = Field(default=None, serialization_alias=translate["version_id"])
+    order: int | None = Field(default=None, serialization_alias=translate["order"])
+    article_number: str | None = Field(default=None, serialization_alias=translate["law_article_number"])
+    current_version_status: str | None = Field(default=None, serialization_alias=translate["current_version_status"])
+    version_tracking: str | None = Field(default=None, serialization_alias=translate["version_tracking"])
+    page: int = 1
+    limit: int = 20
+    output_fields: list[str] = Field(default_factory=list)
+
+    async def do(self) -> dict:
+        params = self.model_dump(exclude_none=True, by_alias=True)
+        logger.info("Listing law contents with parameters: {}", params)
+        return await make_api_request(
+            url=f"{BASE_URL}/law_contents",
+            params=params,
+        )
+
+
+class GetLawContentRequest(BaseModel):
+    law_content_id: str = Field(..., serialization_alias=translate["law_content_id"])
+
+    async def do(self) -> dict:
+        logger.info("Getting law content detail for law_content_id: {}", self.law_content_id)
+        return await make_api_request(
+            url=f"{BASE_URL}/law_contents/{self.law_content_id}",
+        )
