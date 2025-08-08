@@ -33,6 +33,11 @@ This MCP server provides the following tools:
 - **get_interpellation**: Get detailed information about specific interpellations
 - **get_legislator_interpellations**: Get interpellations where a specific legislator is the questioning member
 
+### IVODs (網路電視)
+- **list_ivods**: List IVOD (Internet Video On Demand) recordings with optional filters by term, session, committee, member, and video type
+- **get_ivod**: Get detailed information about specific IVOD recordings, including video URLs, transcripts, and gazette content
+- **get_meet_ivods**: Get IVOD recordings related to specific meetings
+
 ## API Source
 
 This MCP server uses the [Legislative Yuan API v2](https://ly.govapi.tw/v2) as its data source, providing information about Taiwan's Legislative Yuan bills and proceedings.
@@ -145,7 +150,7 @@ uv run mypy .
 - [x] Committee
 - [x] Gazette
 - [x] Interpellation
-- [ ] Ivod
+- [x] Ivod
 - [ ] Law
 - [ ] Legislator
 - [ ] Meet
