@@ -84,7 +84,7 @@ async def test_list_bills_json(server_params: StdioServerParameters) -> None:
         await session.initialize()
 
         # Test JSON response format
-        result = await session.call_tool("search_bills", {"term": 11, "limit": 3})
+        result = await session.call_tool("list_bills", {"term": 11, "limit": 3})
 
         assert len(result.content) == 1
         assert isinstance(result.content[0], TextContent)
@@ -98,7 +98,7 @@ async def test_get_bill_detail_error_handling(server_params: StdioServerParamete
         await session.initialize()
 
         # Test with invalid bill number to check error handling
-        result = await session.call_tool("get_bill_detail", {"bill_no": "invalid_bill_number"})
+        result = await session.call_tool("get_bill", {"bill_no": "invalid_bill_number"})
 
         assert len(result.content) == 1
         assert isinstance(result.content[0], TextContent)
@@ -114,7 +114,7 @@ async def test_get_bill_detail_json(server_params: StdioServerParameters) -> Non
         await session.initialize()
 
         # Test JSON response with a known bill
-        result = await session.call_tool("get_bill_detail", {"bill_no": "203110077970000"})
+        result = await session.call_tool("get_bill", {"bill_no": "203110077970000"})
 
         assert len(result.content) == 1
         assert isinstance(result.content[0], TextContent)
