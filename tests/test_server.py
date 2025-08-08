@@ -138,3 +138,33 @@ async def test_get_bill_related_bills(server_params: StdioServerParameters) -> N
         response_text = result.content[0].text
         # Should be string
         assert isinstance(response_text, str)
+
+
+@pytest.mark.asyncio
+async def test_list_gazettes(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test gazette listing
+        result = await session.call_tool("list_gazettes", {"limit": 1})
+
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+        response_text = result.content[0].text
+        assert isinstance(response_text, str)
+
+
+@pytest.mark.asyncio
+async def test_get_gazette(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test gazette detail retrieval with a test gazette ID
+        result = await session.call_tool("get_gazette", {"gazette_id": "1137701"})
+
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+        response_text = result.content[0].text
+        assert isinstance(response_text, str)

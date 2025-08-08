@@ -150,3 +150,75 @@ class GetCommitteeMeetsRequest(BaseModel):
             url=f"{BASE_URL}/committees/{self.comt_cd}/meets",
             params=params,
         )
+
+
+class ListGazettesRequest(BaseModel):
+    gazette_id: str | None = Field(default=None, serialization_alias=translate["gazette_id"])
+    volume: int | None = Field(default=None, serialization_alias=translate["volume"])
+    page: int = 1
+    limit: int = 20
+    output_fields: list[str] = Field(default_factory=list)
+
+    async def do(self) -> dict:
+        params = self.model_dump(exclude_none=True, by_alias=True)
+        logger.info("Listing gazettes with parameters: {}", params)
+        return await make_api_request(
+            url=f"{BASE_URL}/gazettes",
+            params=params,
+        )
+
+
+class GetGazetteRequest(BaseModel):
+    gazette_id: str = Field(..., serialization_alias=translate["gazette_id"])
+
+    async def do(self) -> dict:
+        logger.info("Getting gazette detail for gazette_id: {}", self.gazette_id)
+        return await make_api_request(
+            url=f"{BASE_URL}/gazettes/{self.gazette_id}",
+        )
+
+
+class GetGazetteAgendasRequest(BaseModel):
+    gazette_id: str = Field(..., serialization_alias=translate["gazette_id"])
+    volume: int | None = Field(default=None, serialization_alias=translate["volume"])
+    term: int | None = Field(default=None, serialization_alias=translate["term"])
+    meeting_date: str | None = Field(default=None, serialization_alias=translate["meeting_date"])
+    page: int = 1
+    limit: int = 20
+    output_fields: list[str] = Field(default_factory=list)
+
+    async def do(self) -> dict:
+        params = self.model_dump(exclude_none=True, by_alias=True, exclude={"gazette_id"})
+        logger.info("Getting gazette agendas for gazette_id: {}, params: {}", self.gazette_id, params)
+        return await make_api_request(
+            url=f"{BASE_URL}/gazettes/{self.gazette_id}/agendas",
+            params=params,
+        )
+
+
+class ListGazetteAgendasRequest(BaseModel):
+    gazette_id: str | None = Field(default=None, serialization_alias=translate["gazette_id"])
+    volume: int | None = Field(default=None, serialization_alias=translate["volume"])
+    term: int | None = Field(default=None, serialization_alias=translate["term"])
+    meeting_date: str | None = Field(default=None, serialization_alias=translate["meeting_date"])
+    page: int = 1
+    limit: int = 20
+    output_fields: list[str] = Field(default_factory=list)
+
+    async def do(self) -> dict:
+        params = self.model_dump(exclude_none=True, by_alias=True)
+        logger.info("Listing gazette agendas with parameters: {}", params)
+        return await make_api_request(
+            url=f"{BASE_URL}/gazette_agendas",
+            params=params,
+        )
+
+
+class GetGazetteAgendaRequest(BaseModel):
+    gazette_agenda_id: str = Field(..., serialization_alias=translate["gazette_agenda_id"])
+
+    async def do(self) -> dict:
+        logger.info("Getting gazette agenda detail for gazette_agenda_id: {}", self.gazette_agenda_id)
+        return await make_api_request(
+            url=f"{BASE_URL}/gazette_agendas/{self.gazette_agenda_id}",
+        )

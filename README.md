@@ -1,16 +1,32 @@
 # ly-mcp
 
-A Model Context Protocol (MCP) server for Taiwan's Legislative Yuan API v2, providing bill search, detailed information, related documents, and meeting records.
+A Model Context Protocol (MCP) server for Taiwan's Legislative Yuan API v2, providing comprehensive access to bills, committees, gazettes, meeting records, and related documents.
 
 ## Features
 
 This MCP server provides the following tools:
 
+### Statistics
+- **get_stat**: Get Legislative Yuan API statistics and overview information
+
+### Bills (議案)
 - **list_bills**: List bills with optional filters by term, session, category, proposer, and other criteria
-- **get_bill_detail**: Get comprehensive information about specific bills (returns complete JSON)
+- **get_bill**: Get comprehensive information about specific bills (returns complete JSON)
 - **get_bill_related_bills**: Query related bills and their associations
-- **get_bill_doc_html**: Retrieve HTML document content for specific bills
 - **get_bill_meets**: Access bill deliberation records from various meetings
+- **get_bill_doc_html**: Retrieve HTML document content for specific bills
+
+### Committees (委員會)
+- **list_committees**: List Legislative Yuan committees with optional filters
+- **get_committee**: Get detailed information about specific committees
+- **get_committee_meets**: Access committee meeting records and proceedings
+
+### Gazettes (公報)
+- **list_gazettes**: List Legislative Yuan gazettes with optional filters by volume and gazette ID
+- **get_gazette**: Get detailed information about specific gazettes
+- **get_gazette_agendas**: Get agendas/contents from specific gazettes
+- **list_gazette_agendas**: List all gazette agendas with optional filters by term, meeting date, etc.
+- **get_gazette_agenda**: Get detailed information about specific gazette agenda items
 
 ## API Source
 
@@ -122,7 +138,7 @@ uv run mypy .
 - [x] Stat
 - [x] Bill
 - [x] Committee
-- [ ] Gazette
+- [x] Gazette
 - [ ] Interpellation
 - [ ] Ivod
 - [ ] Law
