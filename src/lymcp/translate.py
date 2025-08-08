@@ -48,6 +48,11 @@ translate: dict[str, str] = {
     "law_status": "法律狀態",
     "authority": "主管機關",
     "latest_version_date": "最新版本.日期",
+    # Legislators API translations
+    "party": "黨籍",
+    "district_name": "選區名稱",
+    "legislator_id": "歷屆立法委員編號",
+    "legislator_name": "委員姓名",
     "version_number": "版本編號",
     "action": "動作",
     "main_proposer": "歷程.主提案",

@@ -448,3 +448,126 @@ class GetLawContentRequest(BaseModel):
         return await make_api_request(
             url=f"{BASE_URL}/law_contents/{self.law_content_id}",
         )
+
+
+# Legislators API models
+
+class ListLegislatorsRequest(BaseModel):
+    term: int | None = Field(default=None, serialization_alias=translate["term"])
+    party: str | None = Field(default=None, serialization_alias=translate["party"])
+    district_name: str | None = Field(default=None, serialization_alias=translate["district_name"])
+    legislator_id: int | None = Field(default=None, serialization_alias=translate["legislator_id"])
+    legislator_name: str | None = Field(default=None, serialization_alias=translate["legislator_name"])
+    page: int = 1
+    limit: int = 20
+    output_fields: list[str] = Field(default_factory=list)
+
+    async def do(self) -> dict:
+        params = self.model_dump(exclude_none=True, by_alias=True)
+        logger.info("Listing legislators with parameters: {}", params)
+        return await make_api_request(
+            url=f"{BASE_URL}/legislators",
+            params=params,
+        )
+
+
+class GetLegislatorRequest(BaseModel):
+    term: int = Field(...)
+    name: str = Field(...)
+
+    async def do(self) -> dict:
+        logger.info("Getting legislator detail for term: {}, name: {}", self.term, self.name)
+        return await make_api_request(
+            url=f"{BASE_URL}/legislators/{self.term}/{self.name}",
+        )
+
+
+class GetLegislatorProposeBillsRequest(BaseModel):
+    term: int = Field(...)
+    name: str = Field(...)
+    # Bill search parameters
+    bill_term: int | None = Field(default=None, serialization_alias=translate["term"])
+    session: int | None = Field(default=None, serialization_alias=translate["session"])
+    bill_flow_status: str | None = Field(default=None, serialization_alias=translate["bill_flow_status"])
+    bill_type: str | None = Field(default=None, serialization_alias=translate["bill_type"])
+    proposer: str | None = Field(default=None, serialization_alias=translate["proposer"])
+    co_proposer: str | None = Field(default=None, serialization_alias=translate["co_proposer"])
+    law_number: str | None = Field(default=None, serialization_alias=translate["law_number"])
+    bill_status: str | None = Field(default=None, serialization_alias=translate["bill_status"])
+    meeting_code: str | None = Field(default=None, serialization_alias=translate["meeting_code"])
+    proposal_source: str | None = Field(default=None, serialization_alias=translate["proposal_source"])
+    bill_number: str | None = Field(default=None, serialization_alias=translate["bill_number"])
+    proposal_number: str | None = Field(default=None, serialization_alias=translate["proposal_number"])
+    reference_number: str | None = Field(default=None, serialization_alias=translate["reference_number"])
+    article_number: str | None = Field(default=None, serialization_alias=translate["article_number"])
+    proposal_date: str | None = Field(default=None, serialization_alias=translate["proposal_date"])
+    page: int = 1
+    limit: int = 20
+    output_fields: list[str] = Field(default_factory=list)
+
+    async def do(self) -> dict:
+        params = self.model_dump(exclude_none=True, by_alias=True, exclude={"term", "name"})
+        logger.info("Getting legislator propose bills for term: {}, name: {}, params: {}", self.term, self.name, params)
+        return await make_api_request(
+            url=f"{BASE_URL}/legislators/{self.term}/{self.name}/propose_bills",
+            params=params,
+        )
+
+
+class GetLegislatorCosignBillsRequest(BaseModel):
+    term: int = Field(...)
+    name: str = Field(...)
+    # Bill search parameters
+    bill_term: int | None = Field(default=None, serialization_alias=translate["term"])
+    session: int | None = Field(default=None, serialization_alias=translate["session"])
+    bill_flow_status: str | None = Field(default=None, serialization_alias=translate["bill_flow_status"])
+    bill_type: str | None = Field(default=None, serialization_alias=translate["bill_type"])
+    proposer: str | None = Field(default=None, serialization_alias=translate["proposer"])
+    co_proposer: str | None = Field(default=None, serialization_alias=translate["co_proposer"])
+    law_number: str | None = Field(default=None, serialization_alias=translate["law_number"])
+    bill_status: str | None = Field(default=None, serialization_alias=translate["bill_status"])
+    meeting_code: str | None = Field(default=None, serialization_alias=translate["meeting_code"])
+    proposal_source: str | None = Field(default=None, serialization_alias=translate["proposal_source"])
+    bill_number: str | None = Field(default=None, serialization_alias=translate["bill_number"])
+    proposal_number: str | None = Field(default=None, serialization_alias=translate["proposal_number"])
+    reference_number: str | None = Field(default=None, serialization_alias=translate["reference_number"])
+    article_number: str | None = Field(default=None, serialization_alias=translate["article_number"])
+    proposal_date: str | None = Field(default=None, serialization_alias=translate["proposal_date"])
+    page: int = 1
+    limit: int = 20
+    output_fields: list[str] = Field(default_factory=list)
+
+    async def do(self) -> dict:
+        params = self.model_dump(exclude_none=True, by_alias=True, exclude={"term", "name"})
+        logger.info("Getting legislator cosign bills for term: {}, name: {}, params: {}", self.term, self.name, params)
+        return await make_api_request(
+            url=f"{BASE_URL}/legislators/{self.term}/{self.name}/cosign_bills",
+            params=params,
+        )
+
+
+class GetLegislatorMeetsRequest(BaseModel):
+    term: int = Field(...)
+    name: str = Field(...)
+    # Meet search parameters
+    meet_term: int | None = Field(default=None, serialization_alias=translate["term"])
+    meeting_code: str | None = Field(default=None, serialization_alias=translate["meeting_code"])
+    session: int | None = Field(default=None, serialization_alias=translate["session"])
+    meeting_type: str | None = Field(default=None, serialization_alias=translate["meeting_type"])
+    member: str | None = Field(default=None, serialization_alias=translate["member"])
+    date: str | None = Field(default=None, serialization_alias=translate["date"])
+    committee_code: int | None = Field(default=None, serialization_alias=translate["committee_code"])
+    meet_id: str | None = Field(default=None, serialization_alias=translate["meet_id"])
+    bill_no_nested: str | None = Field(default=None, serialization_alias=translate["bill_no_nested"])
+    law_number_nested: str | None = Field(default=None, serialization_alias=translate["law_number_nested"])
+    page: int = 1
+    limit: int = 20
+    output_fields: list[str] = Field(default_factory=list)
+
+    async def do(self) -> dict:
+        params = self.model_dump(exclude_none=True, by_alias=True, exclude={"term", "name"})
+        logger.info("Getting legislator meets for term: {}, name: {}, params: {}", self.term, self.name, params)
+        return await make_api_request(
+            url=f"{BASE_URL}/legislators/{self.term}/{self.name}/meets",
+            params=params,
+        )

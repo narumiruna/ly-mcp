@@ -47,6 +47,14 @@ This MCP server provides the following tools:
 - **list_law_contents**: List law articles/contents with optional filters by law number, version ID, article number, current version status, and version tracking
 - **get_law_content**: Get detailed information about specific law articles/contents using law content ID
 
+### Legislators (立法委員)
+- **list_legislators**: List legislators with optional filters by term, party, district name, legislator ID, and name
+- **get_legislator**: Get detailed information about specific legislators by term and name
+- **get_legislator_propose_bills**: Get bills proposed by a specific legislator with optional filters by bill criteria
+- **get_legislator_cosign_bills**: Get bills co-signed by a specific legislator with optional filters by bill criteria
+- **get_legislator_meets**: Get meetings attended by a specific legislator with optional filters by meeting criteria
+- **get_legislator_interpellations**: Get interpellations made by a specific legislator with optional filters
+
 ## API Source
 
 This MCP server uses the [Legislative Yuan API v2](https://ly.govapi.tw/v2) as its data source, providing information about Taiwan's Legislative Yuan bills and proceedings.
@@ -161,7 +169,7 @@ uv run mypy .
 - [x] Interpellation
 - [x] Ivod
 - [x] Law
-- [ ] Legislator
+- [x] Legislator
 - [ ] Meet
 
 ## License

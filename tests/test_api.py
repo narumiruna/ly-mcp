@@ -379,3 +379,95 @@ async def test_get_law_content_request():
     # 法條資料應該有內容
     assert resp is not None
     assert isinstance(resp, dict)
+
+
+# === Legislators API Tests ===
+
+@pytest.mark.asyncio
+async def test_list_legislators_request():
+    req = api.ListLegislatorsRequest(limit=5)
+    resp = await req.do()
+    # 檢查回應結構
+    assert "legislators" in resp
+    assert isinstance(resp["legislators"], list)
+    assert len(resp["legislators"]) > 0
+    # 檢查基本的分頁資訊
+    assert "total" in resp
+    assert "page" in resp
+    assert "limit" in resp
+
+
+@pytest.mark.asyncio
+async def test_list_legislators_with_filters_request():
+    req = api.ListLegislatorsRequest(
+        term=11,
+        party="民主進步黨",
+        limit=3
+    )
+    resp = await req.do()
+    # 檢查回應中有資料
+    assert "legislators" in resp
+    assert isinstance(resp["legislators"], list)
+
+
+@pytest.mark.asyncio
+async def test_get_legislator_request():
+    # 測試取得特定立法委員資訊
+    req = api.GetLegislatorRequest(term=11, name="韓國瑜")
+    resp = await req.do()
+    # 立法委員資料應該有內容
+    assert resp is not None
+    assert isinstance(resp, dict)
+    # 可能會有 data 或直接包含委員資訊
+    data = resp.get("data", resp)
+    # 應該有屆期和委員姓名
+    assert any(k in data for k in ("屆", "term"))
+    assert any(k in data for k in ("委員姓名", "name"))
+
+
+@pytest.mark.asyncio
+async def test_get_legislator_propose_bills_request():
+    # 測試取得委員為提案人的法案列表
+    req = api.GetLegislatorProposeBillsRequest(
+        term=11,
+        name="韓國瑜",
+        limit=3
+    )
+    resp = await req.do()
+    # 檢查回應結構
+    assert resp is not None
+    assert isinstance(resp, dict)
+    # 應該有bills或相關的議案資料
+    assert any(k in resp for k in ("bills", "data", "議案"))
+
+
+@pytest.mark.asyncio
+async def test_get_legislator_cosign_bills_request():
+    # 測試取得委員為連署人的法案列表
+    req = api.GetLegislatorCosignBillsRequest(
+        term=11,
+        name="韓國瑜",
+        limit=3
+    )
+    resp = await req.do()
+    # 檢查回應結構
+    assert resp is not None
+    assert isinstance(resp, dict)
+    # 應該有bills或相關的議案資料
+    assert any(k in resp for k in ("bills", "data", "議案"))
+
+
+@pytest.mark.asyncio
+async def test_get_legislator_meets_request():
+    # 測試取得委員出席的會議列表
+    req = api.GetLegislatorMeetsRequest(
+        term=11,
+        name="韓國瑜",
+        limit=3
+    )
+    resp = await req.do()
+    # 檢查回應結構
+    assert resp is not None
+    assert isinstance(resp, dict)
+    # 應該有meets或相關的會議資料
+    assert any(k in resp for k in ("meets", "data", "會議"))
