@@ -46,6 +46,11 @@ async def test_list_tools(server_params: StdioServerParameters) -> None:
             "get_legislator_cosign_bills",
             "get_legislator_meets",
             "get_legislator_interpellations",
+            "list_meets",
+            "get_meet",
+            "get_meet_ivods",
+            "get_meet_bills",
+            "get_meet_interpellations",
         ]
         for tool_name in expected_bills_tools:
             assert tool_name in tool_names
@@ -685,6 +690,86 @@ async def test_get_legislator_meets(server_params: StdioServerParameters) -> Non
         )
 
         # Note: This might fail if the specific legislator doesn't exist, but that's okay for the test
+        # The important thing is that the tool is properly configured and callable
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+
+@pytest.mark.asyncio
+async def test_list_meets(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test listing meets
+        result = await session.call_tool(
+            "list_meets",
+            arguments={
+                "term": 11,
+                "page": 1,
+                "limit": 3,
+            },
+        )
+
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+
+@pytest.mark.asyncio
+async def test_get_meet(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test getting meet detail
+        result = await session.call_tool(
+            "get_meet",
+            arguments={
+                "meet_id": "院會-11-2-3",
+            },
+        )
+
+        # Note: This might fail if the specific meet doesn't exist, but that's okay for the test
+        # The important thing is that the tool is properly configured and callable
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+
+@pytest.mark.asyncio
+async def test_get_meet_bills(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test getting meet bills
+        result = await session.call_tool(
+            "get_meet_bills",
+            arguments={
+                "meet_id": "院會-11-2-3",
+                "page": 1,
+                "limit": 3,
+            },
+        )
+
+        # Note: This might fail if the specific meet doesn't exist, but that's okay for the test
+        # The important thing is that the tool is properly configured and callable
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+
+@pytest.mark.asyncio
+async def test_get_meet_interpellations(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test getting meet interpellations
+        result = await session.call_tool(
+            "get_meet_interpellations",
+            arguments={
+                "meet_id": "院會-11-2-3",
+                "page": 1,
+                "limit": 3,
+            },
+        )
+
+        # Note: This might fail if the specific meet doesn't exist, but that's okay for the test
         # The important thing is that the tool is properly configured and callable
         assert len(result.content) == 1
         assert isinstance(result.content[0], TextContent)
