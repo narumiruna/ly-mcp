@@ -29,4 +29,8 @@ translate: dict[str, str] = {
     "reference_number": "字號",
     "session": "會期",
     "term": "屆",
+    "gazette_id": "公報編號",
+    "gazette_agenda_id": "公報議程編號",
+    "meeting_date": "會議日期",
+    "volume": "卷",
 }

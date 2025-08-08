@@ -124,3 +124,43 @@ async def test_committee_meets_request_real():
     resp = await req.do()
     # 會議資料可能在 'meets'、'data'、'results'
     assert any(k in resp for k in ("meets", "data", "results"))
+
+
+@pytest.mark.asyncio
+async def test_list_gazettes_request():
+    req = api.ListGazettesRequest(limit=1)
+    resp = await req.do()
+    # 公報資料可能在 'gazettes', 'data', 'results' 等 key 下
+    assert any(k in resp for k in ("gazettes", "data", "results"))
+
+
+@pytest.mark.asyncio
+async def test_get_gazette_request():
+    # 先查一個 gazette_id
+    search = api.ListGazettesRequest(limit=1)
+    search_resp = await search.do()
+    gazette_id = None
+    for k in ("gazettes", "data", "results"):
+        if k in search_resp and search_resp[k]:
+            gazette_id = search_resp[k][0].get("公報編號") or search_resp[k][0].get("gazetteId")
+            if gazette_id is not None:
+                gazette_id = str(gazette_id)
+            break
+    
+    # 如果找不到 gazette_id，使用一個測試用的 ID
+    if not gazette_id:
+        gazette_id = "1137701"
+    
+    req = api.GetGazetteRequest(gazette_id=gazette_id)
+    resp = await req.do()
+    # 應該有資料回傳
+    assert resp is not None
+
+
+@pytest.mark.asyncio
+async def test_list_gazette_agendas_request():
+    req = api.ListGazetteAgendasRequest(limit=1)
+    resp = await req.do()
+    # 公報議程資料在 'gazetteagendas' key 下
+    assert "gazetteagendas" in resp
+    assert isinstance(resp["gazetteagendas"], list)
