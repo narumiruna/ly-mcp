@@ -146,11 +146,11 @@ async def test_get_gazette_request():
             if gazette_id is not None:
                 gazette_id = str(gazette_id)
             break
-    
+
     # 如果找不到 gazette_id，使用一個測試用的 ID
     if not gazette_id:
         gazette_id = "1137701"
-    
+
     req = api.GetGazetteRequest(gazette_id=gazette_id)
     resp = await req.do()
     # 應該有資料回傳
