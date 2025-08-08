@@ -17,7 +17,7 @@ This repository implements an MCP (Model Context Protocol) server for accessing 
 
 ## MCP Tools (see `src/lymcp/server.py`)
 
-- `search_bills`: Search bills with multiple filters
+- `list_bills`: Search bills with multiple filters
 - `get_bill_detail`: Get detailed information for a specific bill
 - `get_bill_related_bills`: Query related bills
 - `get_bill_meets`: Query bill-related meeting records
@@ -31,6 +31,7 @@ All tools:
 
 ## API Calls
 
+- Source API specification is defined in `swagger.yaml`. Follow the same naming conventions as in the API spec
 - Use `httpx.AsyncClient(timeout=30.0)` for API requests
 - API requests and data models are defined in `src/lymcp/api.py`, each tool has a corresponding request model
 

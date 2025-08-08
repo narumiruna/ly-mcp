@@ -10,15 +10,24 @@ from .translate import translate
 BASE_URL: Final[str] = "https://ly.govapi.tw/v2"
 HTTPX_TIMEOUT: Final[float] = 30.0
 
-class StatRequest(BaseModel):
-    async def do(self) -> dict:
-        async with httpx.AsyncClient(timeout=HTTPX_TIMEOUT) as client:
-            logger.info("Getting statistics")
-            resp = await client.get(f"{BASE_URL}/stat")
-            resp.raise_for_status()
-            return resp.json()
+async def make_api_request(url: str, method: str = "GET", params: dict | None = None) -> dict:
+    """Shared function to make API requests with consistent error handling."""
+    async with httpx.AsyncClient(timeout=HTTPX_TIMEOUT) as client:
+        if method.upper() == "GET":
+            resp = await client.get(url, params=params)
+        else:
+            raise ValueError(f"Unsupported HTTP method: {method}")
+        resp.raise_for_status()
+        return resp.json()
 
-class SearchBillRequest(BaseModel):
+class GetStatRequest(BaseModel):
+    async def do(self) -> dict:
+        logger.info("Getting statistics")
+        return await make_api_request(
+            url=f"{BASE_URL}/stat"
+        )
+
+class ListBillRequest(BaseModel):
     term: int | None = Field(default=None, serialization_alias=translate["term"])
     session: int | None = Field(default=None, serialization_alias=translate["session"])
     bill_flow_status: str | None = Field(default=None, serialization_alias=translate["bill_flow_status"])
@@ -39,28 +48,23 @@ class SearchBillRequest(BaseModel):
     output_fields: list[str] = Field(default_factory=list)
 
     async def do(self) -> dict:
-        async with httpx.AsyncClient(timeout=HTTPX_TIMEOUT) as client:
-            params = self.model_dump(exclude_none=True, by_alias=True)
-            logger.info("Searching bills with parameters: {}", params)
+        params = self.model_dump(exclude_none=True, by_alias=True)
+        logger.info("Listing bills with parameters: {}", params)
+        return await make_api_request(
+            url=f"{BASE_URL}/bills",
+            params=params,
+        )
 
-            resp = await client.get(f"{BASE_URL}/bills", params=params)
-            resp.raise_for_status()
-
-            return resp.json()
-
-
-class GetBillDetailRequest(BaseModel):
+class GetBillRequest(BaseModel):
     bill_no: str = Field(..., serialization_alias=translate["bill_no"])
 
     async def do(self) -> dict:
-        async with httpx.AsyncClient(timeout=HTTPX_TIMEOUT) as client:
-            logger.info("Getting bill detail for bill_no: {}", self.bill_no)
-            resp = await client.get(f"{BASE_URL}/bills/{self.bill_no}")
-            resp.raise_for_status()
-            return resp.json()
+        logger.info("Getting bill detail for bill_no: {}", self.bill_no)
+        return await make_api_request(
+            url=f"{BASE_URL}/bills/{self.bill_no}",
+        )
 
-
-class BillMeetsRequest(BaseModel):
+class GetBillMeetsRequest(BaseModel):
     bill_no: str = Field(..., serialization_alias=translate["bill_no"])
     term: int | None = Field(default=None, serialization_alias=translate["term"])
     session: int | None = Field(default=None, serialization_alias=translate["session"])
@@ -70,38 +74,34 @@ class BillMeetsRequest(BaseModel):
     limit: int = 20
 
     async def do(self) -> dict:
-        async with httpx.AsyncClient(timeout=HTTPX_TIMEOUT) as client:
-            params = self.model_dump(exclude_none=True, by_alias=True, exclude={"bill_no"})
-            logger.info("Getting bill meets for bill_no: {}, params: {}", self.bill_no, params)
-            resp = await client.get(f"{BASE_URL}/bills/{self.bill_no}/meets", params=params)
-            resp.raise_for_status()
-            return resp.json()
+        params = self.model_dump(exclude_none=True, by_alias=True, exclude={"bill_no"})
+        logger.info("Getting bill meets for bill_no: {}, params: {}", self.bill_no, params)
+        return await make_api_request(
+            url=f"{BASE_URL}/bills/{self.bill_no}/meets",
+            params=params,
+        )
 
-
-class BillRelatedBillsRequest(BaseModel):
+class GetBillRelatedBillsRequest(BaseModel):
     bill_no: str = Field(..., serialization_alias=translate["bill_no"])
     page: int = 1
     limit: int = 20
 
     async def do(self) -> dict:
-        async with httpx.AsyncClient(timeout=HTTPX_TIMEOUT) as client:
-            params = self.model_dump(exclude_none=True, by_alias=True, exclude={"bill_no"})
-            logger.info("Getting bill related bills for bill_no: {}, params: {}", self.bill_no, params)
-            resp = await client.get(f"{BASE_URL}/bills/{self.bill_no}/related_bills", params=params)
-            resp.raise_for_status()
-            return resp.json()
+        params = self.model_dump(exclude_none=True, by_alias=True, exclude={"bill_no"})
+        logger.info("Getting bill related bills for bill_no: {}, params: {}", self.bill_no, params)
+        return await make_api_request(
+            url=f"{BASE_URL}/bills/{self.bill_no}/related_bills",
+            params=params,
+        )
 
-
-class BillDocHtmlRequest(BaseModel):
+class GetBillDocHtmlRequest(BaseModel):
     bill_no: str = Field(..., serialization_alias=translate["bill_no"])
 
     async def do(self) -> dict:
-        async with httpx.AsyncClient(timeout=HTTPX_TIMEOUT) as client:
-            logger.info("Getting bill doc html for bill_no: {}", self.bill_no)
-            resp = await client.get(f"{BASE_URL}/bills/{self.bill_no}/doc_html")
-            resp.raise_for_status()
-            return resp.json()
-
+        logger.info("Getting bill doc html for bill_no: {}", self.bill_no)
+        return await make_api_request(
+            url=f"{BASE_URL}/bills/{self.bill_no}/doc_html",
+        )
 
 class ListCommitteesRequest(BaseModel):
     committee_type: str | None = Field(default=None, serialization_alias=translate["committee_type"])
@@ -111,26 +111,23 @@ class ListCommitteesRequest(BaseModel):
     output_fields: list[str] = Field(default_factory=list)
 
     async def do(self) -> dict:
-        async with httpx.AsyncClient(timeout=HTTPX_TIMEOUT) as client:
-            params = self.model_dump(exclude_none=True, by_alias=True)
-            logger.info("Listing committees with parameters: {}", params)
-            resp = await client.get(f"{BASE_URL}/committees", params=params)
-            resp.raise_for_status()
-            return resp.json()
-
+        params = self.model_dump(exclude_none=True, by_alias=True)
+        logger.info("Listing committees with parameters: {}", params)
+        return await make_api_request(
+            url=f"{BASE_URL}/committees",
+            params=params,
+        )
 
 class GetCommitteeRequest(BaseModel):
     comt_cd: str = Field(..., serialization_alias=translate["comt_cd"])
 
     async def do(self) -> dict:
-        async with httpx.AsyncClient(timeout=HTTPX_TIMEOUT) as client:
-            logger.info("Getting committee detail for comt_cd: {}", self.comt_cd)
-            resp = await client.get(f"{BASE_URL}/committees/{self.comt_cd}")
-            resp.raise_for_status()
-            return resp.json()
+        logger.info("Getting committee detail for comt_cd: {}", self.comt_cd)
+        return await make_api_request(
+            url=f"{BASE_URL}/committees/{self.comt_cd}",
+        )
 
-
-class CommitteeMeetsRequest(BaseModel):
+class GetCommitteeMeetsRequest(BaseModel):
     comt_cd: str = Field(..., serialization_alias=translate["comt_cd"])
     term: int | None = Field(default=None, serialization_alias=translate["term"])
     meeting_code: str | None = Field(default=None, serialization_alias=translate["meeting_code"])
@@ -147,9 +144,9 @@ class CommitteeMeetsRequest(BaseModel):
     output_fields: list[str] = Field(default_factory=list)
 
     async def do(self) -> dict:
-        async with httpx.AsyncClient(timeout=HTTPX_TIMEOUT) as client:
-            params = self.model_dump(exclude_none=True, by_alias=True, exclude={"comt_cd"})
-            logger.info("Getting committee meets for comt_cd: {}, params: {}", self.comt_cd, params)
-            resp = await client.get(f"{BASE_URL}/committees/{self.comt_cd}/meets", params=params)
-            resp.raise_for_status()
-            return resp.json()
+        params = self.model_dump(exclude_none=True, by_alias=True, exclude={"comt_cd"})
+        logger.info("Getting committee meets for comt_cd: {}, params: {}", self.comt_cd, params)
+        return await make_api_request(
+            url=f"{BASE_URL}/committees/{self.comt_cd}/meets",
+            params=params,
+        )

@@ -5,20 +5,21 @@ from loguru import logger
 from mcp.server.fastmcp import FastMCP
 from pydantic import Field
 
-from lymcp.api import BillDocHtmlRequest
-from lymcp.api import BillMeetsRequest
-from lymcp.api import BillRelatedBillsRequest
-from lymcp.api import CommitteeMeetsRequest
-from lymcp.api import GetBillDetailRequest
+from lymcp.api import GetBillDocHtmlRequest
+from lymcp.api import GetBillMeetsRequest
+from lymcp.api import GetBillRelatedBillsRequest
+from lymcp.api import GetCommitteeMeetsRequest
+from lymcp.api import GetBillRequest
 from lymcp.api import GetCommitteeRequest
+from lymcp.api import GetStatRequest
+from lymcp.api import ListBillRequest
 from lymcp.api import ListCommitteesRequest
-from lymcp.api import SearchBillRequest
 
 # https://github.com/jlowin/fastmcp/issues/81#issuecomment-2714245145
 mcp = FastMCP("立法院 API v2 MCP Server", log_level="ERROR")
 
 @mcp.tool()
-async def stat() -> str:
+async def get_stat() -> str:
     """
     取得立法院 API 的統計資訊。
 
@@ -29,8 +30,7 @@ async def stat() -> str:
         例外時回傳中文錯誤訊息字串。
     """
     try:
-        from lymcp.api import StatRequest
-        req = StatRequest()
+        req = GetStatRequest()
         resp = await req.do()
         return json.dumps(resp, ensure_ascii=False, indent=2)
     except Exception as e:
@@ -39,7 +39,7 @@ async def stat() -> str:
         return msg
 
 @mcp.tool()
-async def search_bills(
+async def list_bills(
     term: Annotated[int | None, Field(description="屆，例：11")] = None,
     session: Annotated[int | None, Field(description="會期，例：2")] = None,
     bill_flow_status: Annotated[str | None, Field(description="議案流程狀態，如：交付審查、三讀")] = None,
@@ -62,7 +62,7 @@ async def search_bills(
     ] = None,
 ) -> str:
     """
-    搜尋立法院議案列表。
+    列出立法院議案列表。
 
     Args:
         term: 屆，例：11
@@ -91,7 +91,7 @@ async def search_bills(
         例外時回傳中文錯誤訊息字串。
     """
     try:
-        req = SearchBillRequest(
+        req = ListBillRequest(
             session=session,
             term=term,
             bill_flow_status=bill_flow_status,
@@ -116,13 +116,13 @@ async def search_bills(
         return json.dumps(resp, ensure_ascii=False, indent=2)
 
     except Exception as e:
-        msg = f"Failed to search bills, got: {e}"
+        msg = f"Failed to list bills, got: {e}"
         logger.error(msg)
         return msg
 
 
 @mcp.tool()
-async def get_bill_detail(
+async def get_bill(
     bill_no: Annotated[str, Field(description="議案編號，必填，例: 203110077970000")],
 ) -> str:
     """
@@ -138,7 +138,7 @@ async def get_bill_detail(
         例外時回傳中文錯誤訊息字串。
     """
     try:
-        req = GetBillDetailRequest(bill_no=bill_no)
+        req = GetBillRequest(bill_no=bill_no)
         resp = await req.do()
         return json.dumps(resp, ensure_ascii=False, indent=2)
     except Exception as e:
@@ -168,7 +168,7 @@ async def get_bill_related_bills(
         例外時回傳中文錯誤訊息字串。
     """
     try:
-        req = BillRelatedBillsRequest(bill_no=bill_no, page=page, limit=limit)
+        req = GetBillRelatedBillsRequest(bill_no=bill_no, page=page, limit=limit)
         resp = await req.do()
         return json.dumps(resp, ensure_ascii=False, indent=2)
     except Exception as e:
@@ -206,7 +206,7 @@ async def get_bill_meets(
         例外時回傳中文錯誤訊息字串。
     """
     try:
-        req = BillMeetsRequest(
+        req = GetBillMeetsRequest(
             bill_no=bill_no,
             term=term,
             session=session,
@@ -244,7 +244,7 @@ async def get_bill_doc_html(
         例外時回傳中文錯誤訊息字串。
     """
     try:
-        req = BillDocHtmlRequest(bill_no=bill_no)
+        req = GetBillDocHtmlRequest(bill_no=bill_no)
         resp = await req.do()
         return json.dumps(resp, ensure_ascii=False, indent=2)
     except Exception as e:
@@ -264,7 +264,7 @@ async def list_committees(
     ] = None,
 ) -> str:
     """
-    取得委員會列表。
+    列出委員會列表。
 
     Args:
         committee_type: 委員會類別
@@ -366,7 +366,7 @@ async def get_committee_meets(
         例外時回傳中文錯誤訊息字串。
     """
     try:
-        req = CommitteeMeetsRequest(
+        req = GetCommitteeMeetsRequest(
             comt_cd=comt_cd,
             term=term,
             meeting_code=meeting_code,
