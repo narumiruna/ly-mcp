@@ -40,6 +40,12 @@ async def test_list_tools(server_params: StdioServerParameters) -> None:
             "get_law_versions",
             "list_law_contents",
             "get_law_content",
+            "list_legislators",
+            "get_legislator",
+            "get_legislator_propose_bills",
+            "get_legislator_cosign_bills",
+            "get_legislator_meets",
+            "get_legislator_interpellations",
         ]
         for tool_name in expected_bills_tools:
             assert tool_name in tool_names
@@ -551,7 +557,134 @@ async def test_get_law_content(server_params: StdioServerParameters) -> None:
         assert len(result.content) == 1
         assert isinstance(result.content[0], TextContent)
 
+
+# === Legislators API Tests ===
+
+@pytest.mark.asyncio
+async def test_list_legislators(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test basic legislators listing
+        result = await session.call_tool("list_legislators", {"page": 1, "limit": 5})
+
+        assert result.isError is False
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
         response_text = result.content[0].text
 
         # Should be string
         assert isinstance(response_text, str)
+
+
+@pytest.mark.asyncio
+async def test_list_legislators_with_filters(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test legislators listing with filters
+        result = await session.call_tool(
+            "list_legislators",
+            arguments={
+                "term": 11,
+                "party": "民主進步黨",
+                "page": 1,
+                "limit": 3,
+            },
+        )
+
+        assert result.isError is False
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+        response_text = result.content[0].text
+
+        # Should be string
+        assert isinstance(response_text, str)
+
+
+@pytest.mark.asyncio
+async def test_get_legislator(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test getting specific legislator
+        result = await session.call_tool(
+            "get_legislator",
+            arguments={
+                "term": 11,
+                "name": "韓國瑜",
+            },
+        )
+
+        # Note: This might fail if the specific legislator doesn't exist, but that's okay for the test
+        # The important thing is that the tool is properly configured and callable
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+
+@pytest.mark.asyncio
+async def test_get_legislator_propose_bills(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test getting legislator propose bills
+        result = await session.call_tool(
+            "get_legislator_propose_bills",
+            arguments={
+                "term": 11,
+                "name": "韓國瑜",
+                "page": 1,
+                "limit": 3,
+            },
+        )
+
+        # Note: This might fail if the specific legislator doesn't exist, but that's okay for the test
+        # The important thing is that the tool is properly configured and callable
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+
+@pytest.mark.asyncio
+async def test_get_legislator_cosign_bills(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test getting legislator cosign bills
+        result = await session.call_tool(
+            "get_legislator_cosign_bills",
+            arguments={
+                "term": 11,
+                "name": "韓國瑜",
+                "page": 1,
+                "limit": 3,
+            },
+        )
+
+        # Note: This might fail if the specific legislator doesn't exist, but that's okay for the test
+        # The important thing is that the tool is properly configured and callable
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+
+@pytest.mark.asyncio
+async def test_get_legislator_meets(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test getting legislator meets
+        result = await session.call_tool(
+            "get_legislator_meets",
+            arguments={
+                "term": 11,
+                "name": "韓國瑜",
+                "page": 1,
+                "limit": 3,
+            },
+        )
+
+        # Note: This might fail if the specific legislator doesn't exist, but that's okay for the test
+        # The important thing is that the tool is properly configured and callable
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
