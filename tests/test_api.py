@@ -471,3 +471,60 @@ async def test_get_legislator_meets_request():
     assert isinstance(resp, dict)
     # 應該有meets或相關的會議資料
     assert any(k in resp for k in ("meets", "data", "會議"))
+
+
+@pytest.mark.asyncio
+async def test_list_meets_request():
+    # 測試列出會議列表
+    req = api.ListMeetsRequest(
+        term=11,
+        limit=3
+    )
+    resp = await req.do()
+    # 檢查回應結構
+    assert resp is not None
+    assert isinstance(resp, dict)
+    # 應該有meets或相關的會議資料
+    assert any(k in resp for k in ("meets", "data", "會議"))
+
+
+@pytest.mark.asyncio
+async def test_get_meet_request():
+    # 測試取得特定會議詳細資訊
+    req = api.GetMeetRequest(meet_id="院會-11-2-3")
+    resp = await req.do()
+    # 檢查回應結構
+    assert resp is not None
+    assert isinstance(resp, dict)
+    # 應該有meet或相關的會議資料
+    assert any(k in resp for k in ("meet", "data", "會議"))
+
+
+@pytest.mark.asyncio
+async def test_get_meet_bills_request():
+    # 測試取得會議內的議案列表
+    req = api.GetMeetBillsRequest(
+        meet_id="院會-11-2-3",
+        limit=3
+    )
+    resp = await req.do()
+    # 檢查回應結構
+    assert resp is not None
+    assert isinstance(resp, dict)
+    # 應該有bills或相關的議案資料
+    assert any(k in resp for k in ("bills", "data", "議案"))
+
+
+@pytest.mark.asyncio
+async def test_get_meet_interpellations_request():
+    # 測試取得會議內的質詢列表
+    req = api.GetMeetInterpellationsRequest(
+        meet_id="院會-11-2-3",
+        limit=3
+    )
+    resp = await req.do()
+    # 檢查回應結構
+    assert resp is not None
+    assert isinstance(resp, dict)
+    # 應該有interpellations或相關的質詢資料
+    assert any(k in resp for k in ("interpellations", "data", "質詢"))

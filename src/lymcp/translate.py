@@ -65,4 +65,9 @@ translate: dict[str, str] = {
     "law_article_number": "條號",
     "current_version_status": "現行版",
     "version_tracking": "版本追蹤",
+    # Meets API translations
+    "meeting_attendee": "會議資料.出席委員",
+    "meeting_id": "會議資料.會議編號",
+    "meeting_bills_bill_no": "議事網資料.關係文書.議案.議案編號",
+    "meeting_bills_law_no": "議事網資料.關係文書.議案.法律編號",
 }

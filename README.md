@@ -47,6 +47,13 @@ This MCP server provides the following tools:
 - **list_law_contents**: List law articles/contents with optional filters by law number, version ID, article number, current version status, and version tracking
 - **get_law_content**: Get detailed information about specific law articles/contents using law content ID
 
+### Meets (會議)
+- **list_meets**: List Legislative Yuan meetings with optional filters by term, session, meeting type, attendees, date, committee code, and meeting ID
+- **get_meet**: Get detailed information about specific meetings using meeting ID/code
+- **get_meet_ivods**: Get IVOD (Internet Video On Demand) recordings related to specific meetings with optional filters
+- **get_meet_bills**: Get bills discussed in specific meetings with optional filters by bill criteria
+- **get_meet_interpellations**: Get interpellations that occurred in specific meetings with optional filters
+
 ### Legislators (立法委員)
 - **list_legislators**: List legislators with optional filters by term, party, district name, legislator ID, and name
 - **get_legislator**: Get detailed information about specific legislators by term and name
@@ -170,7 +177,7 @@ uv run mypy .
 - [x] Ivod
 - [x] Law
 - [x] Legislator
-- [ ] Meet
+- [x] Meet
 
 ## License
 
