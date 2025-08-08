@@ -8,8 +8,8 @@ from pydantic import Field
 from lymcp.api import GetBillDocHtmlRequest
 from lymcp.api import GetBillMeetsRequest
 from lymcp.api import GetBillRelatedBillsRequest
-from lymcp.api import GetCommitteeMeetsRequest
 from lymcp.api import GetBillRequest
+from lymcp.api import GetCommitteeMeetsRequest
 from lymcp.api import GetCommitteeRequest
 from lymcp.api import GetStatRequest
 from lymcp.api import ListBillRequest
