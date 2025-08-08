@@ -41,4 +41,16 @@ translate: dict[str, str] = {
     "interpellation_member": "質詢委員",
     "interpellation_id": "質詢編號",
     "video_type": "影片種類",
+    # Laws API translations
+    "law_id": "法律編號",
+    "law_category": "類別",
+    "parent_law_number": "母法編號",
+    "law_status": "法律狀態",
+    "authority": "主管機關",
+    "latest_version_date": "最新版本.日期",
+    "version_number": "版本編號",
+    "action": "動作",
+    "main_proposer": "歷程.主提案",
+    "progress": "歷程.進度",
+    "current_version": "現行版本",
 }

@@ -38,6 +38,13 @@ This MCP server provides the following tools:
 - **get_ivod**: Get detailed information about specific IVOD recordings, including video URLs, transcripts, and gazette content
 - **get_meet_ivods**: Get IVOD recordings related to specific meetings
 
+### Laws (法律)
+- **list_laws**: List laws with optional filters by law number, category (母法/子法), parent law number, status, and authority
+- **get_law**: Get comprehensive information about specific laws including basic data, articles, and version information
+- **get_law_progress**: Get undecided progress list for specific laws
+- **get_law_bills**: Get bills related to specific laws with optional filters
+- **get_law_versions**: Get historical version records for specific laws including changes, proposers, and progress
+
 ## API Source
 
 This MCP server uses the [Legislative Yuan API v2](https://ly.govapi.tw/v2) as its data source, providing information about Taiwan's Legislative Yuan bills and proceedings.
@@ -151,7 +158,7 @@ uv run mypy .
 - [x] Gazette
 - [x] Interpellation
 - [x] Ivod
-- [ ] Law
+- [x] Law
 - [ ] Legislator
 - [ ] Meet
 

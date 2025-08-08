@@ -33,6 +33,11 @@ async def test_list_tools(server_params: StdioServerParameters) -> None:
             "list_ivods",
             "get_ivod",
             "get_meet_ivods",
+            "list_laws",
+            "get_law",
+            "get_law_progress",
+            "get_law_bills",
+            "get_law_versions",
         ]
         for tool_name in expected_bills_tools:
             assert tool_name in tool_names
@@ -329,4 +334,136 @@ async def test_ivod_tools_available(server_params: StdioServerParameters) -> Non
             "get_meet_ivods",
         ]
         for tool_name in expected_ivod_tools:
+            assert tool_name in tool_names
+
+
+@pytest.mark.asyncio
+async def test_list_laws(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test basic laws listing
+        result = await session.call_tool("list_laws", {"page": 1, "limit": 5})
+
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+        # Check response is string
+        response_text = result.content[0].text
+        assert isinstance(response_text, str)
+
+
+@pytest.mark.asyncio
+async def test_list_laws_with_filters(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test search with specific filters
+        result = await session.call_tool("list_laws", {"category": "母法", "law_status": "現行", "limit": 3})
+
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+        # Check response is string
+        response_text = result.content[0].text
+        assert isinstance(response_text, str)
+
+
+@pytest.mark.asyncio
+async def test_get_law_detail_error_handling(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test with invalid law ID to check error handling
+        result = await session.call_tool("get_law", {"law_id": "invalid_law_id"})
+
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+        # Should contain string response
+        response_text = result.content[0].text
+        assert isinstance(response_text, str)
+
+
+@pytest.mark.asyncio
+async def test_get_law_detail_json(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test JSON response with a known law
+        result = await session.call_tool("get_law", {"law_id": "09200015"})
+
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+        response_text = result.content[0].text
+        # Should be string
+        assert isinstance(response_text, str)
+
+
+@pytest.mark.asyncio
+async def test_get_law_progress(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test law progress with a known law
+        result = await session.call_tool("get_law_progress", {"law_id": "09200015"})
+
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+        response_text = result.content[0].text
+        # Should be string
+        assert isinstance(response_text, str)
+
+
+@pytest.mark.asyncio
+async def test_get_law_bills(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test law bills with a known law
+        result = await session.call_tool("get_law_bills", {"law_id": "09200015", "limit": 3})
+
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+        response_text = result.content[0].text
+        # Should be string
+        assert isinstance(response_text, str)
+
+
+@pytest.mark.asyncio
+async def test_get_law_versions(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test law versions with a known law
+        result = await session.call_tool("get_law_versions", {"law_id": "09200015", "limit": 3})
+
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+        response_text = result.content[0].text
+        # Should be string
+        assert isinstance(response_text, str)
+
+
+@pytest.mark.asyncio
+async def test_laws_tools_available(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        result = await session.list_tools()
+
+        # Check that laws tools are available
+        tool_names = [tool.name for tool in result.tools]
+        expected_laws_tools = [
+            "list_laws",
+            "get_law",
+            "get_law_progress",
+            "get_law_bills",
+            "get_law_versions",
+        ]
+        for tool_name in expected_laws_tools:
             assert tool_name in tool_names

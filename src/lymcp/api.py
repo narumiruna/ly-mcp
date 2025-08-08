@@ -326,3 +326,95 @@ class GetMeetIvodsRequest(BaseModel):
             url=f"{BASE_URL}/meets/{self.meet_id}/ivods",
             params=params,
         )
+
+
+class ListLawsRequest(BaseModel):
+    law_number: str | None = Field(default=None, serialization_alias=translate["law_number"])
+    category: str | None = Field(default=None, serialization_alias=translate["law_category"])
+    parent_law_number: str | None = Field(default=None, serialization_alias=translate["parent_law_number"])
+    law_status: str | None = Field(default=None, serialization_alias=translate["law_status"])
+    authority: str | None = Field(default=None, serialization_alias=translate["authority"])
+    latest_version_date: str | None = Field(default=None, serialization_alias=translate["latest_version_date"])
+    page: int = 1
+    limit: int = 20
+    output_fields: list[str] = Field(default_factory=list)
+
+    async def do(self) -> dict:
+        params = self.model_dump(exclude_none=True, by_alias=True)
+        logger.info("Listing laws with parameters: {}", params)
+        return await make_api_request(
+            url=f"{BASE_URL}/laws",
+            params=params,
+        )
+
+
+class GetLawRequest(BaseModel):
+    law_id: str = Field(..., serialization_alias=translate["law_id"])
+
+    async def do(self) -> dict:
+        logger.info("Getting law detail for law_id: {}", self.law_id)
+        return await make_api_request(
+            url=f"{BASE_URL}/laws/{self.law_id}",
+        )
+
+
+class GetLawProgressRequest(BaseModel):
+    law_id: str = Field(..., serialization_alias=translate["law_id"])
+
+    async def do(self) -> dict:
+        logger.info("Getting law progress for law_id: {}", self.law_id)
+        return await make_api_request(
+            url=f"{BASE_URL}/laws/{self.law_id}/progress",
+        )
+
+
+class GetLawBillsRequest(BaseModel):
+    law_id: str = Field(..., serialization_alias=translate["law_id"])
+    term: int | None = Field(default=None, serialization_alias=translate["term"])
+    session: int | None = Field(default=None, serialization_alias=translate["session"])
+    bill_flow_status: str | None = Field(default=None, serialization_alias=translate["bill_flow_status"])
+    bill_type: str | None = Field(default=None, serialization_alias=translate["bill_type"])
+    proposer: str | None = Field(default=None, serialization_alias=translate["proposer"])
+    co_proposer: str | None = Field(default=None, serialization_alias=translate["co_proposer"])
+    law_number: str | None = Field(default=None, serialization_alias=translate["law_number"])
+    bill_status: str | None = Field(default=None, serialization_alias=translate["bill_status"])
+    meeting_code: str | None = Field(default=None, serialization_alias=translate["meeting_code"])
+    proposal_source: str | None = Field(default=None, serialization_alias=translate["proposal_source"])
+    bill_number: str | None = Field(default=None, serialization_alias=translate["bill_number"])
+    proposal_number: str | None = Field(default=None, serialization_alias=translate["proposal_number"])
+    reference_number: str | None = Field(default=None, serialization_alias=translate["reference_number"])
+    article_number: str | None = Field(default=None, serialization_alias=translate["article_number"])
+    proposal_date: str | None = Field(default=None, serialization_alias=translate["proposal_date"])
+    page: int = 1
+    limit: int = 20
+    output_fields: list[str] = Field(default_factory=list)
+
+    async def do(self) -> dict:
+        params = self.model_dump(exclude_none=True, by_alias=True, exclude={"law_id"})
+        logger.info("Getting law bills for law_id: {}, params: {}", self.law_id, params)
+        return await make_api_request(
+            url=f"{BASE_URL}/laws/{self.law_id}/bills",
+            params=params,
+        )
+
+
+class GetLawVersionsRequest(BaseModel):
+    law_id: str = Field(..., serialization_alias=translate["law_id"])
+    law_number: str | None = Field(default=None, serialization_alias=translate["law_number"])
+    version_number: str | None = Field(default=None, serialization_alias=translate["version_number"])
+    date: str | None = Field(default=None, serialization_alias=translate["date"])
+    action: str | None = Field(default=None, serialization_alias=translate["action"])
+    main_proposer: str | None = Field(default=None, serialization_alias=translate["main_proposer"])
+    progress: str | None = Field(default=None, serialization_alias=translate["progress"])
+    current_version: str | None = Field(default=None, serialization_alias=translate["current_version"])
+    page: int = 1
+    limit: int = 20
+    output_fields: list[str] = Field(default_factory=list)
+
+    async def do(self) -> dict:
+        params = self.model_dump(exclude_none=True, by_alias=True, exclude={"law_id"})
+        logger.info("Getting law versions for law_id: {}, params: {}", self.law_id, params)
+        return await make_api_request(
+            url=f"{BASE_URL}/laws/{self.law_id}/versions",
+            params=params,
+        )
