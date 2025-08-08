@@ -212,3 +212,51 @@ async def test_get_legislator_interpellations_request():
     # 委員質詢資料應該有回應
     assert resp is not None
     assert isinstance(resp, dict)
+
+
+@pytest.mark.asyncio
+async def test_list_ivods_request():
+    req = api.ListIvodsRequest(term=11, limit=1)
+    resp = await req.do()
+    # IVOD 列表應該有回應
+    assert resp is not None
+    assert isinstance(resp, dict)
+
+
+@pytest.mark.asyncio
+async def test_list_ivods_with_filters_request():
+    req = api.ListIvodsRequest(term=11, video_type="Clip", limit=1)
+    resp = await req.do()
+    # 有篩選條件的 IVOD 列表應該有回應
+    assert resp is not None
+    assert isinstance(resp, dict)
+
+
+@pytest.mark.asyncio
+async def test_get_ivod_request():
+    # 先取得一個 IVOD ID 來測試
+    list_req = api.ListIvodsRequest(term=11, limit=1)
+    list_resp = await list_req.do()
+
+    # 嘗試從回應中取得 IVOD_ID
+    ivod_id = None
+    if "ivods" in list_resp and len(list_resp["ivods"]) > 0:
+        ivod_id = str(list_resp["ivods"][0].get("IVOD_ID"))
+
+    # 如果找不到 IVOD ID，使用一個測試用的 ID
+    if not ivod_id:
+        ivod_id = "156045"
+
+    req = api.GetIvodRequest(ivod_id=ivod_id)
+    resp = await req.do()
+    # 應該有資料回傳
+    assert resp is not None
+
+
+@pytest.mark.asyncio
+async def test_get_meet_ivods_request():
+    req = api.GetMeetIvodsRequest(meet_id="院會-11-2-3", limit=1)
+    resp = await req.do()
+    # 會議 IVOD 資料應該有回應
+    assert resp is not None
+    assert isinstance(resp, dict)

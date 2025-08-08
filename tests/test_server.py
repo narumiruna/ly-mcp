@@ -30,6 +30,9 @@ async def test_list_tools(server_params: StdioServerParameters) -> None:
             "list_interpellations",
             "get_interpellation",
             "get_legislator_interpellations",
+            "list_ivods",
+            "get_ivod",
+            "get_meet_ivods",
         ]
         for tool_name in expected_bills_tools:
             assert tool_name in tool_names
@@ -248,4 +251,82 @@ async def test_interpellation_tools_available(server_params: StdioServerParamete
             "get_legislator_interpellations",
         ]
         for tool_name in expected_interpellation_tools:
+            assert tool_name in tool_names
+
+
+@pytest.mark.asyncio
+async def test_list_ivods(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test basic IVOD listing
+        result = await session.call_tool("list_ivods", {"page": 1, "limit": 5})
+
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+        response_text = result.content[0].text
+        assert isinstance(response_text, str)
+
+
+@pytest.mark.asyncio
+async def test_list_ivods_with_filters(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test IVOD listing with specific filters
+        result = await session.call_tool("list_ivods", {"term": 11, "video_type": "Clip", "limit": 3})
+
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+        response_text = result.content[0].text
+        assert isinstance(response_text, str)
+
+
+@pytest.mark.asyncio
+async def test_get_ivod_error_handling(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test with invalid IVOD ID
+        result = await session.call_tool("get_ivod", {"ivod_id": "invalid_id"})
+
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+        response_text = result.content[0].text
+        assert isinstance(response_text, str)
+
+
+@pytest.mark.asyncio
+async def test_get_meet_ivods(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test meet IVODs retrieval
+        result = await session.call_tool("get_meet_ivods", {"meet_id": "院會-11-2-3", "limit": 3})
+
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+        response_text = result.content[0].text
+        assert isinstance(response_text, str)
+
+
+@pytest.mark.asyncio
+async def test_ivod_tools_available(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        result = await session.list_tools()
+
+        # Check that IVOD tools are available
+        tool_names = [tool.name for tool in result.tools]
+        expected_ivod_tools = [
+            "list_ivods",
+            "get_ivod",
+            "get_meet_ivods",
+        ]
+        for tool_name in expected_ivod_tools:
             assert tool_name in tool_names

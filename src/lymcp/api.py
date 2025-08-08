@@ -271,3 +271,58 @@ class GetLegislatorInterpellationsRequest(BaseModel):
             url=f"{BASE_URL}/legislators/{self.term}/{self.name}/interpellations",
             params=params,
         )
+
+
+class ListIvodsRequest(BaseModel):
+    term: int | None = Field(default=None, serialization_alias=translate["term"])
+    session: int | None = Field(default=None, serialization_alias=translate["session"])
+    meeting_code: str | None = Field(default=None, serialization_alias=translate["meeting_code_detailed"])
+    member_name: str | None = Field(default=None, serialization_alias=translate["member_name"])
+    committee_code: int | None = Field(default=None, serialization_alias=translate["committee_code_detailed"])
+    meeting_code_data: str | None = Field(default=None, serialization_alias=translate["meeting_code_data"])
+    date: str | None = Field(default=None, serialization_alias=translate["date"])
+    video_type: str | None = Field(default=None, serialization_alias=translate["video_type"])
+    page: int = 1
+    limit: int = 20
+    output_fields: list[str] = Field(default_factory=list)
+
+    async def do(self) -> dict:
+        params = self.model_dump(exclude_none=True, by_alias=True)
+        logger.info("Listing IVODs with parameters: {}", params)
+        return await make_api_request(
+            url=f"{BASE_URL}/ivods",
+            params=params,
+        )
+
+
+class GetIvodRequest(BaseModel):
+    ivod_id: str = Field(..., serialization_alias=translate["ivod_id"])
+
+    async def do(self) -> dict:
+        logger.info("Getting IVOD detail for ivod_id: {}", self.ivod_id)
+        return await make_api_request(
+            url=f"{BASE_URL}/ivods/{self.ivod_id}",
+        )
+
+
+class GetMeetIvodsRequest(BaseModel):
+    meet_id: str = Field(..., serialization_alias=translate["meet_id"])
+    term: int | None = Field(default=None, serialization_alias=translate["term"])
+    session: int | None = Field(default=None, serialization_alias=translate["session"])
+    meeting_code: str | None = Field(default=None, serialization_alias=translate["meeting_code_detailed"])
+    member_name: str | None = Field(default=None, serialization_alias=translate["member_name"])
+    committee_code: int | None = Field(default=None, serialization_alias=translate["committee_code_detailed"])
+    meeting_code_data: str | None = Field(default=None, serialization_alias=translate["meeting_code_data"])
+    date: str | None = Field(default=None, serialization_alias=translate["date"])
+    video_type: str | None = Field(default=None, serialization_alias=translate["video_type"])
+    page: int = 1
+    limit: int = 20
+    output_fields: list[str] = Field(default_factory=list)
+
+    async def do(self) -> dict:
+        params = self.model_dump(exclude_none=True, by_alias=True, exclude={"meet_id"})
+        logger.info("Getting meet IVODs for meet_id: {}, params: {}", self.meet_id, params)
+        return await make_api_request(
+            url=f"{BASE_URL}/meets/{self.meet_id}/ivods",
+            params=params,
+        )
