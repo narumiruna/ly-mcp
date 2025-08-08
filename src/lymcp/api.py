@@ -222,3 +222,52 @@ class GetGazetteAgendaRequest(BaseModel):
         return await make_api_request(
             url=f"{BASE_URL}/gazette_agendas/{self.gazette_agenda_id}",
         )
+
+
+class ListInterpellationsRequest(BaseModel):
+    interpellation_member: str | None = Field(default=None, serialization_alias=translate["interpellation_member"])
+    term: int | None = Field(default=None, serialization_alias=translate["term"])
+    session: int | None = Field(default=None, serialization_alias=translate["session"])
+    meeting_code: str | None = Field(default=None, serialization_alias=translate["meeting_code"])
+    page: int = 1
+    limit: int = 20
+    output_fields: list[str] = Field(default_factory=list)
+
+    async def do(self) -> dict:
+        params = self.model_dump(exclude_none=True, by_alias=True)
+        logger.info("Listing interpellations with parameters: {}", params)
+        return await make_api_request(
+            url=f"{BASE_URL}/interpellations",
+            params=params,
+        )
+
+
+class GetInterpellationRequest(BaseModel):
+    interpellation_id: str = Field(..., serialization_alias=translate["interpellation_id"])
+
+    async def do(self) -> dict:
+        logger.info("Getting interpellation detail for interpellation_id: {}", self.interpellation_id)
+        return await make_api_request(
+            url=f"{BASE_URL}/interpellations/{self.interpellation_id}",
+        )
+
+
+class GetLegislatorInterpellationsRequest(BaseModel):
+    term: int = Field(..., serialization_alias=translate["term"])
+    name: str
+    interpellation_member: str | None = Field(default=None, serialization_alias=translate["interpellation_member"])
+    term_query: int | None = Field(default=None, serialization_alias=translate["term"])
+    session: int | None = Field(default=None, serialization_alias=translate["session"])
+    meeting_code: str | None = Field(default=None, serialization_alias=translate["meeting_code"])
+    page: int = 1
+    limit: int = 20
+    output_fields: list[str] = Field(default_factory=list)
+
+    async def do(self) -> dict:
+        params = self.model_dump(exclude_none=True, by_alias=True, exclude={"term", "name"})
+        logger.info("Getting legislator interpellations for term: {}, name: {}, params: {}",
+            self.term, self.name, params)
+        return await make_api_request(
+            url=f"{BASE_URL}/legislators/{self.term}/{self.name}/interpellations",
+            params=params,
+        )

@@ -27,6 +27,9 @@ async def test_list_tools(server_params: StdioServerParameters) -> None:
             "get_bill_related_bills",
             "get_bill_meets",
             "get_bill_doc_html",
+            "list_interpellations",
+            "get_interpellation",
+            "get_legislator_interpellations",
         ]
         for tool_name in expected_bills_tools:
             assert tool_name in tool_names
@@ -168,3 +171,81 @@ async def test_get_gazette(server_params: StdioServerParameters) -> None:
 
         response_text = result.content[0].text
         assert isinstance(response_text, str)
+
+
+@pytest.mark.asyncio
+async def test_list_interpellations(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test basic interpellations search
+        result = await session.call_tool("list_interpellations", {"page": 1, "limit": 3})
+
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+        response_text = result.content[0].text
+        assert isinstance(response_text, str)
+
+
+@pytest.mark.asyncio
+async def test_list_interpellations_with_member(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test interpellations search with specific member
+        result = await session.call_tool("list_interpellations", {"interpellation_member": "羅智強", "limit": 2})
+
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+        response_text = result.content[0].text
+        assert isinstance(response_text, str)
+
+
+@pytest.mark.asyncio
+async def test_get_interpellation(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test interpellation detail retrieval with a test interpellation ID
+        result = await session.call_tool("get_interpellation", {"interpellation_id": "11-1-1-1"})
+
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+        response_text = result.content[0].text
+        assert isinstance(response_text, str)
+
+
+@pytest.mark.asyncio
+async def test_get_legislator_interpellations(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        # Test legislator interpellations retrieval
+        result = await session.call_tool("get_legislator_interpellations", {"term": 11, "name": "韓國瑜", "limit": 2})
+
+        assert len(result.content) == 1
+        assert isinstance(result.content[0], TextContent)
+
+        response_text = result.content[0].text
+        assert isinstance(response_text, str)
+
+
+@pytest.mark.asyncio
+async def test_interpellation_tools_available(server_params: StdioServerParameters) -> None:
+    async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+
+        result = await session.list_tools()
+
+        # Check that interpellation tools are available
+        tool_names = [tool.name for tool in result.tools]
+        expected_interpellation_tools = [
+            "list_interpellations",
+            "get_interpellation",
+            "get_legislator_interpellations",
+        ]
+        for tool_name in expected_interpellation_tools:
+            assert tool_name in tool_names

@@ -164,3 +164,51 @@ async def test_list_gazette_agendas_request():
     # 公報議程資料在 'gazetteagendas' key 下
     assert "gazetteagendas" in resp
     assert isinstance(resp["gazetteagendas"], list)
+
+
+@pytest.mark.asyncio
+async def test_list_interpellations_request():
+    req = api.ListInterpellationsRequest(limit=1)
+    resp = await req.do()
+    # 質詢資料應該在 'interpellations' 或其他 key 下
+    assert resp is not None
+    assert isinstance(resp, dict)
+
+
+@pytest.mark.asyncio
+async def test_list_interpellations_with_member():
+    req = api.ListInterpellationsRequest(interpellation_member="羅智強", limit=1)
+    resp = await req.do()
+    # 質詢資料應該有回應
+    assert resp is not None
+    assert isinstance(resp, dict)
+
+
+@pytest.mark.asyncio
+async def test_get_interpellation_request():
+    # 先取得一個質詢ID來測試
+    list_req = api.ListInterpellationsRequest(limit=1)
+    list_resp = await list_req.do()
+
+    # 嘗試從回應中取得質詢編號
+    interpellation_id = None
+    if "interpellations" in list_resp and len(list_resp["interpellations"]) > 0:
+        interpellation_id = list_resp["interpellations"][0].get("質詢編號")
+
+    # 如果找不到質詢編號，使用一個測試用的 ID
+    if not interpellation_id:
+        interpellation_id = "11-1-1-1"
+
+    req = api.GetInterpellationRequest(interpellation_id=interpellation_id)
+    resp = await req.do()
+    # 應該有資料回傳
+    assert resp is not None
+
+
+@pytest.mark.asyncio
+async def test_get_legislator_interpellations_request():
+    req = api.GetLegislatorInterpellationsRequest(term=11, name="韓國瑜", limit=1)
+    resp = await req.do()
+    # 委員質詢資料應該有回應
+    assert resp is not None
+    assert isinstance(resp, dict)
