@@ -260,3 +260,122 @@ async def test_get_meet_ivods_request():
     # 會議 IVOD 資料應該有回應
     assert resp is not None
     assert isinstance(resp, dict)
+
+
+@pytest.mark.asyncio
+async def test_list_laws_request():
+    req = api.ListLawsRequest(limit=5)
+    resp = await req.do()
+    # 法律資料可能在 'laws', 'data', 'results' 等 key 下
+    assert any(k in resp for k in ("laws", "data", "results"))
+
+
+@pytest.mark.asyncio
+async def test_list_laws_with_filters_request():
+    req = api.ListLawsRequest(category="母法", law_status="現行", limit=3)
+    resp = await req.do()
+    # 應該有法律資料回傳
+    assert any(k in resp for k in ("laws", "data", "results"))
+
+
+@pytest.mark.asyncio
+async def test_get_law_request():
+    # 使用一個已知的法律編號進行測試
+    req = api.GetLawRequest(law_id="09200015")
+    resp = await req.do()
+    # 應該有法律詳細資料
+    assert resp is not None
+    assert isinstance(resp, dict)
+
+
+@pytest.mark.asyncio
+async def test_get_law_progress_request():
+    # 使用一個已知的法律編號進行測試
+    req = api.GetLawProgressRequest(law_id="09200015")
+    resp = await req.do()
+    # 應該有進度資料回傳
+    assert resp is not None
+    assert isinstance(resp, dict)
+
+
+@pytest.mark.asyncio
+async def test_get_law_bills_request():
+    # 使用一個已知的法律編號進行測試
+    req = api.GetLawBillsRequest(law_id="09200015", limit=3)
+    resp = await req.do()
+    # 應該有相關議案資料
+    assert resp is not None
+    assert isinstance(resp, dict)
+
+
+@pytest.mark.asyncio
+async def test_get_law_versions_request():
+    # 使用一個已知的法律編號進行測試
+    req = api.GetLawVersionsRequest(law_id="09200015", limit=3)
+    resp = await req.do()
+    # 應該有版本資料
+    assert resp is not None
+    assert isinstance(resp, dict)
+
+
+@pytest.mark.asyncio
+async def test_get_law_request_with_real_data():
+    # 先查詢法律列表，取得真實的法律編號
+    search = api.ListLawsRequest(limit=1)
+    search_resp = await search.do()
+
+    law_id = None
+    for k in ("laws", "data", "results"):
+        if k in search_resp and search_resp[k]:
+            law_id = search_resp[k][0].get("法律編號") or search_resp[k][0].get("lawId")
+            if law_id is not None:
+                law_id = str(law_id)
+            break
+
+    if law_id:
+        req = api.GetLawRequest(law_id=law_id)
+        resp = await req.do()
+        # 應該有對應的法律編號
+        data = resp.get("data", resp)
+        data_law_id = data.get("法律編號") or data.get("lawId")
+        assert str(data_law_id) == law_id
+
+
+@pytest.mark.asyncio
+async def test_list_law_contents_request():
+    req = api.ListLawContentsRequest(limit=5)
+    resp = await req.do()
+    # 檢查回應結構
+    assert "lawcontents" in resp
+    assert isinstance(resp["lawcontents"], list)
+    assert len(resp["lawcontents"]) > 0
+    # 檢查基本的分頁資訊
+    assert "total" in resp
+    assert "page" in resp
+    assert "limit" in resp
+
+
+@pytest.mark.asyncio
+async def test_list_law_contents_with_filters_request():
+    req = api.ListLawContentsRequest(
+        law_number="90481",
+        current_version_status="現行",
+        limit=3
+    )
+    resp = await req.do()
+    # 檢查回應中有資料
+    assert "lawcontents" in resp
+    assert isinstance(resp["lawcontents"], list)
+    # 檢查篩選參數有被正確應用
+    assert "filter" in resp
+
+
+@pytest.mark.asyncio
+async def test_get_law_content_request():
+    # 測試取得特定法條資訊
+    # 使用swagger.yaml中的範例ID
+    req = api.GetLawContentRequest(law_content_id="90481:90481:1944-02-29-制定:0")
+    resp = await req.do()
+    # 法條資料應該有內容
+    assert resp is not None
+    assert isinstance(resp, dict)
