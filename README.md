@@ -128,6 +128,24 @@ Add the server to your MCP client configuration (e.g., Claude Desktop):
 }
 ```
 
+### Docker
+
+```json
+{
+  "mcpServers": {
+    "lymcp": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "narumi/ly-mcp:latest"
+      ]
+    }
+  }
+}
+```
+
 ## Development
 
 ### Prerequisites
