@@ -69,7 +69,7 @@ uv run pytest -v -s
 make lint
 make type
 uv run ruff check .
-uv run mypy .
+uv run ty check .
 ```
 
 ### Build & Publish
