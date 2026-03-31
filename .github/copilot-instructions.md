@@ -58,7 +58,7 @@ uv run lymcp
 ### Run tests
 
 ```bash
-make test
+just test
 # or
 uv run pytest -v -s
 ```
@@ -66,8 +66,8 @@ uv run pytest -v -s
 ### Lint & Type Check
 
 ```bash
-make lint
-make type
+just lint
+just type
 uv run ruff check .
 uv run ty check .
 ```
@@ -75,7 +75,7 @@ uv run ty check .
 ### Build & Publish
 
 ```bash
-make publish
+just publish
 uv build -f wheel
 uv publish
 ```
