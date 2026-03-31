@@ -16,14 +16,12 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
-    "mypy>=1.13.0",
     "pip>=25.0.1",
     "pytest>=8.3.3",
     "pytest-asyncio>=0.26.0",
     "pytest-cov>=6.0.0",
     "ruff>=0.7.3",
-    "types-pyyaml>=6.0.12.20250516",
-    "types-setuptools>=80.9.0.20250529",
+    "ty>=0.0.2",
 ]
 
 [tool.ruff]
@@ -53,9 +51,6 @@ force-single-line = true
 [tool.pytest.ini_options]
 filterwarnings = ["ignore::DeprecationWarning"]
 asyncio_default_fixture_loop_scope = "function"
-
-[tool.mypy]
-ignore_missing_imports = true
 
 [tool.bumpversion]
 current_version = "0.2.2"
