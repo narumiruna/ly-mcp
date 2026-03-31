@@ -168,6 +168,7 @@ Once connected to the MCP server, you can ask your LLM questions like:
 
 - Python 3.12+
 - [uv](https://docs.astral.sh/uv/) package manager
+- [just](https://github.com/casey/just) command runner
 
 ### Setup
 
@@ -180,14 +181,14 @@ uv sync
 ### Running the MCP Inspector
 
 ```bash
-make dev
+just dev
 ```
 
 ### Running Tests
 
 ```bash
 # Run full test suite with coverage
-make test
+just test
 
 # Run tests with verbose output
 uv run pytest -v -s
@@ -197,10 +198,10 @@ uv run pytest -v -s
 
 ```bash
 # Run linter
-make lint
+just lint
 
 # Run type checker
-make type
+just type
 ```
 
 ## License
