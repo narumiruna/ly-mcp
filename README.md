@@ -1,10 +1,16 @@
 # ly-mcp
 
+[![PyPI version](https://img.shields.io/pypi/v/lymcp)](https://pypi.org/project/lymcp/)
+[![Python](https://img.shields.io/pypi/pyversions/lymcp)](https://pypi.org/project/lymcp/)
+[![CI](https://github.com/narumiruna/ly-mcp/actions/workflows/python.yml/badge.svg)](https://github.com/narumiruna/ly-mcp/actions/workflows/python.yml)
+[![Docker](https://github.com/narumiruna/ly-mcp/actions/workflows/docker.yml/badge.svg)](https://github.com/narumiruna/ly-mcp/actions/workflows/docker.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A Model Context Protocol (MCP) server for Taiwan's Legislative Yuan API v2, providing comprehensive access to bills, committees, gazettes, meeting records, and related documents.
 
 ## Features
 
-This MCP server provides the following tools:
+This MCP server provides 36 tools across 9 categories:
 
 ### Statistics
 - **get_stat**: Get Legislative Yuan API statistics and overview information
@@ -80,7 +86,7 @@ uvx lymcp@latest
 
 Add the server to your MCP client configuration (e.g., Claude Desktop):
 
-### PyPI
+#### PyPI
 
 ```json
 {
@@ -93,7 +99,7 @@ Add the server to your MCP client configuration (e.g., Claude Desktop):
 }
 ```
 
-### GitHub
+#### GitHub
 
 ```json
 {
@@ -110,7 +116,7 @@ Add the server to your MCP client configuration (e.g., Claude Desktop):
 }
 ```
 
-### Local Development
+#### Local Development
 
 ```json
 {
@@ -128,7 +134,7 @@ Add the server to your MCP client configuration (e.g., Claude Desktop):
 }
 ```
 
-### Docker
+#### Docker
 
 ```json
 {
@@ -146,6 +152,16 @@ Add the server to your MCP client configuration (e.g., Claude Desktop):
 }
 ```
 
+## Example Prompts
+
+Once connected to the MCP server, you can ask your LLM questions like:
+
+- "列出第11屆的所有法律提案" (List all bills from the 11th term)
+- "查詢立法委員王美花的提案紀錄" (Look up legislator Wang Mei-hua's proposed bills)
+- "最近一次院會討論了哪些議案？" (What bills were discussed in the most recent plenary session?)
+- "查詢勞動基準法的修法歷程" (Look up the amendment history of the Labor Standards Act)
+- "第11屆第1會期有哪些委員會會議？" (What committee meetings were held in the 1st session of the 11th term?)
+
 ## Development
 
 ### Prerequisites
@@ -159,6 +175,12 @@ Add the server to your MCP client configuration (e.g., Claude Desktop):
 git clone https://github.com/narumiruna/ly-mcp
 cd ly-mcp
 uv sync
+```
+
+### Running the MCP Inspector
+
+```bash
+make dev
 ```
 
 ### Running Tests
@@ -179,23 +201,7 @@ make lint
 
 # Run type checker
 make type
-
-# Run both linter and type checker
-uv run ruff check .
-uv run mypy .
 ```
-
-### To-Do List
-
-- [x] Stat
-- [x] Bill
-- [x] Committee
-- [x] Gazette
-- [x] Interpellation
-- [x] Ivod
-- [x] Law
-- [x] Legislator
-- [x] Meet
 
 ## License
 
