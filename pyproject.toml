@@ -8,7 +8,7 @@ authors         = [{ name = "narumi", email = "toucans-cutouts0f@icloud.com" }]
 dependencies    = [
   "httpx>=0.28.1",
   "loguru>=0.7.3",
-  "mcp[cli]>=1.26.0",
+  "mcp[cli]>=1.27.1",
 ]
 
 [project.scripts]
