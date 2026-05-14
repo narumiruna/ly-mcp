@@ -75,6 +75,27 @@ This MCP server provides 39 tools across 9 categories:
 
 This MCP server uses the [Legislative Yuan API v2](https://ly.govapi.tw/v2) as its data source, providing information about Taiwan's Legislative Yuan bills and proceedings.
 
+## Tool Response Contract
+
+Successful MCP tool calls return the raw JSON payload from the Legislative Yuan
+API. Failed tool calls return a machine-checkable JSON error envelope:
+
+```json
+{
+  "ok": false,
+  "error": {
+    "type": "http_status",
+    "message": "Upstream API returned HTTP 404 for https://ly.govapi.tw/v2/bills/invalid_bill_number",
+    "url": "https://ly.govapi.tw/v2/bills/invalid_bill_number",
+    "status_code": 404,
+    "response_excerpt": "not found"
+  }
+}
+```
+
+Current error `type` values include `http_status`, `timeout`,
+`network_error`, `invalid_json`, and `unexpected_error`.
+
 ## Installation & Usage
 
 ### Quick Start

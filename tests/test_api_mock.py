@@ -1,6 +1,7 @@
 from collections.abc import Callable
 from typing import Any
 
+import httpx
 import pytest
 
 from lymcp import api
@@ -8,6 +9,31 @@ from tests.fixtures import load_json_fixture
 
 RequestFactory = Callable[[], Any]
 SAMPLE_RESPONSE = {"ok": True}
+
+
+class FakeAsyncClient:
+    def __init__(
+        self,
+        *,
+        response: httpx.Response | None = None,
+        error: Exception | None = None,
+        timeout: float | None = None,
+    ) -> None:
+        self.response = response
+        self.error = error
+        self.timeout = timeout
+
+    async def __aenter__(self) -> "FakeAsyncClient":
+        return self
+
+    async def __aexit__(self, *args: object) -> None:
+        return None
+
+    async def get(self, url: str, params: dict[str, Any] | None = None) -> httpx.Response:
+        if self.error is not None:
+            raise self.error
+        assert self.response is not None
+        return self.response
 
 
 @pytest.mark.asyncio
@@ -335,3 +361,64 @@ async def test_remaining_requests_use_expected_endpoint(
 async def test_make_api_request_rejects_unsupported_method() -> None:
     with pytest.raises(ValueError, match="Unsupported HTTP method"):
         await api.make_api_request(f"{api.BASE_URL}/stat", method="POST")
+
+
+@pytest.mark.asyncio
+async def test_make_api_request_wraps_http_status_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    url = f"{api.BASE_URL}/bills/invalid_bill_number"
+    response = httpx.Response(
+        404,
+        request=httpx.Request("GET", url),
+        text="not found",
+    )
+
+    monkeypatch.setattr(api.httpx, "AsyncClient", lambda **kwargs: FakeAsyncClient(response=response, **kwargs))
+
+    with pytest.raises(api.LymcpApiError) as exc_info:
+        await api.make_api_request(url)
+
+    error = exc_info.value
+    assert error.error_type == "http_status"
+    assert error.status_code == 404
+    assert error.url == url
+    assert error.response_excerpt == "not found"
+
+
+@pytest.mark.asyncio
+async def test_make_api_request_wraps_timeout(monkeypatch: pytest.MonkeyPatch) -> None:
+    url = f"{api.BASE_URL}/stat"
+
+    monkeypatch.setattr(
+        api.httpx,
+        "AsyncClient",
+        lambda **kwargs: FakeAsyncClient(error=httpx.TimeoutException("timed out"), **kwargs),
+    )
+
+    with pytest.raises(api.LymcpApiError) as exc_info:
+        await api.make_api_request(url)
+
+    error = exc_info.value
+    assert error.error_type == "timeout"
+    assert error.status_code is None
+    assert error.url == url
+
+
+@pytest.mark.asyncio
+async def test_make_api_request_wraps_non_json_response(monkeypatch: pytest.MonkeyPatch) -> None:
+    url = f"{api.BASE_URL}/stat"
+    response = httpx.Response(
+        200,
+        request=httpx.Request("GET", url),
+        text="<html>not json</html>",
+    )
+
+    monkeypatch.setattr(api.httpx, "AsyncClient", lambda **kwargs: FakeAsyncClient(response=response, **kwargs))
+
+    with pytest.raises(api.LymcpApiError) as exc_info:
+        await api.make_api_request(url)
+
+    error = exc_info.value
+    assert error.error_type == "invalid_json"
+    assert error.status_code == 200
+    assert error.url == url
+    assert error.response_excerpt == "<html>not json</html>"

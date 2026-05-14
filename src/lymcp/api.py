@@ -9,17 +9,83 @@ from .translate import translate
 
 BASE_URL: Final[str] = "https://ly.govapi.tw/v2"
 HTTPX_TIMEOUT: Final[float] = 30.0
+ERROR_EXCERPT_LIMIT: Final[int] = 500
+
+
+class LymcpApiError(Exception):
+    def __init__(
+        self,
+        error_type: str,
+        message: str,
+        *,
+        url: str,
+        status_code: int | None = None,
+        response_excerpt: str | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.error_type = error_type
+        self.message = message
+        self.url = url
+        self.status_code = status_code
+        self.response_excerpt = response_excerpt
+
+    def to_dict(self) -> dict[str, object]:
+        error: dict[str, object] = {
+            "type": self.error_type,
+            "message": self.message,
+            "url": self.url,
+        }
+        if self.status_code is not None:
+            error["status_code"] = self.status_code
+        if self.response_excerpt:
+            error["response_excerpt"] = self.response_excerpt
+        return error
+
+
+def _response_excerpt(response: httpx.Response) -> str:
+    return response.text.strip()[:ERROR_EXCERPT_LIMIT]
 
 
 async def make_api_request(url: str, method: str = "GET", params: dict | None = None) -> dict:
     """Shared function to make API requests with consistent error handling."""
     async with httpx.AsyncClient(timeout=HTTPX_TIMEOUT) as client:
         if method.upper() == "GET":
-            resp = await client.get(url, params=params)
+            try:
+                resp = await client.get(url, params=params)
+            except httpx.TimeoutException as e:
+                raise LymcpApiError(
+                    "timeout",
+                    f"Timed out requesting {url}",
+                    url=url,
+                ) from e
+            except httpx.RequestError as e:
+                raise LymcpApiError(
+                    "network_error",
+                    f"Network error requesting {url}: {e}",
+                    url=url,
+                ) from e
         else:
             raise ValueError(f"Unsupported HTTP method: {method}")
-        resp.raise_for_status()
-        return resp.json()
+        try:
+            resp.raise_for_status()
+        except httpx.HTTPStatusError as e:
+            raise LymcpApiError(
+                "http_status",
+                f"Upstream API returned HTTP {resp.status_code} for {resp.url}",
+                url=str(resp.url),
+                status_code=resp.status_code,
+                response_excerpt=_response_excerpt(resp),
+            ) from e
+        try:
+            return resp.json()
+        except ValueError as e:
+            raise LymcpApiError(
+                "invalid_json",
+                f"Upstream API returned non-JSON response for {resp.url}",
+                url=str(resp.url),
+                status_code=resp.status_code,
+                response_excerpt=_response_excerpt(resp),
+            ) from e
 
 
 class GetStatRequest(BaseModel):

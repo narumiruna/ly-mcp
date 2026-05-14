@@ -22,7 +22,7 @@ An existing completed plan, `docs/plans/2026-05-14_manual-live-and-mock-tests-pl
 - [x] If default pytest still collects live tests, add or repair marker filtering so live tests are skipped by default; verify with `just test` running without network access.
 - [x] Replace MCP tests that only assert `TextContent` and `str` with assertions that parse JSON and validate top-level keys such as `total`, `page`, `limit`, result collection keys, and `supported_filter_fields`; verify with `uv run pytest tests/test_server*.py`.
 - [x] Add request serialization tests for representative filters across bills, meetings, laws, law versions, IVODs, and legislators; verify by monkeypatching `make_api_request` and asserting URL plus params.
-- [ ] Add error-path tests for invalid IDs, HTTP 404, timeout, and non-JSON responses after structured error handling is implemented; verify with deterministic unit tests that do not call the live API. Deferred until `docs/plans/2026-05-14_structured-errors-and-responses-plan.md` lands.
+- [x] Add error-path tests for invalid IDs, HTTP 404, timeout, and non-JSON responses after structured error handling is implemented; verify with deterministic unit tests that do not call the live API.
 - [x] Ensure `just test`, `just test-live`, README testing instructions, and CI workflow commands describe the same behavior; verify by reviewing all four places in one commit.
 - [x] Run the final quality gates: `just lint`, `just type`, `just test`, and one explicit `just test-live` before release or PR merge; verify by recording command output in the PR or final implementation summary.
 

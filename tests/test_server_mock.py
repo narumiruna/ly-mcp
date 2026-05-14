@@ -3,6 +3,7 @@ from typing import Any
 
 import pytest
 
+from lymcp import api
 from lymcp import server
 from tests.fixtures import load_json_fixture
 
@@ -98,6 +99,59 @@ async def test_get_bill_returns_fixture_json(monkeypatch: pytest.MonkeyPatch) ->
 
     assert json.loads(response_text) == expected_response
     assert calls == [{"bill_no": "202110213410000"}]
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("tool_name", "request_class_name", "call_kwargs", "url"),
+    [
+        (
+            "get_bill",
+            "GetBillRequest",
+            {"bill_no": "invalid_bill_number"},
+            f"{api.BASE_URL}/bills/invalid_bill_number",
+        ),
+        (
+            "get_law_version",
+            "GetLawVersionRequest",
+            {"law_version_id": "invalid_law_version"},
+            f"{api.BASE_URL}/law_versions/invalid_law_version",
+        ),
+    ],
+)
+async def test_detail_tool_returns_structured_http_status_error(
+    monkeypatch: pytest.MonkeyPatch,
+    tool_name: str,
+    request_class_name: str,
+    call_kwargs: dict[str, Any],
+    url: str,
+) -> None:
+    class StubErrorRequest:
+        def __init__(self, **kwargs: Any) -> None:
+            self.kwargs = kwargs
+
+        async def do(self) -> dict[str, Any]:
+            raise api.LymcpApiError(
+                "http_status",
+                f"Upstream API returned HTTP 404 for {url}",
+                url=url,
+                status_code=404,
+                response_excerpt="not found",
+            )
+
+    monkeypatch.setattr(server, request_class_name, StubErrorRequest)
+
+    response_text = await getattr(server, tool_name)(**call_kwargs)
+    response = json.loads(response_text)
+
+    assert response["ok"] is False
+    assert response["error"] == {
+        "type": "http_status",
+        "message": f"Upstream API returned HTTP 404 for {url}",
+        "url": url,
+        "status_code": 404,
+        "response_excerpt": "not found",
+    }
 
 
 @pytest.mark.asyncio
