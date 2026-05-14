@@ -2,9 +2,14 @@
 
 Make test and CI behavior match the documented offline/live split, and strengthen MCP contract tests so broken tools fail deterministically. Success means default validation does not require network access, live tests remain explicitly runnable, and tests assert JSON structure, request serialization, and error semantics instead of only checking for strings.
 
+## Status
+
+Completed. Default validation is offline, live tests remain explicit, and mock
+server tests assert parsed JSON contracts plus tool-to-request wiring.
+
 ## Context
 
-An existing completed plan, `docs/plans/2026-05-14_manual-live-and-mock-tests-plan.md`, already describes a live/mock test migration. The current repository still needs a follow-up verification pass because the research review found mismatch risks between README claims, `justfile`, pytest marker behavior, and tests that assert only `isinstance(response_text, str)`.
+An existing completed plan, `docs/plans/2026-05-14_manual-live-and-mock-tests-plan.md`, already described a live/mock test migration. At planning time, the repository still needed a follow-up verification pass because the research review found mismatch risks between README claims, `justfile`, pytest marker behavior, and tests that asserted only `isinstance(response_text, str)`.
 
 ## Non-Goals
 

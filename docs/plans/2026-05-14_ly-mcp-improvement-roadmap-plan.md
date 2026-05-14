@@ -2,12 +2,16 @@
 
 Define the improvement roadmap for the current `lymcp` MCP server gaps found through repository review, OpenAPI comparison, and live MCP tool usage. Success means every identified gap is assigned to an executable plan with clear verification evidence.
 
+## Status
+
+Completed. All linked implementation plans have landed on `main`; this roadmap
+is retained as the closeout record for the improvement pass.
+
 ## Context
 
-The current server wraps the Legislative Yuan API v2 as MCP tools. Review found broad endpoint coverage, but also missing Law Version tools, weak contract testing, plain-string error handling, incomplete tool discoverability, no reusable MCP prompts/resources, and ambiguity around "latest" queries that include future scheduled records.
+At planning time, the server wrapped the Legislative Yuan API v2 as MCP tools with broad endpoint coverage, but review found missing Law Version tools, weak contract testing, plain-string error handling, incomplete tool discoverability, no reusable MCP prompts/resources, and ambiguity around "latest" queries that include future scheduled records.
 
-As of the `roadmap-completion` follow-up, all linked implementation plans have
-landed on `main` and this roadmap is being updated as a status record.
+The `roadmap-completion` follow-up marked the linked implementation plans done.
 
 ## Non-Goals
 
