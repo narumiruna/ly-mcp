@@ -1,0 +1,978 @@
+{
+  "bill": {
+    "total": 144348,
+    "terms": [
+      {
+        "term": 11,
+        "count": 20764,
+        "sessionPeriod_count": [
+          {
+            "sessionPeriod": 5,
+            "count": 1955
+          },
+          {
+            "sessionPeriod": 4,
+            "count": 3410
+          },
+          {
+            "sessionPeriod": 3,
+            "count": 7156
+          },
+          {
+            "sessionPeriod": 2,
+            "count": 2679
+          },
+          {
+            "sessionPeriod": 1,
+            "count": 5530
+          }
+        ]
+      },
+      {
+        "term": 10,
+        "count": 43029,
+        "sessionPeriod_count": [
+          {
+            "sessionPeriod": 8,
+            "count": 7192
+          },
+          {
+            "sessionPeriod": 7,
+            "count": 5702
+          },
+          {
+            "sessionPeriod": 6,
+            "count": 7233
+          },
+          {
+            "sessionPeriod": 5,
+            "count": 6362
+          },
+          {
+            "sessionPeriod": 4,
+            "count": 3009
+          },
+          {
+            "sessionPeriod": 3,
+            "count": 4641
+          },
+          {
+            "sessionPeriod": 2,
+            "count": 3682
+          },
+          {
+            "sessionPeriod": 1,
+            "count": 4903
+          }
+        ]
+      },
+      {
+        "term": 9,
+        "count": 30806,
+        "sessionPeriod_count": [
+          {
+            "sessionPeriod": 8,
+            "count": 2421
+          },
+          {
+            "sessionPeriod": 7,
+            "count": 5274
+          },
+          {
+            "sessionPeriod": 6,
+            "count": 3702
+          },
+          {
+            "sessionPeriod": 5,
+            "count": 4032
+          },
+          {
+            "sessionPeriod": 4,
+            "count": 4470
+          },
+          {
+            "sessionPeriod": 3,
+            "count": 3843
+          },
+          {
+            "sessionPeriod": 2,
+            "count": 2350
+          },
+          {
+            "sessionPeriod": 1,
+            "count": 3966
+          }
+        ]
+      },
+      {
+        "term": 8,
+        "count": 26293,
+        "sessionPeriod_count": [
+          {
+            "sessionPeriod": 8,
+            "count": 3054
+          },
+          {
+            "sessionPeriod": 7,
+            "count": 4154
+          },
+          {
+            "sessionPeriod": 6,
+            "count": 3867
+          },
+          {
+            "sessionPeriod": 5,
+            "count": 2479
+          },
+          {
+            "sessionPeriod": 4,
+            "count": 3158
+          },
+          {
+            "sessionPeriod": 3,
+            "count": 2696
+          },
+          {
+            "sessionPeriod": 2,
+            "count": 3040
+          },
+          {
+            "sessionPeriod": 1,
+            "count": 1877
+          }
+        ]
+      },
+      {
+        "term": 7,
+        "count": 15775,
+        "sessionPeriod_count": [
+          {
+            "sessionPeriod": 8,
+            "count": 2025
+          },
+          {
+            "sessionPeriod": 7,
+            "count": 2301
+          },
+          {
+            "sessionPeriod": 6,
+            "count": 2327
+          },
+          {
+            "sessionPeriod": 5,
+            "count": 1437
+          },
+          {
+            "sessionPeriod": 4,
+            "count": 1780
+          },
+          {
+            "sessionPeriod": 3,
+            "count": 1689
+          },
+          {
+            "sessionPeriod": 2,
+            "count": 1390
+          },
+          {
+            "sessionPeriod": 1,
+            "count": 1946
+          }
+        ]
+      },
+      {
+        "term": 6,
+        "count": 7622,
+        "sessionPeriod_count": [
+          {
+            "sessionPeriod": 6,
+            "count": 1825
+          },
+          {
+            "sessionPeriod": 5,
+            "count": 995
+          },
+          {
+            "sessionPeriod": 4,
+            "count": 1648
+          },
+          {
+            "sessionPeriod": 3,
+            "count": 915
+          },
+          {
+            "sessionPeriod": 2,
+            "count": 1353
+          },
+          {
+            "sessionPeriod": 1,
+            "count": 793
+          }
+        ]
+      },
+      {
+        "term": 5,
+        "count": 59,
+        "sessionPeriod_count": [
+          {
+            "sessionPeriod": 6,
+            "count": 22
+          },
+          {
+            "sessionPeriod": 5,
+            "count": 8
+          },
+          {
+            "sessionPeriod": 4,
+            "count": 15
+          },
+          {
+            "sessionPeriod": 3,
+            "count": 2
+          }
+        ]
+      }
+    ],
+    "max_mtime": 1778765038000,
+    "max_mtime_human": "2026-05-14 13:23:58"
+  },
+  "legislator": {
+    "total": 1656,
+    "terms": [
+      {
+        "term": 11,
+        "count": 123
+      },
+      {
+        "term": 10,
+        "count": 120
+      },
+      {
+        "term": 9,
+        "count": 128
+      },
+      {
+        "term": 8,
+        "count": 124
+      },
+      {
+        "term": 7,
+        "count": 128
+      },
+      {
+        "term": 6,
+        "count": 238
+      },
+      {
+        "term": 5,
+        "count": 231
+      },
+      {
+        "term": 4,
+        "count": 228
+      },
+      {
+        "term": 3,
+        "count": 171
+      },
+      {
+        "term": 2,
+        "count": 165
+      }
+    ]
+  },
+  "gazette": {
+    "total": 1623,
+    "agenda_total": 10281,
+    "max_meeting_date": 1777248000000,
+    "max_meeting_date_human": "2026-04-27 00:00:00",
+    "comYears": [
+      {
+        "year": 115,
+        "count": 54,
+        "agenda_count": 376,
+        "max_meeting_date": 1777248000000,
+        "max_meeting_date_human": "2026-04-27 00:00:00"
+      },
+      {
+        "year": 114,
+        "count": 220,
+        "agenda_count": 1367,
+        "max_meeting_date": 1765929600000,
+        "max_meeting_date_human": "2025-12-17 00:00:00"
+      },
+      {
+        "year": 113,
+        "count": 156,
+        "agenda_count": 1064,
+        "max_meeting_date": 1733961600000,
+        "max_meeting_date_human": "2024-12-12 00:00:00"
+      },
+      {
+        "year": 112,
+        "count": 227,
+        "agenda_count": 1159,
+        "max_meeting_date": 1702339200000,
+        "max_meeting_date_human": "2023-12-12 00:00:00"
+      },
+      {
+        "year": 111,
+        "count": 186,
+        "agenda_count": 1043,
+        "max_meeting_date": 1670889600000,
+        "max_meeting_date_human": "2022-12-13 00:00:00"
+      },
+      {
+        "year": 110,
+        "count": 153,
+        "agenda_count": 1038,
+        "max_meeting_date": 1638230400000,
+        "max_meeting_date_human": "2021-11-30 00:00:00"
+      },
+      {
+        "year": 109,
+        "count": 122,
+        "agenda_count": 723,
+        "max_meeting_date": 1607385600000,
+        "max_meeting_date_human": "2020-12-08 00:00:00"
+      },
+      {
+        "year": 108,
+        "count": 152,
+        "agenda_count": 1133,
+        "max_meeting_date": 1577750400000,
+        "max_meeting_date_human": "2019-12-31 00:00:00"
+      },
+      {
+        "year": 107,
+        "count": 175,
+        "agenda_count": 1211,
+        "max_meeting_date": 1545091200000,
+        "max_meeting_date_human": "2018-12-18 00:00:00"
+      },
+      {
+        "year": 106,
+        "count": 178,
+        "agenda_count": 1167,
+        "max_meeting_date": 1513641600000,
+        "max_meeting_date_human": "2017-12-19 00:00:00"
+      }
+    ]
+  },
+  "meet": {
+    "total": 7899,
+    "terms": [
+      {
+        "term": 11,
+        "count": 1422,
+        "max_meeting_date": 1779321600000,
+        "max_meeting_date_human": "2026-05-21 00:00:00",
+        "meetdata_count": 1397,
+        "議事錄_count": 984,
+        "sessionPeriod_count": [
+          {
+            "sessionPeriod": 5,
+            "count": 150
+          },
+          {
+            "sessionPeriod": 4,
+            "count": 280
+          },
+          {
+            "sessionPeriod": 3,
+            "count": 333
+          },
+          {
+            "sessionPeriod": 2,
+            "count": 282
+          },
+          {
+            "sessionPeriod": 1,
+            "count": 364
+          },
+          {
+            "sessionPeriod": 0,
+            "count": 12
+          }
+        ]
+      },
+      {
+        "term": 10,
+        "count": 2267,
+        "max_meeting_date": 1715904000000,
+        "max_meeting_date_human": "2024-05-17 00:00:00",
+        "meetdata_count": 2146,
+        "議事錄_count": 1603,
+        "sessionPeriod_count": [
+          {
+            "sessionPeriod": 8,
+            "count": 206
+          },
+          {
+            "sessionPeriod": 7,
+            "count": 305
+          },
+          {
+            "sessionPeriod": 6,
+            "count": 293
+          },
+          {
+            "sessionPeriod": 5,
+            "count": 274
+          },
+          {
+            "sessionPeriod": 4,
+            "count": 326
+          },
+          {
+            "sessionPeriod": 3,
+            "count": 283
+          },
+          {
+            "sessionPeriod": 2,
+            "count": 286
+          },
+          {
+            "sessionPeriod": 1,
+            "count": 269
+          },
+          {
+            "sessionPeriod": 0,
+            "count": 19
+          }
+        ]
+      },
+      {
+        "term": 9,
+        "count": 2391,
+        "max_meeting_date": 1579651200000,
+        "max_meeting_date_human": "2020-01-22 00:00:00",
+        "meetdata_count": 2239,
+        "議事錄_count": 1645,
+        "sessionPeriod_count": [
+          {
+            "sessionPeriod": 8,
+            "count": 231
+          },
+          {
+            "sessionPeriod": 7,
+            "count": 289
+          },
+          {
+            "sessionPeriod": 6,
+            "count": 255
+          },
+          {
+            "sessionPeriod": 5,
+            "count": 317
+          },
+          {
+            "sessionPeriod": 4,
+            "count": 297
+          },
+          {
+            "sessionPeriod": 3,
+            "count": 324
+          },
+          {
+            "sessionPeriod": 2,
+            "count": 270
+          },
+          {
+            "sessionPeriod": 1,
+            "count": 393
+          },
+          {
+            "sessionPeriod": 0,
+            "count": 15
+          }
+        ]
+      },
+      {
+        "term": 8,
+        "count": 1818,
+        "max_meeting_date": 1450396800000,
+        "max_meeting_date_human": "2015-12-18 00:00:00",
+        "meetdata_count": 1434,
+        "議事錄_count": 1480,
+        "sessionPeriod_count": [
+          {
+            "sessionPeriod": 8,
+            "count": 163
+          },
+          {
+            "sessionPeriod": 7,
+            "count": 220
+          },
+          {
+            "sessionPeriod": 6,
+            "count": 263
+          },
+          {
+            "sessionPeriod": 5,
+            "count": 239
+          },
+          {
+            "sessionPeriod": 4,
+            "count": 256
+          },
+          {
+            "sessionPeriod": 3,
+            "count": 188
+          },
+          {
+            "sessionPeriod": 2,
+            "count": 246
+          },
+          {
+            "sessionPeriod": 1,
+            "count": 232
+          }
+        ]
+      },
+      {
+        "term": 6,
+        "count": 1,
+        "max_meeting_date": null,
+        "max_meeting_date_human": "1970-01-01 00:00:00",
+        "meetdata_count": 0,
+        "議事錄_count": 1,
+        "sessionPeriod_count": [
+          {
+            "sessionPeriod": 1,
+            "count": 1
+          }
+        ]
+      }
+    ]
+  },
+  "ivod": {
+    "total": 99893,
+    "max_meeting_date": 1778720400000,
+    "max_meeting_date_human": "2026-05-14 01:00:00",
+    "min_meeting_date": 1110762000000,
+    "min_meeting_date_human": "2005-03-14 01:00:00",
+    "terms": [
+      {
+        "term": 11,
+        "count": 20868,
+        "max_meeting_date": 1778558400000,
+        "max_meeting_date_human": "2026-05-12 04:00:00",
+        "min_meeting_date": 1707116400000,
+        "min_meeting_date_human": "2024-02-05 07:00:00",
+        "sessionPeriod_count": [
+          {
+            "sessionPeriod": 5,
+            "count": 1788,
+            "max_meeting_date": 1778558400000,
+            "max_meeting_date_human": "2026-05-12 04:00:00",
+            "min_meeting_date": 1771898400000,
+            "min_meeting_date_human": "2026-02-24 02:00:00"
+          },
+          {
+            "sessionPeriod": 4,
+            "count": 3706,
+            "max_meeting_date": 1769740200000,
+            "max_meeting_date_human": "2026-01-30 02:30:00",
+            "min_meeting_date": 1757642400000,
+            "min_meeting_date_human": "2025-09-12 02:00:00"
+          },
+          {
+            "sessionPeriod": 3,
+            "count": 5106,
+            "max_meeting_date": 1756429200000,
+            "max_meeting_date_human": "2025-08-29 01:00:00",
+            "min_meeting_date": 1738823400000,
+            "min_meeting_date_human": "2025-02-06 06:30:00"
+          },
+          {
+            "sessionPeriod": 2,
+            "count": 4163,
+            "max_meeting_date": 1737388800000,
+            "max_meeting_date_human": "2025-01-20 16:00:00",
+            "min_meeting_date": 1726626600000,
+            "min_meeting_date_human": "2024-09-18 02:30:00"
+          },
+          {
+            "sessionPeriod": 1,
+            "count": 6091,
+            "max_meeting_date": 1723600800000,
+            "max_meeting_date_human": "2024-08-14 02:00:00",
+            "min_meeting_date": 1707116400000,
+            "min_meeting_date_human": "2024-02-05 07:00:00"
+          },
+          {
+            "sessionPeriod": 0,
+            "count": 13,
+            "max_meeting_date": 1768536600000,
+            "max_meeting_date_human": "2026-01-16 04:10:00",
+            "min_meeting_date": 1715919000000,
+            "min_meeting_date_human": "2024-05-17 04:10:00"
+          }
+        ]
+      },
+      {
+        "term": 10,
+        "count": 33852,
+        "max_meeting_date": 1704762000000,
+        "max_meeting_date_human": "2024-01-09 01:00:00",
+        "min_meeting_date": 1581660000000,
+        "min_meeting_date_human": "2020-02-14 06:00:00",
+        "sessionPeriod_count": [
+          {
+            "sessionPeriod": 8,
+            "count": 2371,
+            "max_meeting_date": 1704762000000,
+            "max_meeting_date_human": "2024-01-09 01:00:00",
+            "min_meeting_date": 1694590200000,
+            "min_meeting_date_human": "2023-09-13 07:30:00"
+          },
+          {
+            "sessionPeriod": 7,
+            "count": 3693,
+            "max_meeting_date": 1690765200000,
+            "max_meeting_date_human": "2023-07-31 01:00:00",
+            "min_meeting_date": 1675994400000,
+            "min_meeting_date_human": "2023-02-10 02:00:00"
+          },
+          {
+            "sessionPeriod": 6,
+            "count": 3619,
+            "max_meeting_date": 1674090000000,
+            "max_meeting_date_human": "2023-01-19 01:00:00",
+            "min_meeting_date": 1663293600000,
+            "min_meeting_date_human": "2022-09-16 02:00:00"
+          },
+          {
+            "sessionPeriod": 5,
+            "count": 4263,
+            "max_meeting_date": 1653958800000,
+            "max_meeting_date_human": "2022-05-31 01:00:00",
+            "min_meeting_date": 1645149600000,
+            "min_meeting_date_human": "2022-02-18 02:00:00"
+          },
+          {
+            "sessionPeriod": 4,
+            "count": 4834,
+            "max_meeting_date": 1643331600000,
+            "max_meeting_date_human": "2022-01-28 01:00:00",
+            "min_meeting_date": 1631239200000,
+            "min_meeting_date_human": "2021-09-10 02:00:00"
+          },
+          {
+            "sessionPeriod": 3,
+            "count": 4239,
+            "max_meeting_date": 1625536800000,
+            "max_meeting_date_human": "2021-07-06 02:00:00",
+            "min_meeting_date": 1613613600000,
+            "min_meeting_date_human": "2021-02-18 02:00:00"
+          },
+          {
+            "sessionPeriod": 2,
+            "count": 5564,
+            "max_meeting_date": 1611882000000,
+            "max_meeting_date_human": "2021-01-29 01:00:00",
+            "min_meeting_date": 1600048800000,
+            "min_meeting_date_human": "2020-09-14 02:00:00"
+          },
+          {
+            "sessionPeriod": 1,
+            "count": 5195,
+            "max_meeting_date": 1597802400000,
+            "max_meeting_date_human": "2020-08-19 02:00:00",
+            "min_meeting_date": 1581660000000,
+            "min_meeting_date_human": "2020-02-14 06:00:00"
+          },
+          {
+            "sessionPeriod": 0,
+            "count": 18,
+            "max_meeting_date": 1702613400000,
+            "max_meeting_date_human": "2023-12-15 04:10:00",
+            "min_meeting_date": 1587096600000,
+            "min_meeting_date_human": "2020-04-17 04:10:00"
+          }
+        ]
+      },
+      {
+        "term": 9,
+        "count": 34167,
+        "max_meeting_date": 1579482000000,
+        "max_meeting_date_human": "2020-01-20 01:00:00",
+        "min_meeting_date": 1455843600000,
+        "min_meeting_date_human": "2016-02-19 01:00:00",
+        "sessionPeriod_count": [
+          {
+            "sessionPeriod": 8,
+            "count": 2325,
+            "max_meeting_date": 1579482000000,
+            "max_meeting_date_human": "2020-01-20 01:00:00",
+            "min_meeting_date": 1567494000000,
+            "min_meeting_date_human": "2019-09-03 07:00:00"
+          },
+          {
+            "sessionPeriod": 7,
+            "count": 3957,
+            "max_meeting_date": 1562203800000,
+            "max_meeting_date_human": "2019-07-04 01:30:00",
+            "min_meeting_date": 1549944000000,
+            "min_meeting_date_human": "2019-02-12 04:00:00"
+          },
+          {
+            "sessionPeriod": 6,
+            "count": 3570,
+            "max_meeting_date": 1547701200000,
+            "max_meeting_date_human": "2019-01-17 05:00:00",
+            "min_meeting_date": 1536127200000,
+            "min_meeting_date_human": "2018-09-05 06:00:00"
+          },
+          {
+            "sessionPeriod": 5,
+            "count": 4130,
+            "max_meeting_date": 1530838800000,
+            "max_meeting_date_human": "2018-07-06 01:00:00",
+            "min_meeting_date": 1519608600000,
+            "min_meeting_date_human": "2018-02-26 01:30:00"
+          },
+          {
+            "sessionPeriod": 4,
+            "count": 4598,
+            "max_meeting_date": 1517274000000,
+            "max_meeting_date_human": "2018-01-30 01:00:00",
+            "min_meeting_date": 1505959200000,
+            "min_meeting_date_human": "2017-09-21 02:00:00"
+          },
+          {
+            "sessionPeriod": 3,
+            "count": 5256,
+            "max_meeting_date": 1504147200000,
+            "max_meeting_date_human": "2017-08-31 02:40:00",
+            "min_meeting_date": 1486947600000,
+            "min_meeting_date_human": "2017-02-13 01:00:00"
+          },
+          {
+            "sessionPeriod": 2,
+            "count": 3992,
+            "max_meeting_date": 1484787600000,
+            "max_meeting_date_human": "2017-01-19 01:00:00",
+            "min_meeting_date": 1473134400000,
+            "min_meeting_date_human": "2016-09-06 04:00:00"
+          },
+          {
+            "sessionPeriod": 1,
+            "count": 6324,
+            "max_meeting_date": 1472439600000,
+            "max_meeting_date_human": "2016-08-29 03:00:00",
+            "min_meeting_date": 1455843600000,
+            "min_meeting_date_human": "2016-02-19 01:00:00"
+          },
+          {
+            "sessionPeriod": 0,
+            "count": 15,
+            "max_meeting_date": 1573791000000,
+            "max_meeting_date_human": "2019-11-15 04:10:00",
+            "min_meeting_date": 1481861400000,
+            "min_meeting_date_human": "2016-12-16 04:10:00"
+          }
+        ]
+      },
+      {
+        "term": 8,
+        "count": 9608,
+        "max_meeting_date": 1450400400000,
+        "max_meeting_date_human": "2015-12-18 01:00:00",
+        "min_meeting_date": 1330045200000,
+        "min_meeting_date_human": "2012-02-24 01:00:00",
+        "sessionPeriod_count": [
+          {
+            "sessionPeriod": 8,
+            "count": 2508,
+            "max_meeting_date": 1450400400000,
+            "max_meeting_date_human": "2015-12-18 01:00:00",
+            "min_meeting_date": 1441684800000,
+            "min_meeting_date_human": "2015-09-08 04:00:00"
+          },
+          {
+            "sessionPeriod": 7,
+            "count": 3528,
+            "max_meeting_date": 1434416400000,
+            "max_meeting_date_human": "2015-06-16 01:00:00",
+            "min_meeting_date": 1422849600000,
+            "min_meeting_date_human": "2015-02-02 04:00:00"
+          },
+          {
+            "sessionPeriod": 6,
+            "count": 1802,
+            "max_meeting_date": 1421974800000,
+            "max_meeting_date_human": "2015-01-23 01:00:00",
+            "min_meeting_date": 1410235200000,
+            "min_meeting_date_human": "2014-09-09 04:00:00"
+          },
+          {
+            "sessionPeriod": 5,
+            "count": 265,
+            "max_meeting_date": 1407459600000,
+            "max_meeting_date_human": "2014-08-08 01:00:00",
+            "min_meeting_date": 1393808400000,
+            "min_meeting_date_human": "2014-03-03 01:00:00"
+          },
+          {
+            "sessionPeriod": 4,
+            "count": 349,
+            "max_meeting_date": 1389594600000,
+            "max_meeting_date_human": "2014-01-13 06:30:00",
+            "min_meeting_date": 1379379600000,
+            "min_meeting_date_human": "2013-09-17 01:00:00"
+          },
+          {
+            "sessionPeriod": 3,
+            "count": 256,
+            "max_meeting_date": 1372294800000,
+            "max_meeting_date_human": "2013-06-27 01:00:00",
+            "min_meeting_date": 1361840400000,
+            "min_meeting_date_human": "2013-02-26 01:00:00"
+          },
+          {
+            "sessionPeriod": 2,
+            "count": 315,
+            "max_meeting_date": 1357866000000,
+            "max_meeting_date_human": "2013-01-11 01:00:00",
+            "min_meeting_date": 1347930000000,
+            "min_meeting_date_human": "2012-09-18 01:00:00"
+          },
+          {
+            "sessionPeriod": 1,
+            "count": 268,
+            "max_meeting_date": 1343264400000,
+            "max_meeting_date_human": "2012-07-26 01:00:00",
+            "min_meeting_date": 1330045200000,
+            "min_meeting_date_human": "2012-02-24 01:00:00"
+          }
+        ]
+      },
+      {
+        "term": 7,
+        "count": 1364,
+        "max_meeting_date": 1323824400000,
+        "max_meeting_date_human": "2011-12-14 01:00:00",
+        "min_meeting_date": 1204246800000,
+        "min_meeting_date_human": "2008-02-29 01:00:00",
+        "sessionPeriod_count": [
+          {
+            "sessionPeriod": 8,
+            "count": 212,
+            "max_meeting_date": 1323824400000,
+            "max_meeting_date_human": "2011-12-14 01:00:00",
+            "min_meeting_date": 1316134800000,
+            "min_meeting_date_human": "2011-09-16 01:00:00"
+          },
+          {
+            "sessionPeriod": 7,
+            "count": 255,
+            "max_meeting_date": 1308013200000,
+            "max_meeting_date_human": "2011-06-14 01:00:00",
+            "min_meeting_date": 1298336400000,
+            "min_meeting_date_human": "2011-02-22 01:00:00"
+          },
+          {
+            "sessionPeriod": 6,
+            "count": 247,
+            "max_meeting_date": 1294794000000,
+            "max_meeting_date_human": "2011-01-12 01:00:00",
+            "min_meeting_date": 1285290000000,
+            "min_meeting_date_human": "2010-09-24 01:00:00"
+          },
+          {
+            "sessionPeriod": 5,
+            "count": 248,
+            "max_meeting_date": 1282179600000,
+            "max_meeting_date_human": "2010-08-19 01:00:00",
+            "min_meeting_date": 1266886800000,
+            "min_meeting_date_human": "2010-02-23 01:00:00"
+          },
+          {
+            "sessionPeriod": 4,
+            "count": 255,
+            "max_meeting_date": 1262912400000,
+            "max_meeting_date_human": "2010-01-08 01:00:00",
+            "min_meeting_date": 1253235600000,
+            "min_meeting_date_human": "2009-09-18 01:00:00"
+          },
+          {
+            "sessionPeriod": 3,
+            "count": 93,
+            "max_meeting_date": 1243904400000,
+            "max_meeting_date_human": "2009-06-02 01:00:00",
+            "min_meeting_date": 1235091600000,
+            "min_meeting_date_human": "2009-02-20 01:00:00"
+          },
+          {
+            "sessionPeriod": 2,
+            "count": 17,
+            "max_meeting_date": 1231722000000,
+            "max_meeting_date_human": "2009-01-12 01:00:00",
+            "min_meeting_date": 1222995600000,
+            "min_meeting_date_human": "2008-10-03 01:00:00"
+          },
+          {
+            "sessionPeriod": 1,
+            "count": 37,
+            "max_meeting_date": 1216256400000,
+            "max_meeting_date_human": "2008-07-17 01:00:00",
+            "min_meeting_date": 1204246800000,
+            "min_meeting_date_human": "2008-02-29 01:00:00"
+          }
+        ]
+      },
+      {
+        "term": 6,
+        "count": 34,
+        "max_meeting_date": 1197248400000,
+        "max_meeting_date_human": "2007-12-10 01:00:00",
+        "min_meeting_date": 1111539600000,
+        "min_meeting_date_human": "2005-03-23 01:00:00",
+        "sessionPeriod_count": [
+          {
+            "sessionPeriod": 6,
+            "count": 14,
+            "max_meeting_date": 1197248400000,
+            "max_meeting_date_human": "2007-12-10 01:00:00",
+            "min_meeting_date": 1191200400000,
+            "min_meeting_date_human": "2007-10-01 01:00:00"
+          },
+          {
+            "sessionPeriod": 5,
+            "count": 7,
+            "max_meeting_date": 1180573200000,
+            "max_meeting_date_human": "2007-05-31 01:00:00",
+            "min_meeting_date": 1172797200000,
+            "min_meeting_date_human": "2007-03-02 01:00:00"
+          },
+          {
+            "sessionPeriod": 4,
+            "count": 4,
+            "max_meeting_date": 1165798800000,
+            "max_meeting_date_human": "2006-12-11 01:00:00",
+            "min_meeting_date": 1161046800000,
+            "min_meeting_date_human": "2006-10-17 01:00:00"
+          },
+          {
+            "sessionPeriod": 3,
+            "count": 5,
+            "max_meeting_date": 1146013200000,
+            "max_meeting_date_human": "2006-04-26 01:00:00",
+            "min_meeting_date": 1142384400000,
+            "min_meeting_date_human": "2006-03-15 01:00:00"
+          },
+          {
+            "sessionPeriod": 1,
+            "count": 4,
+            "max_meeting_date": 1116810000000,
+            "max_meeting_date_human": "2005-05-23 01:00:00",
+            "min_meeting_date": 1111539600000,
+            "min_meeting_date_human": "2005-03-23 01:00:00"
+          }
+        ]
+      }
+    ]
+  }
+}

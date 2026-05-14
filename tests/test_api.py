@@ -2,6 +2,8 @@ import pytest
 
 from lymcp import api
 
+pytestmark = pytest.mark.live
+
 
 @pytest.mark.asyncio
 async def test_get_stat_request():

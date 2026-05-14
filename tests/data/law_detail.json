@@ -1,0 +1,53 @@
+{
+  "error": false,
+  "id": [
+    "09200015"
+  ],
+  "data": {
+    "法律編號": "09200015",
+    "類別": "子法",
+    "母法編號": "09200",
+    "名稱": "國際機場、港口聯合檢查協調中心設置辦法",
+    "其他名稱": [
+      "國際機場港口檢查協調中心設置辦法"
+    ],
+    "別名": [
+      "國際機場港口聯合檢查協調中心設置辦法"
+    ]
+  },
+  "supported_relations": {
+    "progress": {
+      "type": "_function",
+      "function": "getProgress",
+      "subject": "未議決進度"
+    },
+    "bills": {
+      "type": "bill",
+      "map": {
+        "法律編號": "法律編號"
+      },
+      "subject": "法律相關議案"
+    },
+    "versions": {
+      "type": "law_version",
+      "map": {
+        "法律編號": "法律編號"
+      },
+      "subject": "法律過往的版本紀錄"
+    }
+  },
+  "relations": [
+    {
+      "url": "https://v2.ly.govapi.tw/law/09200015/progress",
+      "name": "progress"
+    },
+    {
+      "url": "https://v2.ly.govapi.tw/law/09200015/bills",
+      "name": "bills"
+    },
+    {
+      "url": "https://v2.ly.govapi.tw/law/09200015/versions",
+      "name": "versions"
+    }
+  ]
+}

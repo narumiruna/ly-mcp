@@ -4,6 +4,8 @@ from mcp import StdioServerParameters
 from mcp import stdio_client
 from mcp.types import TextContent
 
+pytestmark = pytest.mark.live
+
 
 @pytest.fixture
 def server_params() -> StdioServerParameters:
@@ -55,6 +57,7 @@ async def test_list_tools(server_params: StdioServerParameters) -> None:
         for tool_name in expected_bills_tools:
             assert tool_name in tool_names
 
+
 @pytest.mark.asyncio
 async def test_get_stat(server_params: StdioServerParameters) -> None:
     async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
@@ -69,6 +72,7 @@ async def test_get_stat(server_params: StdioServerParameters) -> None:
         # Check response is string
         response_text = result.content[0].text
         assert isinstance(response_text, str)
+
 
 @pytest.mark.asyncio
 async def test_list_bills(server_params: StdioServerParameters) -> None:
@@ -115,6 +119,7 @@ async def test_list_bills_json(server_params: StdioServerParameters) -> None:
 
         response_text = result.content[0].text
         assert isinstance(response_text, str)
+
 
 @pytest.mark.asyncio
 async def test_get_bill_detail_error_handling(server_params: StdioServerParameters) -> None:
@@ -564,6 +569,7 @@ async def test_get_law_content(server_params: StdioServerParameters) -> None:
 
 
 # === Legislators API Tests ===
+
 
 @pytest.mark.asyncio
 async def test_list_legislators(server_params: StdioServerParameters) -> None:

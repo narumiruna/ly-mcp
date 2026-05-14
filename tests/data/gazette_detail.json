@@ -1,0 +1,28 @@
+{
+  "error": false,
+  "id": [
+    "1137701"
+  ],
+  "data": {
+    "卷": 113,
+    "期": 77,
+    "冊別": 1,
+    "發布日期": "2024-10-21",
+    "公報編號": "1137701"
+  },
+  "supported_relations": {
+    "agendas": {
+      "type": "gazette_agenda",
+      "map": {
+        "公報編號": "公報編號"
+      },
+      "subject": "公報所含的公報目錄"
+    }
+  },
+  "relations": [
+    {
+      "url": "https://v2.ly.govapi.tw/gazette/1137701/agendas",
+      "name": "agendas"
+    }
+  ]
+}

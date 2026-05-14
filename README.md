@@ -2,7 +2,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/lymcp)](https://pypi.org/project/lymcp/)
 [![Python](https://img.shields.io/pypi/pyversions/lymcp)](https://pypi.org/project/lymcp/)
-[![CI](https://github.com/narumiruna/ly-mcp/actions/workflows/python.yml/badge.svg)](https://github.com/narumiruna/ly-mcp/actions/workflows/python.yml)
+[![CI](https://github.com/narumiruna/ly-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/narumiruna/ly-mcp/actions/workflows/ci.yml)
 [![Docker](https://github.com/narumiruna/ly-mcp/actions/workflows/docker.yml/badge.svg)](https://github.com/narumiruna/ly-mcp/actions/workflows/docker.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -193,12 +193,19 @@ just dev
 ### Running Tests
 
 ```bash
-# Run full test suite with coverage
+# Run the default offline test suite with coverage
 just test
 
-# Run tests with verbose output
+# Run the default offline test suite directly
 uv run pytest -v -s
+
+# Run live tests against the Legislative Yuan API manually
+just test-live
 ```
+
+The default pytest configuration excludes tests marked `live`, so CI and normal
+local runs use fixture-backed samples from `tests/data`. Refresh those JSON
+samples intentionally when the live API shape changes.
 
 ### Code Quality
 
