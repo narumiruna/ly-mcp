@@ -3,3 +3,15 @@ command = "uv"
 args    = ["run", "lymcp"]
 cwd     = "."
 enabled = true
+
+[mcp_servers.lymcp.tools.get_stat]
+approval_mode = "approve"
+
+[mcp_servers.lymcp.tools.list_legislators]
+approval_mode = "approve"
+
+[mcp_servers.lymcp.tools.list_bills]
+approval_mode = "approve"
+
+[mcp_servers.lymcp.tools.get_bill]
+approval_mode = "approve"
