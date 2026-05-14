@@ -9,6 +9,15 @@ from tests.fixtures import load_json_fixture
 SAMPLE_RESPONSE = {"ok": True}
 
 
+LIST_CONTRACT_CASES = [
+    ("list_bills", "ListBillRequest", "bills_list.json", "bills"),
+    ("list_gazettes", "ListGazettesRequest", "gazettes_list.json", "gazettes"),
+    ("list_laws", "ListLawsRequest", "laws_list.json", "laws"),
+    ("list_legislators", "ListLegislatorsRequest", "legislators_list.json", "legislators"),
+    ("list_meets", "ListMeetsRequest", "meets_list.json", "meets"),
+]
+
+
 class StubRequest:
     def __init__(self, response: dict[str, Any]) -> None:
         self.response = response
@@ -89,6 +98,34 @@ async def test_get_bill_returns_fixture_json(monkeypatch: pytest.MonkeyPatch) ->
 
     assert json.loads(response_text) == expected_response
     assert calls == [{"bill_no": "202110213410000"}]
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(("tool_name", "request_class_name", "fixture_name", "collection_key"), LIST_CONTRACT_CASES)
+async def test_list_tool_returns_collection_contract(
+    monkeypatch: pytest.MonkeyPatch,
+    tool_name: str,
+    request_class_name: str,
+    fixture_name: str,
+    collection_key: str,
+) -> None:
+    expected_response = load_json_fixture(fixture_name)
+
+    monkeypatch.setattr(server, request_class_name, lambda **_: StubRequest(expected_response))
+
+    response_text = await getattr(server, tool_name)(limit=1)
+    response = json.loads(response_text)
+
+    assert isinstance(response["total"], int)
+    assert isinstance(response["total_page"], int)
+    assert response["page"] == 1
+    assert response["limit"] == 1
+    assert isinstance(response["filter"], dict)
+    assert isinstance(response["id_fields"], list)
+    assert isinstance(response[collection_key], list)
+    assert response[collection_key]
+    assert isinstance(response["supported_filter_fields"], list)
+    assert response["supported_filter_fields"]
 
 
 @pytest.mark.asyncio
