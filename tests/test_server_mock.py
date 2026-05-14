@@ -19,6 +19,94 @@ LIST_CONTRACT_CASES = [
 ]
 
 
+DETAIL_ERROR_CASES = [
+    (
+        "get_bill",
+        "GetBillRequest",
+        {"bill_no": "invalid_bill_number"},
+        f"{api.BASE_URL}/bills/invalid_bill_number",
+    ),
+    (
+        "get_law_version",
+        "GetLawVersionRequest",
+        {"law_version_id": "invalid_law_version"},
+        f"{api.BASE_URL}/law_versions/invalid_law_version",
+    ),
+]
+
+
+TOOL_RESPONSE_CASES = [
+    ("get_bill_related_bills", "GetBillRelatedBillsRequest", {"bill_no": "202110213410000", "limit": 1}),
+    ("get_bill_meets", "GetBillMeetsRequest", {"bill_no": "202110213410000", "term": 11, "limit": 1}),
+    ("get_bill_doc_html", "GetBillDocHtmlRequest", {"bill_no": "202110213410000"}),
+    ("list_committees", "ListCommitteesRequest", {"limit": 1}),
+    ("get_committee", "GetCommitteeRequest", {"comt_cd": "16"}),
+    ("get_committee_meets", "GetCommitteeMeetsRequest", {"comt_cd": "16", "term": 11, "limit": 1}),
+    ("list_gazettes", "ListGazettesRequest", {"limit": 1}),
+    ("get_gazette", "GetGazetteRequest", {"gazette_id": "1137701"}),
+    ("get_gazette_agendas", "GetGazetteAgendasRequest", {"gazette_id": "1137701", "term": 11, "limit": 1}),
+    ("list_gazette_agendas", "ListGazetteAgendasRequest", {"term": 11, "limit": 1}),
+    ("get_gazette_agenda", "GetGazetteAgendaRequest", {"gazette_agenda_id": "1137701_00001"}),
+    ("list_interpellations", "ListInterpellationsRequest", {"interpellation_member": "羅智強", "limit": 1}),
+    ("get_interpellation", "GetInterpellationRequest", {"interpellation_id": "11-1-1-1"}),
+    (
+        "get_legislator_interpellations",
+        "GetLegislatorInterpellationsRequest",
+        {"term": 11, "name": "韓國瑜", "limit": 1},
+    ),
+    ("list_ivods", "ListIvodsRequest", {"term": 11, "video_type": "Clip", "limit": 1}),
+    ("get_ivod", "GetIvodRequest", {"ivod_id": "156045"}),
+    ("get_meet_ivods", "GetMeetIvodsRequest", {"meet_id": "院會-11-2-3", "term": 11, "limit": 1}),
+    ("list_laws", "ListLawsRequest", {"limit": 1}),
+    ("get_law", "GetLawRequest", {"law_id": "09200015"}),
+    ("get_law_progress", "GetLawProgressRequest", {"law_id": "09200015"}),
+    ("get_law_bills", "GetLawBillsRequest", {"law_id": "09200015", "term": 11, "limit": 1}),
+    ("get_law_versions", "GetLawVersionsRequest", {"law_id": "09200015", "limit": 1}),
+    ("list_law_versions", "ListLawVersionsRequest", {"law_number": "90481", "limit": 1}),
+    ("get_law_version", "GetLawVersionRequest", {"law_version_id": "90481:1944-02-29-制定"}),
+    (
+        "get_law_version_contents",
+        "GetLawVersionContentsRequest",
+        {"law_version_id": "90481:1944-02-29-制定", "law_number": "90481", "limit": 1},
+    ),
+    ("list_law_contents", "ListLawContentsRequest", {"law_number": "90481", "limit": 1}),
+    ("get_law_content", "GetLawContentRequest", {"law_content_id": "90481:90481:1944-02-29-制定:0"}),
+    ("list_legislators", "ListLegislatorsRequest", {"term": 11, "limit": 1}),
+    ("get_legislator", "GetLegislatorRequest", {"term": 11, "name": "韓國瑜"}),
+    (
+        "get_legislator_propose_bills",
+        "GetLegislatorProposeBillsRequest",
+        {"term": 11, "name": "韓國瑜", "limit": 1},
+    ),
+    (
+        "get_legislator_cosign_bills",
+        "GetLegislatorCosignBillsRequest",
+        {"term": 11, "name": "韓國瑜", "limit": 1},
+    ),
+    (
+        "get_legislator_meets",
+        "GetLegislatorMeetsRequest",
+        {"term": 11, "name": "韓國瑜", "limit": 1},
+    ),
+    ("list_meets", "ListMeetsRequest", {"term": 11, "limit": 1}),
+    ("get_meet", "GetMeetRequest", {"meet_id": "院會-11-2-3"}),
+    ("get_meet_bills", "GetMeetBillsRequest", {"meet_id": "院會-11-2-3", "term": 11, "limit": 1}),
+    (
+        "get_meet_interpellations",
+        "GetMeetInterpellationsRequest",
+        {"meet_id": "院會-11-2-3", "term": 11, "limit": 1},
+    ),
+]
+
+
+OFFLINE_MOCK_TOOL_NAMES = (
+    {"get_stat", "list_bills", "get_bill"}
+    | {tool_name for tool_name, *_ in LIST_CONTRACT_CASES}
+    | {tool_name for tool_name, *_ in DETAIL_ERROR_CASES}
+    | {tool_name for tool_name, *_ in TOOL_RESPONSE_CASES}
+)
+
+
 EXPECTED_PROMPTS = {
     "latest_plenary_meeting_bills",
     "law_amendment_history",
@@ -34,6 +122,13 @@ class StubRequest:
 
     async def do(self) -> dict[str, Any]:
         return self.response
+
+
+@pytest.mark.asyncio
+async def test_registered_tools_have_offline_mock_coverage() -> None:
+    tools = await server.mcp.list_tools()
+
+    assert {tool.name for tool in tools} == OFFLINE_MOCK_TOOL_NAMES
 
 
 @pytest.mark.asyncio
@@ -140,23 +235,7 @@ async def test_get_bill_returns_fixture_json(monkeypatch: pytest.MonkeyPatch) ->
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(
-    ("tool_name", "request_class_name", "call_kwargs", "url"),
-    [
-        (
-            "get_bill",
-            "GetBillRequest",
-            {"bill_no": "invalid_bill_number"},
-            f"{api.BASE_URL}/bills/invalid_bill_number",
-        ),
-        (
-            "get_law_version",
-            "GetLawVersionRequest",
-            {"law_version_id": "invalid_law_version"},
-            f"{api.BASE_URL}/law_versions/invalid_law_version",
-        ),
-    ],
-)
+@pytest.mark.parametrize(("tool_name", "request_class_name", "call_kwargs", "url"), DETAIL_ERROR_CASES)
 async def test_detail_tool_returns_structured_http_status_error(
     monkeypatch: pytest.MonkeyPatch,
     tool_name: str,
@@ -221,71 +300,7 @@ async def test_list_tool_returns_collection_contract(
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(
-    ("tool_name", "request_class_name", "call_kwargs"),
-    [
-        ("get_bill_related_bills", "GetBillRelatedBillsRequest", {"bill_no": "202110213410000", "limit": 1}),
-        ("get_bill_meets", "GetBillMeetsRequest", {"bill_no": "202110213410000", "term": 11, "limit": 1}),
-        ("get_bill_doc_html", "GetBillDocHtmlRequest", {"bill_no": "202110213410000"}),
-        ("list_committees", "ListCommitteesRequest", {"limit": 1}),
-        ("get_committee", "GetCommitteeRequest", {"comt_cd": "16"}),
-        ("get_committee_meets", "GetCommitteeMeetsRequest", {"comt_cd": "16", "term": 11, "limit": 1}),
-        ("list_gazettes", "ListGazettesRequest", {"limit": 1}),
-        ("get_gazette", "GetGazetteRequest", {"gazette_id": "1137701"}),
-        ("get_gazette_agendas", "GetGazetteAgendasRequest", {"gazette_id": "1137701", "term": 11, "limit": 1}),
-        ("list_gazette_agendas", "ListGazetteAgendasRequest", {"term": 11, "limit": 1}),
-        ("get_gazette_agenda", "GetGazetteAgendaRequest", {"gazette_agenda_id": "1137701_00001"}),
-        ("list_interpellations", "ListInterpellationsRequest", {"interpellation_member": "羅智強", "limit": 1}),
-        ("get_interpellation", "GetInterpellationRequest", {"interpellation_id": "11-1-1-1"}),
-        (
-            "get_legislator_interpellations",
-            "GetLegislatorInterpellationsRequest",
-            {"term": 11, "name": "韓國瑜", "limit": 1},
-        ),
-        ("list_ivods", "ListIvodsRequest", {"term": 11, "video_type": "Clip", "limit": 1}),
-        ("get_ivod", "GetIvodRequest", {"ivod_id": "156045"}),
-        ("get_meet_ivods", "GetMeetIvodsRequest", {"meet_id": "院會-11-2-3", "term": 11, "limit": 1}),
-        ("list_laws", "ListLawsRequest", {"limit": 1}),
-        ("get_law", "GetLawRequest", {"law_id": "09200015"}),
-        ("get_law_progress", "GetLawProgressRequest", {"law_id": "09200015"}),
-        ("get_law_bills", "GetLawBillsRequest", {"law_id": "09200015", "term": 11, "limit": 1}),
-        ("get_law_versions", "GetLawVersionsRequest", {"law_id": "09200015", "limit": 1}),
-        ("list_law_versions", "ListLawVersionsRequest", {"law_number": "90481", "limit": 1}),
-        ("get_law_version", "GetLawVersionRequest", {"law_version_id": "90481:1944-02-29-制定"}),
-        (
-            "get_law_version_contents",
-            "GetLawVersionContentsRequest",
-            {"law_version_id": "90481:1944-02-29-制定", "law_number": "90481", "limit": 1},
-        ),
-        ("list_law_contents", "ListLawContentsRequest", {"law_number": "90481", "limit": 1}),
-        ("get_law_content", "GetLawContentRequest", {"law_content_id": "90481:90481:1944-02-29-制定:0"}),
-        ("list_legislators", "ListLegislatorsRequest", {"term": 11, "limit": 1}),
-        ("get_legislator", "GetLegislatorRequest", {"term": 11, "name": "韓國瑜"}),
-        (
-            "get_legislator_propose_bills",
-            "GetLegislatorProposeBillsRequest",
-            {"term": 11, "name": "韓國瑜", "limit": 1},
-        ),
-        (
-            "get_legislator_cosign_bills",
-            "GetLegislatorCosignBillsRequest",
-            {"term": 11, "name": "韓國瑜", "limit": 1},
-        ),
-        (
-            "get_legislator_meets",
-            "GetLegislatorMeetsRequest",
-            {"term": 11, "name": "韓國瑜", "limit": 1},
-        ),
-        ("list_meets", "ListMeetsRequest", {"term": 11, "limit": 1}),
-        ("get_meet", "GetMeetRequest", {"meet_id": "院會-11-2-3"}),
-        ("get_meet_bills", "GetMeetBillsRequest", {"meet_id": "院會-11-2-3", "term": 11, "limit": 1}),
-        (
-            "get_meet_interpellations",
-            "GetMeetInterpellationsRequest",
-            {"meet_id": "院會-11-2-3", "term": 11, "limit": 1},
-        ),
-    ],
-)
+@pytest.mark.parametrize(("tool_name", "request_class_name", "call_kwargs"), TOOL_RESPONSE_CASES)
 async def test_tool_returns_request_response(
     monkeypatch: pytest.MonkeyPatch,
     tool_name: str,

@@ -2,13 +2,18 @@
 
 Improve response and error semantics so MCP clients and tests can distinguish successful data, empty results, invalid parameters, upstream HTTP failures, timeouts, and non-JSON responses. Success means tool failures are returned in a consistent, machine-checkable shape instead of arbitrary plain strings.
 
+## Status
+
+Completed. Successful tool output remains the raw upstream payload, while
+failures now return a consistent JSON error envelope.
+
 ## Context
 
-The current API helper calls `resp.raise_for_status()` and `resp.json()` directly. Server tools catch all exceptions and return strings like `Failed to list bills, got: ...`. This keeps the MCP server from crashing, but it makes errors hard for clients, tests, and users to interpret.
+At planning time, the API helper called `resp.raise_for_status()` and `resp.json()` directly. Server tools caught all exceptions and returned strings like `Failed to list bills, got: ...`. That kept the MCP server from crashing, but it made errors hard for clients, tests, and users to interpret.
 
 ## Architecture
 
-Keep `httpx` and the current request model layer. Introduce a small local response/error helper rather than a new dependency:
+Keep `httpx` and the request model layer. Introduce a small local response/error helper rather than a new dependency:
 
 - API layer normalizes upstream HTTP and JSON failures.
 - Server layer serializes a consistent success or error envelope.

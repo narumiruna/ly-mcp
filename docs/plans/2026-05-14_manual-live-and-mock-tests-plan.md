@@ -2,9 +2,15 @@
 
 Move live Legislative Yuan API tests out of the default CI path and add offline mock tests backed by checked-in JSON samples under `tests/data`. Success means pull requests can run lint, type check, and deterministic mock tests without network dependency, while default pytest runs skip `live` tests unless `-m live` is specified.
 
+## Status
+
+Completed. CI and normal local tests use offline fixture-backed tests, while
+live tests remain available through `just test-live` and the manual live-test
+workflow.
+
 ## Context
 
-The current `CI` workflow runs `uv run pytest -v -s --cov=src --cov-report=xml tests` on `push`, `pull_request`, and `workflow_dispatch`. Before this migration, the existing API and MCP server tests called the real `https://ly.govapi.tw/v2` service during normal test runs, which made CI depend on external data shape, network availability, and API latency.
+At planning time, the `CI` workflow ran `uv run pytest -v -s --cov=src --cov-report=xml tests` on `push`, `pull_request`, and `workflow_dispatch`. Before this migration, the API and MCP server tests called the real `https://ly.govapi.tw/v2` service during normal test runs, which made CI depend on external data shape, network availability, and API latency.
 
 ## Non-Goals
 

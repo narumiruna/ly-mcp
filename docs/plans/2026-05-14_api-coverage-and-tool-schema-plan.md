@@ -2,19 +2,24 @@
 
 Bring the MCP tool surface into alignment with `swagger.yaml` and make query parameters easier to discover and use. Success means every Legislative Yuan API v2 endpoint in `swagger.yaml` has an intentional MCP representation, and supported filters are either exposed as tool parameters or explicitly documented as intentionally raw.
 
+## Status
+
+Completed. The server now exposes 39 MCP tools for the 39 endpoints listed in
+`swagger.yaml`, including the top-level Law Version API.
+
 ## Context
 
-The current server exposes 36 MCP tools, while `swagger.yaml` lists 39 endpoints. The missing endpoint group is the top-level Law Version API:
+At planning time, the server exposed 36 MCP tools while `swagger.yaml` listed 39 endpoints. The missing endpoint group was the top-level Law Version API:
 
 - `/law_versions`
 - `/law_versions/{id}`
 - `/law_versions/{id}/contents`
 
-Live `list_bills` responses also report `supported_filter_fields` that are not all represented in the MCP tool schema, such as `提案單位/提案委員`.
+Live `list_bills` responses also reported `supported_filter_fields` that were not all represented in the MCP tool schema, such as `提案單位/提案委員`.
 
 ## Architecture
 
-The current code has a direct two-layer wrapper:
+The code keeps a direct two-layer wrapper:
 
 - `src/lymcp/api.py` defines Pydantic request models and API calls.
 - `src/lymcp/server.py` exposes FastMCP tools that construct request models and JSON-dump responses.

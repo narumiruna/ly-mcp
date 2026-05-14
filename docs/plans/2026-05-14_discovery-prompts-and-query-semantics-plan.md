@@ -2,6 +2,12 @@
 
 Improve MCP usability for common Legislative Yuan research tasks by adding discoverable guidance, reusable prompts/resources, and bounded query semantics for "latest", "scheduled", "occurred", law histories, and legislator activity. Success means users can ask common questions with less trial-and-error and get results whose date semantics are explicit.
 
+## Status
+
+Completed. The server now exposes workflow prompts plus `lymcp://query-semantics`
+and `lymcp://workflow-reference` resources for date semantics and tool
+selection guidance.
+
 ## Context
 
 Live MCP checks showed that default sorted results can include future scheduled bills and meetings. On 2026-05-14, `list_bills(term=11)` returned bills with proposal dates after the current date, and `list_meets(term=11)` returned meetings scheduled for future dates. This is valid source data, but natural-language prompts like "最近一次院會" need a clear distinction between latest known record, latest occurred meeting, and next scheduled meeting.
