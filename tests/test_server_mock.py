@@ -40,7 +40,12 @@ async def test_list_bills_returns_fixture_json(monkeypatch: pytest.MonkeyPatch) 
 
     monkeypatch.setattr(server, "ListBillRequest", StubListBillRequest)
 
-    response_text = await server.list_bills(term=11, bill_type="法律案", limit=1)
+    response_text = await server.list_bills(
+        term=11,
+        bill_type="法律案",
+        proposal_unit_or_member="王世堅",
+        limit=1,
+    )
 
     assert json.loads(response_text) == expected_response
     assert calls == [
@@ -60,6 +65,7 @@ async def test_list_bills_returns_fixture_json(monkeypatch: pytest.MonkeyPatch) 
             "reference_number": None,
             "article_number": None,
             "proposal_date": None,
+            "proposal_unit_or_member": "王世堅",
             "page": 1,
             "limit": 1,
             "output_fields": [],
@@ -115,6 +121,13 @@ async def test_get_bill_returns_fixture_json(monkeypatch: pytest.MonkeyPatch) ->
         ("get_law_progress", "GetLawProgressRequest", {"law_id": "09200015"}),
         ("get_law_bills", "GetLawBillsRequest", {"law_id": "09200015", "term": 11, "limit": 1}),
         ("get_law_versions", "GetLawVersionsRequest", {"law_id": "09200015", "limit": 1}),
+        ("list_law_versions", "ListLawVersionsRequest", {"law_number": "90481", "limit": 1}),
+        ("get_law_version", "GetLawVersionRequest", {"law_version_id": "90481:1944-02-29-制定"}),
+        (
+            "get_law_version_contents",
+            "GetLawVersionContentsRequest",
+            {"law_version_id": "90481:1944-02-29-制定", "law_number": "90481", "limit": 1},
+        ),
         ("list_law_contents", "ListLawContentsRequest", {"law_number": "90481", "limit": 1}),
         ("get_law_content", "GetLawContentRequest", {"law_content_id": "90481:90481:1944-02-29-制定:0"}),
         ("list_legislators", "ListLegislatorsRequest", {"term": 11, "limit": 1}),

@@ -21,10 +21,22 @@ SAMPLE_RESPONSE = {"ok": True}
             None,
         ),
         (
-            lambda: api.ListBillRequest(term=11, bill_type="法律案", limit=1),
+            lambda: api.ListBillRequest(
+                term=11,
+                bill_type="法律案",
+                proposal_unit_or_member="王世堅",
+                limit=1,
+            ),
             "bills_list.json",
             f"{api.BASE_URL}/bills",
-            {"屆": 11, "議案類別": "法律案", "page": 1, "limit": 1, "output_fields": []},
+            {
+                "屆": 11,
+                "議案類別": "法律案",
+                "提案單位/提案委員": "王世堅",
+                "page": 1,
+                "limit": 1,
+                "output_fields": [],
+            },
         ),
         (
             lambda: api.GetBillRequest(bill_no="202110213410000"),
@@ -201,6 +213,25 @@ async def test_request_uses_expected_endpoint_and_returns_fixture(
             lambda: api.GetLawVersionsRequest(law_id="09200015", limit=1),
             f"{api.BASE_URL}/laws/09200015/versions",
             {"page": 1, "limit": 1, "output_fields": []},
+        ),
+        (
+            lambda: api.ListLawVersionsRequest(law_number="90481", current_version="非現行", limit=1),
+            f"{api.BASE_URL}/law_versions",
+            {"法律編號": "90481", "現行版本": "非現行", "page": 1, "limit": 1, "output_fields": []},
+        ),
+        (
+            lambda: api.GetLawVersionRequest(law_version_id="90481:1944-02-29-制定"),
+            f"{api.BASE_URL}/law_versions/90481:1944-02-29-制定",
+            None,
+        ),
+        (
+            lambda: api.GetLawVersionContentsRequest(
+                law_version_id="90481:1944-02-29-制定",
+                law_number="90481",
+                limit=1,
+            ),
+            f"{api.BASE_URL}/law_versions/90481:1944-02-29-制定/contents",
+            {"法律編號": "90481", "page": 1, "limit": 1, "output_fields": []},
         ),
         (
             lambda: api.ListLawContentsRequest(law_number="90481", limit=1),

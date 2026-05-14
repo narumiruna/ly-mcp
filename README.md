@@ -10,7 +10,7 @@ A Model Context Protocol (MCP) server for Taiwan's Legislative Yuan API v2, prov
 
 ## Features
 
-This MCP server provides 36 tools across 9 categories:
+This MCP server provides 39 tools across 9 categories:
 
 ### Statistics
 - **get_stat**: Get Legislative Yuan API statistics and overview information
@@ -50,6 +50,9 @@ This MCP server provides 36 tools across 9 categories:
 - **get_law_progress**: Get undecided progress list for specific laws
 - **get_law_bills**: Get bills related to specific laws with optional filters
 - **get_law_versions**: Get historical version records for specific laws including changes, proposers, and progress
+- **list_law_versions**: List law versions across laws with optional filters by law number, version number, date, action, progress, and current version status
+- **get_law_version**: Get detailed information about a specific law version by version ID
+- **get_law_version_contents**: Get law article contents included in a specific law version
 - **list_law_contents**: List law articles/contents with optional filters by law number, version ID, article number, current version status, and version tracking
 - **get_law_content**: Get detailed information about specific law articles/contents using law content ID
 

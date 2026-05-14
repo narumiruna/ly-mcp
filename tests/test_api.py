@@ -322,6 +322,31 @@ async def test_get_law_versions_request():
 
 
 @pytest.mark.asyncio
+async def test_list_law_versions_request():
+    req = api.ListLawVersionsRequest(law_number="90481", limit=1)
+    resp = await req.do()
+    assert "lawversions" in resp
+    assert isinstance(resp["lawversions"], list)
+    assert "supported_filter_fields" in resp
+
+
+@pytest.mark.asyncio
+async def test_get_law_version_request():
+    req = api.GetLawVersionRequest(law_version_id="90481:1944-02-29-制定")
+    resp = await req.do()
+    assert resp is not None
+    assert isinstance(resp, dict)
+
+
+@pytest.mark.asyncio
+async def test_get_law_version_contents_request():
+    req = api.GetLawVersionContentsRequest(law_version_id="90481:1944-02-29-制定", limit=1)
+    resp = await req.do()
+    assert "lawcontents" in resp
+    assert isinstance(resp["lawcontents"], list)
+
+
+@pytest.mark.asyncio
 async def test_get_law_request_with_real_data():
     # 先查詢法律列表，取得真實的法律編號
     search = api.ListLawsRequest(limit=1)
