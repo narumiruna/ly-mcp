@@ -417,6 +417,7 @@ dependencies = [
     { name = "httpx" },
     { name = "loguru" },
     { name = "mcp", extra = ["cli"] },
+    { name = "typer" },
 ]
 
 [package.dev-dependencies]
@@ -433,6 +434,7 @@ requires-dist = [
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "loguru", specifier = ">=0.7.3" },
     { name = "mcp", extras = ["cli"], specifier = ">=1.27.1" },
+    { name = "typer", specifier = ">=0.25.1" },
 ]
 
 [package.metadata.requires-dev]

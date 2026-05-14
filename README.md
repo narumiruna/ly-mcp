@@ -183,6 +183,42 @@ uvx lymcp@latest
 }
 ```
 
+### 💻 Terminal CLI
+
+套件也提供 `ly` 指令，讓 agents 或 shell workflow 可以直接從 terminal 查詢立法院 API。CLI 預設輸出 pretty JSON，失敗時會輸出和 MCP tools 相同的 JSON error envelope 並回傳非 0 exit code。
+
+```bash
+ly --help
+ly stat
+ly bills list --term 11 --bill-type 法律案 --limit 5
+ly bills get 202110213410000
+ly laws versions 09200015 --limit 5
+ly meets bills 院會-11-2-3 --term 11 --limit 5
+ly legislators propose-bills 11 韓國瑜 --limit 5
+```
+
+給 agents 使用時，建議用資料領域選 command group：
+
+- `ly bills ...` 查議案、關聯議案、審議會議與議案本文 HTML。
+- `ly laws ...`、`ly law-versions ...`、`ly law-contents ...` 查法律、修法版本與法條內容。
+- `ly meets ...` 查會議、會議中的議案、質詢與 IVOD。
+- `ly legislators ...` 查立法委員、提案、連署、出席會議與質詢。
+- `ly gazettes ...`、`ly gazette-agendas ...` 查公報與公報目錄。
+- `ly committees ...`、`ly interpellations ...`、`ly ivods ...` 查委員會、質詢與網路電視資料。
+
+常用輸出選項：
+
+```bash
+# 單行 JSON，方便 pipe 給其他工具
+ly --compact bills list --term 11 --limit 1
+
+# 將成功結果寫入檔案
+ly --output bills.json bills list --term 11 --limit 20
+
+# 傳遞上游 output_fields
+ly bills list --term 11 --fields 議案編號,案由,提案日期
+```
+
 ## 💬 範例提示
 
 連上 MCP 伺服器後，可以向 LLM 提出這類問題：
