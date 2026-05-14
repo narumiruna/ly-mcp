@@ -15,6 +15,7 @@ async def test_get_stat_request():
     assert isinstance(resp["bill"], dict)
     assert len(resp["bill"]) > 0
 
+
 @pytest.mark.asyncio
 async def test_search_bill_request_real():
     req = api.ListBillRequest(term=11, bill_type="法律案", limit=1)
@@ -93,7 +94,7 @@ async def test_get_committee_request_real():
     # 取第一個委員會代號
     comt_cd = None
     for k in ("committees", "data", "results"):
-        if k in search_resp and search_resp[k]:
+        if search_resp.get(k):
             comt_cd = search_resp[k][0].get("委員會代號") or search_resp[k][0].get("comtCd")
             if comt_cd is not None:
                 comt_cd = str(comt_cd)
@@ -114,7 +115,7 @@ async def test_committee_meets_request_real():
     search_resp = await search.do()
     comt_cd = None
     for k in ("committees", "data", "results"):
-        if k in search_resp and search_resp[k]:
+        if search_resp.get(k):
             comt_cd = search_resp[k][0].get("委員會代號") or search_resp[k][0].get("comtCd")
             if comt_cd is not None:
                 comt_cd = str(comt_cd)
@@ -141,7 +142,7 @@ async def test_get_gazette_request():
     search_resp = await search.do()
     gazette_id = None
     for k in ("gazettes", "data", "results"):
-        if k in search_resp and search_resp[k]:
+        if search_resp.get(k):
             gazette_id = search_resp[k][0].get("公報編號") or search_resp[k][0].get("gazetteId")
             if gazette_id is not None:
                 gazette_id = str(gazette_id)
@@ -326,7 +327,7 @@ async def test_get_law_request_with_real_data():
 
     law_id = None
     for k in ("laws", "data", "results"):
-        if k in search_resp and search_resp[k]:
+        if search_resp.get(k):
             law_id = search_resp[k][0].get("法律編號") or search_resp[k][0].get("lawId")
             if law_id is not None:
                 law_id = str(law_id)
@@ -357,11 +358,7 @@ async def test_list_law_contents_request():
 
 @pytest.mark.asyncio
 async def test_list_law_contents_with_filters_request():
-    req = api.ListLawContentsRequest(
-        law_number="90481",
-        current_version_status="現行",
-        limit=3
-    )
+    req = api.ListLawContentsRequest(law_number="90481", current_version_status="現行", limit=3)
     resp = await req.do()
     # 檢查回應中有資料
     assert "lawcontents" in resp
@@ -383,6 +380,7 @@ async def test_get_law_content_request():
 
 # === Legislators API Tests ===
 
+
 @pytest.mark.asyncio
 async def test_list_legislators_request():
     req = api.ListLegislatorsRequest(limit=5)
@@ -399,11 +397,7 @@ async def test_list_legislators_request():
 
 @pytest.mark.asyncio
 async def test_list_legislators_with_filters_request():
-    req = api.ListLegislatorsRequest(
-        term=11,
-        party="民主進步黨",
-        limit=3
-    )
+    req = api.ListLegislatorsRequest(term=11, party="民主進步黨", limit=3)
     resp = await req.do()
     # 檢查回應中有資料
     assert "legislators" in resp
@@ -428,11 +422,7 @@ async def test_get_legislator_request():
 @pytest.mark.asyncio
 async def test_get_legislator_propose_bills_request():
     # 測試取得委員為提案人的法案列表
-    req = api.GetLegislatorProposeBillsRequest(
-        term=11,
-        name="韓國瑜",
-        limit=3
-    )
+    req = api.GetLegislatorProposeBillsRequest(term=11, name="韓國瑜", limit=3)
     resp = await req.do()
     # 檢查回應結構
     assert resp is not None
@@ -444,11 +434,7 @@ async def test_get_legislator_propose_bills_request():
 @pytest.mark.asyncio
 async def test_get_legislator_cosign_bills_request():
     # 測試取得委員為連署人的法案列表
-    req = api.GetLegislatorCosignBillsRequest(
-        term=11,
-        name="韓國瑜",
-        limit=3
-    )
+    req = api.GetLegislatorCosignBillsRequest(term=11, name="韓國瑜", limit=3)
     resp = await req.do()
     # 檢查回應結構
     assert resp is not None
@@ -460,11 +446,7 @@ async def test_get_legislator_cosign_bills_request():
 @pytest.mark.asyncio
 async def test_get_legislator_meets_request():
     # 測試取得委員出席的會議列表
-    req = api.GetLegislatorMeetsRequest(
-        term=11,
-        name="韓國瑜",
-        limit=3
-    )
+    req = api.GetLegislatorMeetsRequest(term=11, name="韓國瑜", limit=3)
     resp = await req.do()
     # 檢查回應結構
     assert resp is not None
@@ -476,10 +458,7 @@ async def test_get_legislator_meets_request():
 @pytest.mark.asyncio
 async def test_list_meets_request():
     # 測試列出會議列表
-    req = api.ListMeetsRequest(
-        term=11,
-        limit=3
-    )
+    req = api.ListMeetsRequest(term=11, limit=3)
     resp = await req.do()
     # 檢查回應結構
     assert resp is not None
@@ -503,10 +482,7 @@ async def test_get_meet_request():
 @pytest.mark.asyncio
 async def test_get_meet_bills_request():
     # 測試取得會議內的議案列表
-    req = api.GetMeetBillsRequest(
-        meet_id="院會-11-2-3",
-        limit=3
-    )
+    req = api.GetMeetBillsRequest(meet_id="院會-11-2-3", limit=3)
     resp = await req.do()
     # 檢查回應結構
     assert resp is not None
@@ -518,10 +494,7 @@ async def test_get_meet_bills_request():
 @pytest.mark.asyncio
 async def test_get_meet_interpellations_request():
     # 測試取得會議內的質詢列表
-    req = api.GetMeetInterpellationsRequest(
-        meet_id="院會-11-2-3",
-        limit=3
-    )
+    req = api.GetMeetInterpellationsRequest(meet_id="院會-11-2-3", limit=3)
     resp = await req.do()
     # 檢查回應結構
     assert resp is not None
