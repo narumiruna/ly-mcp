@@ -11,14 +11,19 @@ Use `ly` to query Taiwan Legislative Yuan API v2 from the terminal and summarize
 
 Prefer running the CLI over guessing from memory. The CLI returns JSON by default, so inspect the fields you need and synthesize a concise answer instead of dumping the full payload unless the user asks for raw output.
 
+## Installation
+
+If `ly` is not available, install it with:
+
+```bash
+uv tool install lymcp
+```
+
 ## Command Selection
 
-- If the current working directory is the `ly-mcp` repository root or one of its subdirectories, run `uv run ly ...` from the repository root.
-- If `uv` cache writes fail in the local sandbox, retry local commands as `UV_CACHE_DIR=/tmp/uv-cache uv run ly ...`.
-- Outside this repository, run `uvx --from lymcp ly ...`.
-- Treat `uv run` as the current local workspace or branch. Treat `uvx --from lymcp ly` as the latest published package.
-- If `uv run` fails inside the repository, report the local repository or environment issue and stop instead of falling back to the published package.
-- If `uvx --from lymcp ly` fails because `uv` is missing, network access is restricted, package resolution fails, or the published version does not include `ly`, report the prerequisite clearly.
+- Run `ly ...` directly when the command is installed.
+- If `ly` is missing, install it with `uv tool install lymcp`, then retry the same `ly ...` command.
+- If installation fails because `uv` is missing, network access is restricted, package resolution fails, or the published version does not include `ly`, report the prerequisite clearly.
 
 ## Command Map
 
@@ -61,8 +66,8 @@ Prefer running the CLI over guessing from memory. The CLI returns JSON by defaul
 
 ## Examples
 
-- "列出第 11 屆法律案" -> `uv run ly bills list --term 11 --bill-type 法律案 --limit 10`
-- "查勞動基準法修法歷程" -> `uv run ly laws list --fields 法律編號,名稱 --limit 10`, then `uv run ly laws versions LAW_ID --limit 20`
-- "最近已發生的院會討論哪些議案？" -> `uv run ly meets list --meeting-type 院會 --term 11 --limit 20`, choose the latest occurred meeting by date, then `uv run ly meets bills MEET_ID --limit 50`
-- "查韓國瑜提案紀錄" -> `uv run ly legislators propose-bills 11 韓國瑜 --limit 20`
-- "查某委員會會議" -> `uv run ly committees list --fields 委員會代號,委員會名稱`, then `uv run ly committees meets COMT_CD --term 11 --limit 20`
+- "列出第 11 屆法律案" -> `ly bills list --term 11 --bill-type 法律案 --limit 10`
+- "查勞動基準法修法歷程" -> `ly laws list --fields 法律編號,名稱 --limit 10`, then `ly laws versions LAW_ID --limit 20`
+- "最近已發生的院會討論哪些議案？" -> `ly meets list --meeting-type 院會 --term 11 --limit 20`, choose the latest occurred meeting by date, then `ly meets bills MEET_ID --limit 50`
+- "查韓國瑜提案紀錄" -> `ly legislators propose-bills 11 韓國瑜 --limit 20`
+- "查某委員會會議" -> `ly committees list --fields 委員會代號,委員會名稱`, then `ly committees meets COMT_CD --term 11 --limit 20`
