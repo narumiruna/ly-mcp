@@ -1,0 +1,5 @@
+[mcp_servers.lymcp]
+command = "uv"
+args    = ["run", "lymcp"]
+cwd     = "."
+enabled = true
