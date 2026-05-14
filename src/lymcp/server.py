@@ -20,6 +20,8 @@ from lymcp.api import GetLawBillsRequest
 from lymcp.api import GetLawContentRequest
 from lymcp.api import GetLawProgressRequest
 from lymcp.api import GetLawRequest
+from lymcp.api import GetLawVersionContentsRequest
+from lymcp.api import GetLawVersionRequest
 from lymcp.api import GetLawVersionsRequest
 from lymcp.api import GetLegislatorCosignBillsRequest
 from lymcp.api import GetLegislatorInterpellationsRequest
@@ -39,11 +41,13 @@ from lymcp.api import ListInterpellationsRequest
 from lymcp.api import ListIvodsRequest
 from lymcp.api import ListLawContentsRequest
 from lymcp.api import ListLawsRequest
+from lymcp.api import ListLawVersionsRequest
 from lymcp.api import ListLegislatorsRequest
 from lymcp.api import ListMeetsRequest
 
 # https://github.com/jlowin/fastmcp/issues/81#issuecomment-2714245145
 mcp = FastMCP("立法院 API v2 MCP Server", log_level="ERROR")
+
 
 @mcp.tool()
 async def get_stat() -> str:
@@ -65,6 +69,7 @@ async def get_stat() -> str:
         logger.error(msg)
         return msg
 
+
 @mcp.tool()
 async def list_bills(
     term: Annotated[int | None, Field(description="屆，例：11")] = None,
@@ -82,6 +87,7 @@ async def list_bills(
     reference_number: Annotated[str | None, Field(description="字號")] = None,
     article_number: Annotated[str | None, Field(description="法條編號")] = None,
     proposal_date: Annotated[str | None, Field(description="提案日期，格式：YYYY-MM-DD")] = None,
+    proposal_unit_or_member: Annotated[str | None, Field(description="提案單位或提案委員")] = None,
     page: Annotated[int, Field(description="頁數，預設1")] = 1,
     limit: Annotated[int, Field(description="每頁筆數，預設20，建議不超過100")] = 20,
     output_fields: Annotated[
@@ -107,6 +113,7 @@ async def list_bills(
         reference_number: 字號
         article_number: 法條編號
         proposal_date: 提案日期，格式：YYYY-MM-DD
+        proposal_unit_or_member: 提案單位或提案委員
         page: 頁數，預設1
         limit: 每頁筆數，預設20，建議不超過100
         output_fields: 自訂回傳欄位（如需指定欄位，請填寫欄位名稱列表）
@@ -134,6 +141,7 @@ async def list_bills(
             reference_number=reference_number,
             article_number=article_number,
             proposal_date=proposal_date,
+            proposal_unit_or_member=proposal_unit_or_member,
             page=page,
             limit=limit,
             output_fields=output_fields or [],
@@ -890,8 +898,9 @@ async def list_laws(
     parent_law_number: Annotated[str | None, Field(description="母法編號，例：09200")] = None,
     law_status: Annotated[str | None, Field(description="法律狀態，例：現行")] = None,
     authority: Annotated[str | None, Field(description="主管機關，例：總統府")] = None,
-    latest_version_date: Annotated[str | None, Field(
-        description="最新版本日期，格式：YYYY-MM-DD，例：2024-10-25")] = None,
+    latest_version_date: Annotated[
+        str | None, Field(description="最新版本日期，格式：YYYY-MM-DD，例：2024-10-25")
+    ] = None,
     page: Annotated[int, Field(description="頁數，預設1")] = 1,
     limit: Annotated[int, Field(description="每頁筆數，預設20，建議不超過100")] = 20,
     output_fields: Annotated[
@@ -1135,6 +1144,146 @@ async def get_law_versions(
 
 
 @mcp.tool()
+async def list_law_versions(
+    law_number: Annotated[str | None, Field(description="法律編號，例：90481")] = None,
+    version_number: Annotated[str | None, Field(description="版本編號，例：90481:1944-02-29-制定")] = None,
+    date: Annotated[str | None, Field(description="日期，格式：YYYY-MM-DD，例：1944-02-29")] = None,
+    action: Annotated[str | None, Field(description="動作，例：制定")] = None,
+    main_proposer: Annotated[str | None, Field(description="歷程主提案，例：張子揚")] = None,
+    progress: Annotated[str | None, Field(description="歷程進度，例：一讀")] = None,
+    current_version: Annotated[str | None, Field(description="現行版本，現行或非現行")] = None,
+    page: Annotated[int, Field(description="頁數，預設1")] = 1,
+    limit: Annotated[int, Field(description="每頁筆數，預設20，建議不超過100")] = 20,
+    output_fields: Annotated[
+        list[str] | None, Field(description="自訂回傳欄位（如需指定欄位，請填寫欄位名稱列表）")
+    ] = None,
+) -> str:
+    """
+    列出法律版本資料。
+
+    Args:
+        law_number: 法律編號，例：90481
+        version_number: 版本編號，例：90481:1944-02-29-制定
+        date: 日期，格式：YYYY-MM-DD，例：1944-02-29
+        action: 動作，例：制定
+        main_proposer: 歷程主提案，例：張子揚
+        progress: 歷程進度，例：一讀
+        current_version: 現行版本，現行或非現行
+        page: 頁數，預設1
+        limit: 每頁筆數，預設20，建議不超過100
+        output_fields: 自訂回傳欄位（如需指定欄位，請填寫欄位名稱列表）
+
+    Returns:
+        str: JSON 格式，包含法律版本列表。
+
+    Raises:
+        例外時回傳中文錯誤訊息字串。
+    """
+    try:
+        req = ListLawVersionsRequest(
+            law_number=law_number,
+            version_number=version_number,
+            date=date,
+            action=action,
+            main_proposer=main_proposer,
+            progress=progress,
+            current_version=current_version,
+            page=page,
+            limit=limit,
+            output_fields=output_fields or [],
+        )
+        resp = await req.do()
+        return json.dumps(resp, ensure_ascii=False, indent=2)
+    except Exception as e:
+        msg = f"Failed to list law versions, got: {e}"
+        logger.error(msg)
+        return msg
+
+
+@mcp.tool()
+async def get_law_version(
+    law_version_id: Annotated[str, Field(description="版本編號，必填，例：90481:1944-02-29-制定")],
+) -> str:
+    """
+    取得特定法律版本資訊。
+
+    Args:
+        law_version_id: 版本編號，必填，例：90481:1944-02-29-制定
+
+    Returns:
+        str: JSON 格式，包含法律版本詳細資訊。
+
+    Raises:
+        例外時回傳中文錯誤訊息字串。
+    """
+    try:
+        req = GetLawVersionRequest(law_version_id=law_version_id)
+        resp = await req.do()
+        return json.dumps(resp, ensure_ascii=False, indent=2)
+    except Exception as e:
+        msg = f"Failed to get law version, got: {e}"
+        logger.error(msg)
+        return msg
+
+
+@mcp.tool()
+async def get_law_version_contents(
+    law_version_id: Annotated[str, Field(description="版本編號，必填，例：90481:1944-02-29-制定")],
+    law_number: Annotated[str | None, Field(description="法律編號，例：90481")] = None,
+    version_id: Annotated[str | None, Field(description="法條資料版本編號，例：90481:1944-02-29-制定")] = None,
+    order: Annotated[int | None, Field(description="順序，例：1")] = None,
+    article_number: Annotated[str | None, Field(description="條號，例：第一條")] = None,
+    current_version_status: Annotated[str | None, Field(description="現行版，可選值：現行、非現行")] = None,
+    version_tracking: Annotated[str | None, Field(description="版本追蹤，例：new")] = None,
+    page: Annotated[int, Field(description="頁數，預設1")] = 1,
+    limit: Annotated[int, Field(description="每頁筆數，預設20")] = 20,
+    output_fields: Annotated[
+        list[str] | None, Field(description="自訂回傳欄位（如需指定欄位，請填寫欄位名稱列表）")
+    ] = None,
+) -> str:
+    """
+    取得法律版本包含的法條列表。
+
+    Args:
+        law_version_id: 版本編號，必填，例：90481:1944-02-29-制定
+        law_number: 法律編號，例：90481
+        version_id: 法條資料版本編號，例：90481:1944-02-29-制定
+        order: 順序，例：1
+        article_number: 條號，例：第一條
+        current_version_status: 現行版，可選值：現行、非現行
+        version_tracking: 版本追蹤，例：new
+        page: 頁數，預設1
+        limit: 每頁筆數，預設20
+        output_fields: 自訂回傳欄位（如需指定欄位，請填寫欄位名稱列表）
+
+    Returns:
+        str: JSON 格式，包含特定法律版本的法條列表。
+
+    Raises:
+        例外時回傳中文錯誤訊息字串。
+    """
+    try:
+        req = GetLawVersionContentsRequest(
+            law_version_id=law_version_id,
+            law_number=law_number,
+            version_id=version_id,
+            order=order,
+            article_number=article_number,
+            current_version_status=current_version_status,
+            version_tracking=version_tracking,
+            page=page,
+            limit=limit,
+            output_fields=output_fields or [],
+        )
+        resp = await req.do()
+        return json.dumps(resp, ensure_ascii=False, indent=2)
+    except Exception as e:
+        msg = f"Failed to get law version contents, got: {e}"
+        logger.error(msg)
+        return msg
+
+
+@mcp.tool()
 async def list_law_contents(
     law_number: Annotated[str | None, Field(description="法律編號，例：90481")] = None,
     version_id: Annotated[str | None, Field(description="版本編號，例：90481:90481:1944-02-29-制定:1")] = None,
@@ -1190,7 +1339,7 @@ async def list_law_contents(
 
 @mcp.tool()
 async def get_law_content(
-    law_content_id: Annotated[str, Field(description="法條編號，例：90481:90481:1944-02-29-制定:0")]
+    law_content_id: Annotated[str, Field(description="法條編號，例：90481:90481:1944-02-29-制定:0")],
 ) -> str:
     """
     取得特定法條的詳細資訊。
@@ -1215,6 +1364,7 @@ async def get_law_content(
 
 
 # === Legislators API ===
+
 
 @mcp.tool()
 async def list_legislators(
@@ -1270,7 +1420,7 @@ async def list_legislators(
 @mcp.tool()
 async def get_legislator(
     term: Annotated[int, Field(description="屆，例：11")],
-    name: Annotated[str, Field(description="委員姓名，例：韓國瑜")]
+    name: Annotated[str, Field(description="委員姓名，例：韓國瑜")],
 ) -> str:
     """
     取得特定立法委員的詳細資訊。
@@ -1608,9 +1758,7 @@ async def list_meets(
 
 
 @mcp.tool()
-async def get_meet(
-    meet_id: Annotated[str, Field(description="會議代碼，例：院會-11-2-3")]
-) -> str:
+async def get_meet(meet_id: Annotated[str, Field(description="會議代碼，例：院會-11-2-3")]) -> str:
     """
     取得特定會議的詳細資訊。
 

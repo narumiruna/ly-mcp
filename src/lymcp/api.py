@@ -10,6 +10,7 @@ from .translate import translate
 BASE_URL: Final[str] = "https://ly.govapi.tw/v2"
 HTTPX_TIMEOUT: Final[float] = 30.0
 
+
 async def make_api_request(url: str, method: str = "GET", params: dict | None = None) -> dict:
     """Shared function to make API requests with consistent error handling."""
     async with httpx.AsyncClient(timeout=HTTPX_TIMEOUT) as client:
@@ -20,12 +21,12 @@ async def make_api_request(url: str, method: str = "GET", params: dict | None = 
         resp.raise_for_status()
         return resp.json()
 
+
 class GetStatRequest(BaseModel):
     async def do(self) -> dict:
         logger.info("Getting statistics")
-        return await make_api_request(
-            url=f"{BASE_URL}/stat"
-        )
+        return await make_api_request(url=f"{BASE_URL}/stat")
+
 
 class ListBillRequest(BaseModel):
     term: int | None = Field(default=None, serialization_alias=translate["term"])
@@ -43,6 +44,7 @@ class ListBillRequest(BaseModel):
     reference_number: str | None = Field(default=None, serialization_alias=translate["reference_number"])
     article_number: str | None = Field(default=None, serialization_alias=translate["article_number"])
     proposal_date: str | None = Field(default=None, serialization_alias=translate["proposal_date"])
+    proposal_unit_or_member: str | None = Field(default=None, serialization_alias=translate["proposal_unit_or_member"])
     page: int = 1
     limit: int = 20
     output_fields: list[str] = Field(default_factory=list)
@@ -55,6 +57,7 @@ class ListBillRequest(BaseModel):
             params=params,
         )
 
+
 class GetBillRequest(BaseModel):
     bill_no: str = Field(..., serialization_alias=translate["bill_no"])
 
@@ -63,6 +66,7 @@ class GetBillRequest(BaseModel):
         return await make_api_request(
             url=f"{BASE_URL}/bills/{self.bill_no}",
         )
+
 
 class GetBillMeetsRequest(BaseModel):
     bill_no: str = Field(..., serialization_alias=translate["bill_no"])
@@ -81,6 +85,7 @@ class GetBillMeetsRequest(BaseModel):
             params=params,
         )
 
+
 class GetBillRelatedBillsRequest(BaseModel):
     bill_no: str = Field(..., serialization_alias=translate["bill_no"])
     page: int = 1
@@ -94,6 +99,7 @@ class GetBillRelatedBillsRequest(BaseModel):
             params=params,
         )
 
+
 class GetBillDocHtmlRequest(BaseModel):
     bill_no: str = Field(..., serialization_alias=translate["bill_no"])
 
@@ -102,6 +108,7 @@ class GetBillDocHtmlRequest(BaseModel):
         return await make_api_request(
             url=f"{BASE_URL}/bills/{self.bill_no}/doc_html",
         )
+
 
 class ListCommitteesRequest(BaseModel):
     committee_type: str | None = Field(default=None, serialization_alias=translate["committee_type"])
@@ -118,6 +125,7 @@ class ListCommitteesRequest(BaseModel):
             params=params,
         )
 
+
 class GetCommitteeRequest(BaseModel):
     comt_cd: str = Field(..., serialization_alias=translate["comt_cd"])
 
@@ -126,6 +134,7 @@ class GetCommitteeRequest(BaseModel):
         return await make_api_request(
             url=f"{BASE_URL}/committees/{self.comt_cd}",
         )
+
 
 class GetCommitteeMeetsRequest(BaseModel):
     comt_cd: str = Field(..., serialization_alias=translate["comt_cd"])
@@ -265,8 +274,9 @@ class GetLegislatorInterpellationsRequest(BaseModel):
 
     async def do(self) -> dict:
         params = self.model_dump(exclude_none=True, by_alias=True, exclude={"term", "name"})
-        logger.info("Getting legislator interpellations for term: {}, name: {}, params: {}",
-            self.term, self.name, params)
+        logger.info(
+            "Getting legislator interpellations for term: {}, name: {}, params: {}", self.term, self.name, params
+        )
         return await make_api_request(
             url=f"{BASE_URL}/legislators/{self.term}/{self.name}/interpellations",
             params=params,
@@ -420,6 +430,58 @@ class GetLawVersionsRequest(BaseModel):
         )
 
 
+class ListLawVersionsRequest(BaseModel):
+    law_number: str | None = Field(default=None, serialization_alias=translate["law_number"])
+    version_number: str | None = Field(default=None, serialization_alias=translate["version_number"])
+    date: str | None = Field(default=None, serialization_alias=translate["date"])
+    action: str | None = Field(default=None, serialization_alias=translate["action"])
+    main_proposer: str | None = Field(default=None, serialization_alias=translate["main_proposer"])
+    progress: str | None = Field(default=None, serialization_alias=translate["progress"])
+    current_version: str | None = Field(default=None, serialization_alias=translate["current_version"])
+    page: int = 1
+    limit: int = 20
+    output_fields: list[str] = Field(default_factory=list)
+
+    async def do(self) -> dict:
+        params = self.model_dump(exclude_none=True, by_alias=True)
+        logger.info("Listing law versions with parameters: {}", params)
+        return await make_api_request(
+            url=f"{BASE_URL}/law_versions",
+            params=params,
+        )
+
+
+class GetLawVersionRequest(BaseModel):
+    law_version_id: str = Field(..., serialization_alias=translate["law_version_id"])
+
+    async def do(self) -> dict:
+        logger.info("Getting law version detail for law_version_id: {}", self.law_version_id)
+        return await make_api_request(
+            url=f"{BASE_URL}/law_versions/{self.law_version_id}",
+        )
+
+
+class GetLawVersionContentsRequest(BaseModel):
+    law_version_id: str = Field(..., serialization_alias=translate["law_version_id"])
+    law_number: str | None = Field(default=None, serialization_alias=translate["law_number"])
+    version_id: str | None = Field(default=None, serialization_alias=translate["version_id"])
+    order: int | None = Field(default=None, serialization_alias=translate["order"])
+    article_number: str | None = Field(default=None, serialization_alias=translate["law_article_number"])
+    current_version_status: str | None = Field(default=None, serialization_alias=translate["current_version_status"])
+    version_tracking: str | None = Field(default=None, serialization_alias=translate["version_tracking"])
+    page: int = 1
+    limit: int = 20
+    output_fields: list[str] = Field(default_factory=list)
+
+    async def do(self) -> dict:
+        params = self.model_dump(exclude_none=True, by_alias=True, exclude={"law_version_id"})
+        logger.info("Getting law version contents for law_version_id: {}, params: {}", self.law_version_id, params)
+        return await make_api_request(
+            url=f"{BASE_URL}/law_versions/{self.law_version_id}/contents",
+            params=params,
+        )
+
+
 class ListLawContentsRequest(BaseModel):
     law_number: str | None = Field(default=None, serialization_alias=translate["law_number"])
     version_id: str | None = Field(default=None, serialization_alias=translate["version_id"])
@@ -451,6 +513,7 @@ class GetLawContentRequest(BaseModel):
 
 
 # Legislators API models
+
 
 class ListLegislatorsRequest(BaseModel):
     term: int | None = Field(default=None, serialization_alias=translate["term"])

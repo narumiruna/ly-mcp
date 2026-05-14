@@ -15,3 +15,21 @@ approval_mode = "approve"
 
 [mcp_servers.lymcp.tools.get_bill]
 approval_mode = "approve"
+
+[mcp_servers.lymcp.tools.list_laws]
+approval_mode = "approve"
+
+[mcp_servers.lymcp.tools.list_meets]
+approval_mode = "approve"
+
+[mcp_servers.lymcp.tools.get_law_versions]
+approval_mode = "approve"
+
+[mcp_servers.lymcp.tools.list_law_versions]
+approval_mode = "approve"
+
+[mcp_servers.lymcp.tools.get_law_version]
+approval_mode = "approve"
+
+[mcp_servers.lymcp.tools.get_law_version_contents]
+approval_mode = "approve"
