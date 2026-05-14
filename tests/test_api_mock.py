@@ -1,6 +1,7 @@
 from collections.abc import Callable
 from typing import Any
 
+import httpx
 import pytest
 
 from lymcp import api
@@ -8,6 +9,31 @@ from tests.fixtures import load_json_fixture
 
 RequestFactory = Callable[[], Any]
 SAMPLE_RESPONSE = {"ok": True}
+
+
+class FakeAsyncClient:
+    def __init__(
+        self,
+        *,
+        response: httpx.Response | None = None,
+        error: Exception | None = None,
+        timeout: float | None = None,
+    ) -> None:
+        self.response = response
+        self.error = error
+        self.timeout = timeout
+
+    async def __aenter__(self) -> "FakeAsyncClient":
+        return self
+
+    async def __aexit__(self, *args: object) -> None:
+        return None
+
+    async def get(self, url: str, params: dict[str, Any] | None = None) -> httpx.Response:
+        if self.error is not None:
+            raise self.error
+        assert self.response is not None
+        return self.response
 
 
 @pytest.mark.asyncio
@@ -57,10 +83,17 @@ SAMPLE_RESPONSE = {"ok": True}
             None,
         ),
         (
-            lambda: api.ListLawsRequest(limit=1),
+            lambda: api.ListLawsRequest(category="母法", law_status="現行", authority="司法院", limit=1),
             "laws_list.json",
             f"{api.BASE_URL}/laws",
-            {"page": 1, "limit": 1, "output_fields": []},
+            {
+                "類別": "母法",
+                "法律狀態": "現行",
+                "主管機關": "司法院",
+                "page": 1,
+                "limit": 1,
+                "output_fields": [],
+            },
         ),
         (
             lambda: api.GetLawRequest(law_id="09200015"),
@@ -69,10 +102,24 @@ SAMPLE_RESPONSE = {"ok": True}
             None,
         ),
         (
-            lambda: api.ListLegislatorsRequest(term=11, limit=1),
+            lambda: api.ListLegislatorsRequest(
+                term=11,
+                party="台灣民眾黨",
+                district_name="全國不分區及僑居國外國民",
+                legislator_name="吳春城",
+                limit=1,
+            ),
             "legislators_list.json",
             f"{api.BASE_URL}/legislators",
-            {"屆": 11, "page": 1, "limit": 1, "output_fields": []},
+            {
+                "屆": 11,
+                "黨籍": "台灣民眾黨",
+                "選區名稱": "全國不分區及僑居國外國民",
+                "委員姓名": "吳春城",
+                "page": 1,
+                "limit": 1,
+                "output_fields": [],
+            },
         ),
         (
             lambda: api.GetLegislatorRequest(term=11, name="韓國瑜"),
@@ -81,10 +128,26 @@ SAMPLE_RESPONSE = {"ok": True}
             None,
         ),
         (
-            lambda: api.ListMeetsRequest(term=11, limit=1),
+            lambda: api.ListMeetsRequest(
+                term=11,
+                session=5,
+                meeting_type="委員會",
+                date="2026-05-18",
+                committee_code=35,
+                limit=1,
+            ),
             "meets_list.json",
             f"{api.BASE_URL}/meets",
-            {"屆": 11, "page": 1, "limit": 1, "output_fields": []},
+            {
+                "屆": 11,
+                "會期": 5,
+                "會議種類": "委員會",
+                "日期": "2026-05-18",
+                "委員會代號": 35,
+                "page": 1,
+                "limit": 1,
+                "output_fields": [],
+            },
         ),
         (
             lambda: api.GetMeetRequest(meet_id="院會-11-2-3"),
@@ -298,3 +361,64 @@ async def test_remaining_requests_use_expected_endpoint(
 async def test_make_api_request_rejects_unsupported_method() -> None:
     with pytest.raises(ValueError, match="Unsupported HTTP method"):
         await api.make_api_request(f"{api.BASE_URL}/stat", method="POST")
+
+
+@pytest.mark.asyncio
+async def test_make_api_request_wraps_http_status_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    url = f"{api.BASE_URL}/bills/invalid_bill_number"
+    response = httpx.Response(
+        404,
+        request=httpx.Request("GET", url),
+        text="not found",
+    )
+
+    monkeypatch.setattr(api.httpx, "AsyncClient", lambda **kwargs: FakeAsyncClient(response=response, **kwargs))
+
+    with pytest.raises(api.LymcpApiError) as exc_info:
+        await api.make_api_request(url)
+
+    error = exc_info.value
+    assert error.error_type == "http_status"
+    assert error.status_code == 404
+    assert error.url == url
+    assert error.response_excerpt == "not found"
+
+
+@pytest.mark.asyncio
+async def test_make_api_request_wraps_timeout(monkeypatch: pytest.MonkeyPatch) -> None:
+    url = f"{api.BASE_URL}/stat"
+
+    monkeypatch.setattr(
+        api.httpx,
+        "AsyncClient",
+        lambda **kwargs: FakeAsyncClient(error=httpx.TimeoutException("timed out"), **kwargs),
+    )
+
+    with pytest.raises(api.LymcpApiError) as exc_info:
+        await api.make_api_request(url)
+
+    error = exc_info.value
+    assert error.error_type == "timeout"
+    assert error.status_code is None
+    assert error.url == url
+
+
+@pytest.mark.asyncio
+async def test_make_api_request_wraps_non_json_response(monkeypatch: pytest.MonkeyPatch) -> None:
+    url = f"{api.BASE_URL}/stat"
+    response = httpx.Response(
+        200,
+        request=httpx.Request("GET", url),
+        text="<html>not json</html>",
+    )
+
+    monkeypatch.setattr(api.httpx, "AsyncClient", lambda **kwargs: FakeAsyncClient(response=response, **kwargs))
+
+    with pytest.raises(api.LymcpApiError) as exc_info:
+        await api.make_api_request(url)
+
+    error = exc_info.value
+    assert error.error_type == "invalid_json"
+    assert error.status_code == 200
+    assert error.url == url
+    assert error.response_excerpt == "<html>not json</html>"

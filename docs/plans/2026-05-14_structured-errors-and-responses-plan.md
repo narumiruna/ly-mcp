@@ -24,15 +24,16 @@ Keep `httpx` and the current request model layer. Introduce a small local respon
 
 - Returning JSON text content is acceptable for MCP compatibility, as long as the JSON shape is consistent.
 - Existing users can tolerate additional metadata fields if the original payload remains present.
+- Successful tool output remains the raw upstream API payload in this pass. Structured envelopes are applied to errors only, preserving existing successful-client behavior while making failures machine-checkable.
 
 ## Plan
 
-- [ ] Define a minimal response contract for tool output, for example `{ "ok": true, "data": ... }` and `{ "ok": false, "error": { "type": "...", "message": "...", "status_code": ... } }`; verify by documenting the contract in a short developer note or README testing section.
-- [ ] Add local exception classes or result helpers in `src/lymcp/api.py` for HTTP status errors, timeout/network errors, and JSON parse errors; verify with unit tests using monkeypatched `httpx.AsyncClient`.
-- [ ] Update server tool wrappers to serialize successful responses and structured errors consistently; verify with representative MCP tool tests for success and failure.
-- [ ] Preserve enough upstream detail for debugging, including endpoint URL path, status code, and response excerpt when safe; verify with tests that assert no traceback-only messages leak to the user.
-- [ ] Add tests for invalid bill ID, invalid law version ID, timeout, and non-JSON upstream response; verify with deterministic tests that do not call the live API.
-- [ ] Update README or developer docs to explain how MCP clients should interpret `ok`, `data`, and `error`; verify by matching docs to tests.
+- [x] Define a minimal response contract for tool output, using raw upstream payloads for success and `{ "ok": false, "error": { "type": "...", "message": "...", "status_code": ... } }` for failures; verify by documenting the contract in README.
+- [x] Add local exception classes or result helpers in `src/lymcp/api.py` for HTTP status errors, timeout/network errors, and JSON parse errors; verify with unit tests using monkeypatched `httpx.AsyncClient`.
+- [x] Update server tool wrappers to serialize structured errors consistently while preserving successful raw payloads; verify with representative MCP tool tests for success and failure.
+- [x] Preserve enough upstream detail for debugging, including endpoint URL path, status code, and response excerpt when safe; verify with tests that assert structured error fields instead of traceback-only messages.
+- [x] Add tests for invalid bill ID, invalid law version ID, timeout, and non-JSON upstream response; verify with deterministic tests that do not call the live API.
+- [x] Update README or developer docs to explain how MCP clients should interpret error `ok` and `error`; verify by matching docs to tests.
 
 ## Risks
 
@@ -47,7 +48,7 @@ Keep `httpx` and the current request model layer. Introduce a small local respon
 
 ## Completion Checklist
 
-- [ ] MCP tool errors are consistently machine-checkable, verified by tests for HTTP 404, timeout, and non-JSON responses.
-- [ ] Successful responses remain usable by existing clients or have documented migration notes, verified by README examples and tests.
-- [ ] Error messages include actionable endpoint/status context without raw tracebacks, verified by failure-path tests.
-- [ ] Quality gates pass after the change, verified by `just lint`, `just type`, and `just test`.
+- [x] MCP tool errors are consistently machine-checkable, verified by tests for HTTP 404, timeout, and non-JSON responses.
+- [x] Successful responses remain usable by existing clients or have documented migration notes, verified by README examples and tests.
+- [x] Error messages include actionable endpoint/status context without raw tracebacks, verified by failure-path tests.
+- [x] Quality gates pass after the change, verified by `just lint`, `just type`, and `just test`.
