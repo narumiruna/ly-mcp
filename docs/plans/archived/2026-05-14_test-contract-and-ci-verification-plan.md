@@ -9,7 +9,7 @@ server tests assert parsed JSON contracts plus tool-to-request wiring.
 
 ## Context
 
-An existing completed plan, `docs/plans/2026-05-14_manual-live-and-mock-tests-plan.md`, already described a live/mock test migration. At planning time, the repository still needed a follow-up verification pass because the research review found mismatch risks between README claims, `justfile`, pytest marker behavior, and tests that asserted only `isinstance(response_text, str)`.
+An existing completed plan, `docs/plans/archived/2026-05-14_manual-live-and-mock-tests-plan.md`, already described a live/mock test migration. At planning time, the repository still needed a follow-up verification pass because the research review found mismatch risks between README claims, `justfile`, pytest marker behavior, and tests that asserted only `isinstance(response_text, str)`.
 
 ## Non-Goals
 

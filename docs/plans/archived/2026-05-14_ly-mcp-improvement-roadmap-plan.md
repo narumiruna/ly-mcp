@@ -27,10 +27,10 @@ The `roadmap-completion` follow-up marked the linked implementation plans done.
 
 ## Plan
 
-- [x] Complete the API coverage work described in `docs/plans/2026-05-14_api-coverage-and-tool-schema-plan.md` to align MCP tools with `swagger.yaml`; verified with `docs/api-endpoint-tool-audit.md`, 39 `@mcp.tool()` registrations, and MCP tool tests.
-- [x] Complete the test-contract work described in `docs/plans/2026-05-14_test-contract-and-ci-verification-plan.md` to make default tests deterministic and meaningful; verified with `just test`, `just lint`, and `just type`.
-- [x] Complete the structured error and response work described in `docs/plans/2026-05-14_structured-errors-and-responses-plan.md` to make failures and result payloads machine-checkable; verified with unit tests for HTTP errors, JSON parse errors, timeout handling, and MCP tool error output.
-- [x] Complete the discovery and query semantics work described in `docs/plans/2026-05-14_discovery-prompts-and-query-semantics-plan.md` to improve common natural-language tasks such as latest meetings, law histories, and legislator activity lookups; verified with registered MCP prompts/resources and representative live smoke checks.
+- [x] Complete the API coverage work described in `docs/plans/archived/2026-05-14_api-coverage-and-tool-schema-plan.md` to align MCP tools with `swagger.yaml`; verified with `docs/api-endpoint-tool-audit.md`, 39 `@mcp.tool()` registrations, and MCP tool tests.
+- [x] Complete the test-contract work described in `docs/plans/archived/2026-05-14_test-contract-and-ci-verification-plan.md` to make default tests deterministic and meaningful; verified with `just test`, `just lint`, and `just type`.
+- [x] Complete the structured error and response work described in `docs/plans/archived/2026-05-14_structured-errors-and-responses-plan.md` to make failures and result payloads machine-checkable; verified with unit tests for HTTP errors, JSON parse errors, timeout handling, and MCP tool error output.
+- [x] Complete the discovery and query semantics work described in `docs/plans/archived/2026-05-14_discovery-prompts-and-query-semantics-plan.md` to improve common natural-language tasks such as latest meetings, law histories, and legislator activity lookups; verified with registered MCP prompts/resources and representative live smoke checks.
 - [x] Update `README.md` after the implementation plans land so feature lists, test commands, and example prompts match actual behavior; verified by reviewing README sections against current `list_tools`, `justfile`, pytest marker behavior, response contract, and discovery prompts/resources.
 
 ## Risks
