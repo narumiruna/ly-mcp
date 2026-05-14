@@ -1,15 +1,32 @@
 [project]
 name            = "lymcp"
 version         = "0.3.1"
-description     = ""
+description     = "Model Context Protocol server for Taiwan Legislative Yuan API v2"
 readme          = "README.md"
 requires-python = ">=3.11"
 authors         = [{ name = "narumi", email = "toucans-cutouts0f@icloud.com" }]
+license         = { file = "LICENSE" }
+keywords        = ["mcp", "model-context-protocol", "taiwan", "legislative-yuan", "api"]
+classifiers     = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
 dependencies    = [
   "httpx>=0.28.1",
   "loguru>=0.7.3",
   "mcp[cli]>=1.27.1",
 ]
+
+[project.urls]
+Homepage   = "https://github.com/narumiruna/ly-mcp"
+Repository = "https://github.com/narumiruna/ly-mcp"
+Issues     = "https://github.com/narumiruna/ly-mcp/issues"
 
 [project.scripts]
 lymcp = "lymcp.server:main"
