@@ -1,0 +1,53 @@
+## Goal
+
+Improve response and error semantics so MCP clients and tests can distinguish successful data, empty results, invalid parameters, upstream HTTP failures, timeouts, and non-JSON responses. Success means tool failures are returned in a consistent, machine-checkable shape instead of arbitrary plain strings.
+
+## Context
+
+The current API helper calls `resp.raise_for_status()` and `resp.json()` directly. Server tools catch all exceptions and return strings like `Failed to list bills, got: ...`. This keeps the MCP server from crashing, but it makes errors hard for clients, tests, and users to interpret.
+
+## Architecture
+
+Keep `httpx` and the current request model layer. Introduce a small local response/error helper rather than a new dependency:
+
+- API layer normalizes upstream HTTP and JSON failures.
+- Server layer serializes a consistent success or error envelope.
+- Tests assert the envelope and error categories.
+
+## Non-Goals
+
+- Do not redesign the transport or replace FastMCP.
+- Do not hide the original Legislative Yuan API payload on successful calls.
+- Do not invent domain-specific summaries for every endpoint in this phase.
+
+## Assumptions
+
+- Returning JSON text content is acceptable for MCP compatibility, as long as the JSON shape is consistent.
+- Existing users can tolerate additional metadata fields if the original payload remains present.
+
+## Plan
+
+- [ ] Define a minimal response contract for tool output, for example `{ "ok": true, "data": ... }` and `{ "ok": false, "error": { "type": "...", "message": "...", "status_code": ... } }`; verify by documenting the contract in a short developer note or README testing section.
+- [ ] Add local exception classes or result helpers in `src/lymcp/api.py` for HTTP status errors, timeout/network errors, and JSON parse errors; verify with unit tests using monkeypatched `httpx.AsyncClient`.
+- [ ] Update server tool wrappers to serialize successful responses and structured errors consistently; verify with representative MCP tool tests for success and failure.
+- [ ] Preserve enough upstream detail for debugging, including endpoint URL path, status code, and response excerpt when safe; verify with tests that assert no traceback-only messages leak to the user.
+- [ ] Add tests for invalid bill ID, invalid law version ID, timeout, and non-JSON upstream response; verify with deterministic tests that do not call the live API.
+- [ ] Update README or developer docs to explain how MCP clients should interpret `ok`, `data`, and `error`; verify by matching docs to tests.
+
+## Risks
+
+- Changing the success envelope may be a breaking change for clients that expect the raw API object at the top level.
+- Including upstream response excerpts can leak noisy or overly large data; cap excerpts and avoid full HTML bodies.
+- Too much abstraction in error handling could make this small wrapper harder to read; keep helper APIs minimal.
+
+## Rollback / Recovery
+
+- If the success envelope is too disruptive, keep raw successful payloads unchanged and apply the structured envelope only to errors.
+- If downstream clients rely on exact text errors, release the change with a minor-version note and examples.
+
+## Completion Checklist
+
+- [ ] MCP tool errors are consistently machine-checkable, verified by tests for HTTP 404, timeout, and non-JSON responses.
+- [ ] Successful responses remain usable by existing clients or have documented migration notes, verified by README examples and tests.
+- [ ] Error messages include actionable endpoint/status context without raw tracebacks, verified by failure-path tests.
+- [ ] Quality gates pass after the change, verified by `just lint`, `just type`, and `just test`.
