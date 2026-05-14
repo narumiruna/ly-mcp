@@ -1,0 +1,4 @@
+interface:
+  display_name: "Use ly"
+  short_description: "Query Taiwan Legislative Yuan data with ly"
+  default_prompt: "Use $ly to answer this Taiwan Legislative Yuan data question by running the appropriate ly CLI command and summarizing the JSON result."

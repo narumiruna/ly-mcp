@@ -187,6 +187,12 @@ uvx lymcp@latest
 
 套件也提供 `ly` 指令，讓 agents 或 shell workflow 可以直接從 terminal 查詢立法院 API。CLI 預設輸出 pretty JSON，失敗時會輸出和 MCP tools 相同的 JSON error envelope 並回傳非 0 exit code。
 
+如果要讓 agent 使用 repo 內的 `ly` skill，可以安裝：
+
+```bash
+npx skills add /narumiruna/ly-mcp
+```
+
 ```bash
 ly --help
 ly stat
