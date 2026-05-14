@@ -8,7 +8,7 @@ authors         = [{ name = "narumi", email = "toucans-cutouts0f@icloud.com" }]
 license         = { file = "LICENSE" }
 keywords        = ["mcp", "model-context-protocol", "taiwan", "legislative-yuan", "api"]
 classifiers     = [
-  "Development Status :: 4 - Beta",
+  "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
   "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3",
