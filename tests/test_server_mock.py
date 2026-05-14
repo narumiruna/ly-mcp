@@ -19,12 +19,50 @@ LIST_CONTRACT_CASES = [
 ]
 
 
+EXPECTED_PROMPTS = {
+    "latest_plenary_meeting_bills",
+    "law_amendment_history",
+    "legislator_proposal_record",
+    "legislator_interpellations",
+    "committee_meeting_lookup",
+}
+
+
 class StubRequest:
     def __init__(self, response: dict[str, Any]) -> None:
         self.response = response
 
     async def do(self) -> dict[str, Any]:
         return self.response
+
+
+@pytest.mark.asyncio
+async def test_discovery_prompts_are_registered() -> None:
+    prompts = await server.mcp.list_prompts()
+
+    assert {prompt.name for prompt in prompts} >= EXPECTED_PROMPTS
+
+
+@pytest.mark.asyncio
+async def test_discovery_resources_are_registered_and_readable() -> None:
+    resources = await server.mcp.list_resources()
+
+    assert {str(resource.uri) for resource in resources} >= {
+        "lymcp://query-semantics",
+        "lymcp://workflow-reference",
+    }
+
+    query_semantics = list(await server.mcp.read_resource("lymcp://query-semantics"))
+    workflow_reference = list(await server.mcp.read_resource("lymcp://workflow-reference"))
+    query_semantics_text = query_semantics[0].content
+    workflow_reference_text = workflow_reference[0].content
+
+    assert isinstance(query_semantics_text, str)
+    assert isinstance(workflow_reference_text, str)
+    assert "latest occurred" in query_semantics_text
+    assert "next scheduled" in query_semantics_text
+    assert "Latest Plenary Meeting Bills" in workflow_reference_text
+    assert "Law Amendment History" in workflow_reference_text
 
 
 @pytest.mark.asyncio

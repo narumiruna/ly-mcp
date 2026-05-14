@@ -182,9 +182,23 @@ Once connected to the MCP server, you can ask your LLM questions like:
 
 - "列出第11屆的所有法律提案" (List all bills from the 11th term)
 - "查詢立法委員王美花的提案紀錄" (Look up legislator Wang Mei-hua's proposed bills)
-- "最近一次院會討論了哪些議案？" (What bills were discussed in the most recent plenary session?)
+- "以今天的台北日期為準，最近已發生的院會討論了哪些議案？" (Using today's Taipei date, what bills were discussed in the latest occurred plenary meeting?)
+- "下一場已排程的院會是什麼時候？" (When is the next scheduled plenary meeting?)
 - "查詢勞動基準法的修法歷程" (Look up the amendment history of the Labor Standards Act)
 - "第11屆第1會期有哪些委員會會議？" (What committee meetings were held in the 1st session of the 11th term?)
+
+For date-sensitive questions, distinguish:
+
+- `latest known`: use the upstream default sort, including future scheduled records.
+- `latest occurred`: only consider records whose relevant date is on or before the reference date.
+- `next scheduled`: only consider records whose relevant date is after the reference date.
+
+The server also exposes MCP prompts for common workflows:
+`latest_plenary_meeting_bills`, `law_amendment_history`,
+`legislator_proposal_record`, `legislator_interpellations`, and
+`committee_meeting_lookup`. Read `lymcp://query-semantics` and
+`lymcp://workflow-reference` for compact guidance on date semantics, filters,
+ID fields, and workflow steps.
 
 ## Development
 
