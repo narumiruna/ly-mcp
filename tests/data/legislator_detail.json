@@ -1,0 +1,101 @@
+{
+  "error": false,
+  "id": [
+    "11",
+    "韓國瑜"
+  ],
+  "data": {
+    "屆": 11,
+    "委員姓名": "韓國瑜",
+    "委員英文姓名": "Kuo-Yu Han",
+    "性別": "男",
+    "黨籍": "中國國民黨",
+    "黨團": "中國國民黨",
+    "選區名稱": "全國不分區及僑居國外國民",
+    "委員會": [
+      "第11屆第1會期：外交及國防委員會",
+      "第11屆第2會期：外交及國防委員會",
+      "第11屆第3會期：外交及國防委員會",
+      "第11屆第4會期：外交及國防委員會",
+      "第11屆第5會期：外交及國防委員會"
+    ],
+    "到職日": "2024/02/01",
+    "學歷": [
+      "東吳大學英國語文學系文學士學位",
+      "政治大學東亞研究所法學碩士"
+    ],
+    "經歷": [
+      "典亮慈善基金會董事長",
+      "高雄市市長",
+      "台北農產公司總經理",
+      "立法委員（第二、三、四屆）",
+      "台北縣議員"
+    ],
+    "照片位址": "https://www.ly.gov.tw//Images/Legislators/110106.jpg",
+    "是否離職": "否",
+    "離職日期": "",
+    "離職原因": "",
+    "歷屆立法委員編號": 688,
+    "電話": [
+      "院長室：02-2358-6011"
+    ],
+    "傳真": [
+      "院長室：02-2395-5317"
+    ],
+    "通訊處": [
+      "院長室：100220台北市中正區中山南路1號"
+    ]
+  },
+  "supported_relations": {
+    "propose_bills": {
+      "type": "bill",
+      "map": {
+        "屆": "屆",
+        "委員姓名": "提案人"
+      },
+      "subject": "委員為提案人的法案"
+    },
+    "cosign_bills": {
+      "type": "bill",
+      "map": {
+        "屆": "屆",
+        "委員姓名": "連署人"
+      },
+      "subject": "委員為連署人的法案"
+    },
+    "meets": {
+      "type": "meet",
+      "map": {
+        "屆": "屆",
+        "委員姓名": "會議資料.出席委員"
+      },
+      "subject": "委員出席的會議"
+    },
+    "interpellations": {
+      "type": "interpellation",
+      "map": {
+        "屆": "屆",
+        "委員姓名": "質詢委員"
+      },
+      "subject": "委員為質詢委員的質詢"
+    }
+  },
+  "relations": [
+    {
+      "url": "https://v2.ly.govapi.tw/legislator/11-%E9%9F%93%E5%9C%8B%E7%91%9C/propose_bills",
+      "name": "propose_bills"
+    },
+    {
+      "url": "https://v2.ly.govapi.tw/legislator/11-%E9%9F%93%E5%9C%8B%E7%91%9C/cosign_bills",
+      "name": "cosign_bills"
+    },
+    {
+      "url": "https://v2.ly.govapi.tw/legislator/11-%E9%9F%93%E5%9C%8B%E7%91%9C/meets",
+      "name": "meets"
+    },
+    {
+      "url": "https://v2.ly.govapi.tw/legislator/11-%E9%9F%93%E5%9C%8B%E7%91%9C/interpellations",
+      "name": "interpellations"
+    }
+  ]
+}

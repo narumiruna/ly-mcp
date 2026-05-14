@@ -35,6 +35,9 @@ pre_commit_hooks = ["uv lock", "git add uv.lock"]
 
 [tool.pytest]
 filterwarnings                     = ["ignore::DeprecationWarning"]
+markers                            = [
+  "live: tests that call the live Legislative Yuan API or run MCP tools that may call it",
+]
 asyncio_default_fixture_loop_scope = "function"
 
 [tool.ruff]

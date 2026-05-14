@@ -1,0 +1,20 @@
+name: Live Tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  live-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: uv sync
+      - name: Run live tests
+        run: uv run pytest -v -s -m live tests
