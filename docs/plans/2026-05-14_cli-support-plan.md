@@ -104,15 +104,15 @@ Command 設計原則：
 
 ## Plan
 
-- [ ] 新增 Typer dependency 與 console script：執行 `uv add typer`，在 `pyproject.toml` 加入 `ly = "lymcp.cli:app"`，並確認 `uv lock` 已更新；verify with `uv run ly --help` 可啟動且 `git diff -- pyproject.toml uv.lock` 只含預期 dependency/script 變更。
-- [ ] 建立 `src/lymcp/cli.py` 的 root app、全域輸出 options 與 `ly stat` command，重用 `GetStatRequest().do()` 並輸出 JSON；verify with `uv run ly stat` against a monkeypatched offline test and `uv run ly --help` showing the root command.
-- [ ] 建立 CLI 共用執行與輸出 helper，將 successful dict pretty-print 成 UTF-8 JSON，將 `LymcpApiError` 與 unexpected exceptions 轉為既有 JSON error envelope 與非零 exit code；verify with `uv run pytest -v -s tests/test_cli_mock.py -k error`.
-- [ ] 實作第一組 list/get command groups：`bills`、`laws`、`meets`、`legislators`，每個 group 至少包含 `list` 與 `get`，並涵蓋常用 filters；verify with `CliRunner` tests asserting request class kwargs and JSON stdout for fixture-backed responses.
-- [ ] 實作剩餘 command groups：`committees`、`gazettes`、`gazette-agendas`、`interpellations`、`ivods`、`law-versions`、`law-contents`，讓 CLI coverage 對齊所有 MCP tools；verify with a parametrized test comparing expected command inventory to the 39 existing tool-equivalent operations.
-- [ ] 為 agent-friendly usage 補上 README CLI 區塊，包含安裝後 `ly --help`、三到五個穩定範例、JSON output contract、錯誤 envelope、以及 MCP tool 到 CLI command 的映射規則；verify with `rg -n "ly bills list|ly laws versions|JSON" README.md`.
-- [ ] 若需要 agent skill 支援，新增或規劃 repo-local skill 文件，描述 command selection、date semantics、ID resolution workflow、以及何時改用 MCP tools；verify with skill file review or an explicit follow-up plan if repo does not yet want a skill in this PR.
-- [ ] 增加 CLI offline tests 到 `tests/test_cli_mock.py`，覆蓋 help、success JSON、error JSON、required argument failures、list filters、detail positional IDs、`--compact` 或 `--output` 行為；verify with `uv run pytest -v -s tests/test_cli_mock.py`.
-- [ ] 跑完整品質檢查，確認 CLI 變更沒有破壞 MCP server；verify with `just lint`, `just type`, and `just test`.
+- [x] 新增 Typer dependency 與 console script：執行 `uv add typer`，在 `pyproject.toml` 加入 `ly = "lymcp.cli:app"`，並確認 `uv.lock` 已更新；verified with `UV_CACHE_DIR=/tmp/uv-cache uv run ly --help`.
+- [x] 建立 `src/lymcp/cli.py` 的 root app、全域輸出 options 與 `ly stat` command，重用 `GetStatRequest().do()` 並輸出 JSON；verified with `tests/test_cli_mock.py::test_stat_outputs_fixture_json` and `UV_CACHE_DIR=/tmp/uv-cache uv run ly --help`.
+- [x] 建立 CLI 共用執行與輸出 helper，將 successful dict pretty-print 成 UTF-8 JSON，將 `LymcpApiError` 與 unexpected exceptions 轉為既有 JSON error envelope 與非零 exit code；verified with `tests/test_cli_mock.py::test_api_error_outputs_json_to_stderr`.
+- [x] 實作第一組 list/get command groups：`bills`、`laws`、`meets`、`legislators`，每個 group 至少包含 `list` 與 `get`，並涵蓋常用 filters；verified with `COMMAND_INVENTORY`, `CliRunner` tests, and help smoke commands.
+- [x] 實作剩餘 command groups：`committees`、`gazettes`、`gazette-agendas`、`interpellations`、`ivods`、`law-versions`、`law-contents`，讓 CLI coverage 對齊所有 MCP tools；verified with `tests/test_cli_mock.py::test_command_inventory_matches_mcp_tool_coverage`.
+- [x] 為 agent-friendly usage 補上 README CLI 區塊，包含安裝後 `ly --help`、三到五個穩定範例、JSON output contract、錯誤 envelope、以及 MCP tool 到 CLI command 的映射規則；verified with `rg -n "ly bills list|ly laws versions|JSON" README.md`.
+- [x] Not applicable: repo-local skill file was not added in this PR because this repository does not currently define a `skills/` layout. Agent-facing command selection guidance is documented in README, and a future repo-local skill can consume the stable `ly ...` command tree.
+- [x] 增加 CLI offline tests 到 `tests/test_cli_mock.py`，覆蓋 help、success JSON、error JSON、required argument failures、list filters、detail positional IDs、`--compact` 或 `--output` 行為；verified with `UV_CACHE_DIR=/tmp/uv-cache uv run pytest -v -s tests/test_cli_mock.py`.
+- [x] 跑完整品質檢查，確認 CLI 變更沒有破壞 MCP server；verified with `UV_CACHE_DIR=/tmp/uv-cache just lint`, `UV_CACHE_DIR=/tmp/uv-cache just type`, and `UV_CACHE_DIR=/tmp/uv-cache just test`.
 
 ## Risks
 
@@ -129,9 +129,9 @@ Command 設計原則：
 
 ## Completion Checklist
 
-- [ ] `ly` console script 可用，並由 `uv run ly --help` 與 `pyproject.toml` 的 `[project.scripts]` 證明。
-- [ ] CLI commands 覆蓋既有 39 個 MCP tool-equivalent operations，並由 command inventory test 證明。
-- [ ] CLI 成功輸出與失敗輸出都是 agent-friendly JSON，並由 `tests/test_cli_mock.py` success/error cases 證明。
-- [ ] CLI 使用既有 `src/lymcp/api.py` request classes，且沒有新增第二套 HTTP client，並由 code review 或 targeted tests 證明。
-- [ ] README 已記錄 `ly` 安裝與使用方式、範例 commands、輸出 contract 與日期/ID 查詢注意事項，並由 README diff 證明。
-- [ ] 品質檢查 `just lint`, `just type`, and `just test` 全部通過。
+- [x] `ly` console script 可用，並由 `UV_CACHE_DIR=/tmp/uv-cache uv run ly --help` 與 `pyproject.toml` 的 `[project.scripts]` 證明。
+- [x] CLI commands 覆蓋既有 39 個 MCP tool-equivalent operations，並由 `tests/test_cli_mock.py::test_command_inventory_matches_mcp_tool_coverage` 證明。
+- [x] CLI 成功輸出與失敗輸出都是 agent-friendly JSON，並由 `tests/test_cli_mock.py` success/error cases 證明。
+- [x] CLI 使用既有 `src/lymcp/api.py` request classes，且沒有新增第二套 HTTP client，並由 `src/lymcp/cli.py` imports and `rg -n "make_api_request|httpx|AsyncClient|requests|BASE_URL" src/lymcp/cli.py` returning no matches 證明。
+- [x] README 已記錄 `ly` 安裝與使用方式、範例 commands、輸出 contract 與日期/ID 查詢注意事項，並由 README Terminal CLI section 證明。
+- [x] 品質檢查 `UV_CACHE_DIR=/tmp/uv-cache just lint`, `UV_CACHE_DIR=/tmp/uv-cache just type`, and `UV_CACHE_DIR=/tmp/uv-cache just test` 全部通過。
