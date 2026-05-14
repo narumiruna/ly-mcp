@@ -1,6 +1,6 @@
 [project]
 name            = "lymcp"
-version         = "0.3.1"
+version         = "0.4.0"
 description     = "Model Context Protocol server for Taiwan Legislative Yuan API v2"
 readme          = "README.md"
 requires-python = ">=3.11"
@@ -47,7 +47,7 @@ requires      = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.bumpversion]
-current_version  = "0.3.1"
+current_version  = "0.4.0"
 tag              = true
 commit           = true
 pre_commit_hooks = ["uv lock", "git add uv.lock"]
