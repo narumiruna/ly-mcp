@@ -9,9 +9,11 @@ dependencies    = [
   "httpx>=0.28.1",
   "loguru>=0.7.3",
   "mcp[cli]>=1.27.1",
+  "typer>=0.25.1",
 ]
 
 [project.scripts]
+ly    = "lymcp.cli:app"
 lymcp = "lymcp.server:main"
 
 [dependency-groups]
