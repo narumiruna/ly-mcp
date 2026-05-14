@@ -178,6 +178,12 @@ cd ly-mcp
 uv sync
 ```
 
+### Using Codex CLI
+
+This repository includes `.codex/config.toml` for local Codex CLI development.
+When you start Codex CLI from the repository root, it can use the configured
+`lymcp` MCP server via `uv run lymcp`.
+
 ### Running the MCP Inspector
 
 ```bash
