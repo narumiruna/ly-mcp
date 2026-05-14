@@ -19,22 +19,19 @@ permissions:
 jobs:
   bump-version:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout the code
         uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@v7
       - name: Bump version
         id: bump
-        uses: callowayproject/bump-my-version@master
+        uses: callowayproject/bump-my-version@1.3.0
         env:
           BUMPVERSION_TAG: "true"
         with:
           args: ${{ inputs.bump-type }}
-          # Create a personal access token https://github.com/settings/tokens
-          # Add your role to bypass list in the branch protection settings
-          # github-token: ${{ secrets.GH_TOKEN }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # Use a Personal Access Token (PAT) to ensure the publish workflow is triggered on tag push
+          github-token: ${{ secrets.PAT_TOKEN }}
       - name: Check
         if: steps.bump.outputs.bumped == 'true'
         run: |
