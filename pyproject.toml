@@ -8,7 +8,7 @@ authors         = [{ name = "narumi", email = "toucans-cutouts0f@icloud.com" }]
 dependencies    = [
   "httpx>=0.28.1",
   "loguru>=0.7.3",
-  "mcp[cli]>=1.26.0",
+  "mcp[cli]>=1.27.1",
 ]
 
 [project.scripts]
@@ -16,11 +16,11 @@ lymcp = "lymcp.server:main"
 
 [dependency-groups]
 dev = [
-  "pytest>=9.0.2",
+  "pytest>=9.0.3",
   "pytest-asyncio>=1.3.0",
   "pytest-cov>=7.1.0",
-  "ruff>=0.15.8",
-  "ty>=0.0.27",
+  "ruff>=0.15.12",
+  "ty>=0.0.35",
 ]
 
 [build-system]
