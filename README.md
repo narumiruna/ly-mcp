@@ -1,4 +1,4 @@
-# ly-mcp
+# 🏛️ ly-mcp
 
 [![PyPI version](https://img.shields.io/pypi/v/lymcp)](https://pypi.org/project/lymcp/)
 [![Python](https://img.shields.io/pypi/pyversions/lymcp)](https://pypi.org/project/lymcp/)
@@ -6,79 +6,87 @@
 [![Docker](https://github.com/narumiruna/ly-mcp/actions/workflows/docker.yml/badge.svg)](https://github.com/narumiruna/ly-mcp/actions/workflows/docker.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A Model Context Protocol (MCP) server for Taiwan's Legislative Yuan API v2, providing comprehensive access to bills, committees, gazettes, meeting records, and related documents.
+ly-mcp 是一個串接台灣立法院 API v2 的 Model Context Protocol (MCP) 伺服器，提供議案、委員會、公報、會議紀錄與相關文件等資料查詢能力。
 
-## Features
+## ✨ 功能
 
-This MCP server provides 39 tools across 9 categories:
+此 MCP 伺服器提供 9 大類、共 39 個工具：
 
-### Statistics
-- **get_stat**: Get Legislative Yuan API statistics and overview information
+### 📊 統計
 
-### Bills (議案)
-- **list_bills**: List bills with optional filters by term, session, category, proposer, and other criteria
-- **get_bill**: Get comprehensive information about specific bills (returns complete JSON)
-- **get_bill_related_bills**: Query related bills and their associations
-- **get_bill_meets**: Access bill deliberation records from various meetings
-- **get_bill_doc_html**: Retrieve HTML document content for specific bills
+- **get_stat**：取得立法院 API 的統計與概覽資訊。
 
-### Committees (委員會)
-- **list_committees**: List Legislative Yuan committees with optional filters
-- **get_committee**: Get detailed information about specific committees
-- **get_committee_meets**: Access committee meeting records and proceedings
+### 📄 議案
 
-### Gazettes (公報)
-- **list_gazettes**: List Legislative Yuan gazettes with optional filters by volume and gazette ID
-- **get_gazette**: Get detailed information about specific gazettes
-- **get_gazette_agendas**: Get agendas/contents from specific gazettes
-- **list_gazette_agendas**: List all gazette agendas with optional filters by term, meeting date, etc.
-- **get_gazette_agenda**: Get detailed information about specific gazette agenda items
+- **list_bills**：列出議案，可依屆期、會期、類別、提案人等條件篩選。
+- **get_bill**：取得特定議案的完整資訊，回傳完整 JSON。
+- **get_bill_related_bills**：查詢相關議案與其關聯。
+- **get_bill_meets**：取得議案在各會議中的審議紀錄。
+- **get_bill_doc_html**：取得特定議案的 HTML 文件內容。
 
-### Interpellations (質詢)
-- **list_interpellations**: List interpellations with optional filters by member, term, session, and meeting code
-- **get_interpellation**: Get detailed information about specific interpellations
-- **get_legislator_interpellations**: Get interpellations where a specific legislator is the questioning member
+### 🏢 委員會
 
-### IVODs (網路電視)
-- **list_ivods**: List IVOD (Internet Video On Demand) recordings with optional filters by term, session, committee, member, and video type
-- **get_ivod**: Get detailed information about specific IVOD recordings, including video URLs, transcripts, and gazette content
-- **get_meet_ivods**: Get IVOD recordings related to specific meetings
+- **list_committees**：列出立法院委員會，可搭配篩選條件。
+- **get_committee**：取得特定委員會的詳細資訊。
+- **get_committee_meets**：取得委員會會議紀錄與議事內容。
 
-### Laws (法律)
-- **list_laws**: List laws with optional filters by law number, category (母法/子法), parent law number, status, and authority
-- **get_law**: Get comprehensive information about specific laws including basic data, articles, and version information
-- **get_law_progress**: Get undecided progress list for specific laws
-- **get_law_bills**: Get bills related to specific laws with optional filters
-- **get_law_versions**: Get historical version records for specific laws including changes, proposers, and progress
-- **list_law_versions**: List law versions across laws with optional filters by law number, version number, date, action, progress, and current version status
-- **get_law_version**: Get detailed information about a specific law version by version ID
-- **get_law_version_contents**: Get law article contents included in a specific law version
-- **list_law_contents**: List law articles/contents with optional filters by law number, version ID, article number, current version status, and version tracking
-- **get_law_content**: Get detailed information about specific law articles/contents using law content ID
+### 📰 公報
 
-### Meets (會議)
-- **list_meets**: List Legislative Yuan meetings with optional filters by term, session, meeting type, attendees, date, committee code, and meeting ID
-- **get_meet**: Get detailed information about specific meetings using meeting ID/code
-- **get_meet_ivods**: Get IVOD (Internet Video On Demand) recordings related to specific meetings with optional filters
-- **get_meet_bills**: Get bills discussed in specific meetings with optional filters by bill criteria
-- **get_meet_interpellations**: Get interpellations that occurred in specific meetings with optional filters
+- **list_gazettes**：列出立法院公報，可依卷期與公報編號篩選。
+- **get_gazette**：取得特定公報的詳細資訊。
+- **get_gazette_agendas**：取得特定公報中的議程或目錄內容。
+- **list_gazette_agendas**：列出公報目錄，可依屆期、會議日期等條件篩選。
+- **get_gazette_agenda**：取得特定公報目錄項目的詳細資訊。
 
-### Legislators (立法委員)
-- **list_legislators**: List legislators with optional filters by term, party, district name, legislator ID, and name
-- **get_legislator**: Get detailed information about specific legislators by term and name
-- **get_legislator_propose_bills**: Get bills proposed by a specific legislator with optional filters by bill criteria
-- **get_legislator_cosign_bills**: Get bills co-signed by a specific legislator with optional filters by bill criteria
-- **get_legislator_meets**: Get meetings attended by a specific legislator with optional filters by meeting criteria
-- **get_legislator_interpellations**: Get interpellations made by a specific legislator with optional filters
+### 🎙️ 質詢
 
-## API Source
+- **list_interpellations**：列出質詢資料，可依委員、屆期、會期與會議代碼篩選。
+- **get_interpellation**：取得特定質詢的詳細資訊。
+- **get_legislator_interpellations**：取得特定立法委員作為質詢委員的質詢資料。
 
-This MCP server uses the [Legislative Yuan API v2](https://ly.govapi.tw/v2) as its data source, providing information about Taiwan's Legislative Yuan bills and proceedings.
+### 🎥 IVOD（網路電視）
 
-## Tool Response Contract
+- **list_ivods**：列出 IVOD 影片，可依屆期、會期、委員會、委員與影片類型篩選。
+- **get_ivod**：取得特定 IVOD 影片的詳細資訊，包含影片網址、逐字稿與公報內容。
+- **get_meet_ivods**：取得特定會議相關的 IVOD 影片。
 
-Successful MCP tool calls return the raw JSON payload from the Legislative Yuan
-API. Failed tool calls return a machine-checkable JSON error envelope:
+### ⚖️ 法律
+
+- **list_laws**：列出法律，可依法律編號、類別（母法或子法）、母法編號、狀態與主管機關篩選。
+- **get_law**：取得特定法律的完整資訊，包含基本資料、法條與版本資訊。
+- **get_law_progress**：取得特定法律的未議決進度列表。
+- **get_law_bills**：取得特定法律相關的議案，可搭配篩選條件。
+- **get_law_versions**：取得特定法律的歷史版本紀錄，包含修正內容、提案人與進度。
+- **list_law_versions**：跨法律列出法律版本，可依法律編號、版本編號、日期、動作、進度與現行版本狀態篩選。
+- **get_law_version**：依版本 ID 取得特定法律版本的詳細資訊。
+- **get_law_version_contents**：取得特定法律版本包含的法條內容。
+- **list_law_contents**：列出法條內容，可依法律編號、版本 ID、條號、現行版狀態與版本追蹤篩選。
+- **get_law_content**：依法條內容 ID 取得特定法條的詳細資訊。
+
+### 🗓️ 會議
+
+- **list_meets**：列出立法院會議，可依屆期、會期、會議種類、出席委員、日期、委員會代號與會議編號篩選。
+- **get_meet**：依會議 ID 或代碼取得特定會議的詳細資訊。
+- **get_meet_ivods**：取得特定會議相關的 IVOD 影片，可搭配篩選條件。
+- **get_meet_bills**：取得特定會議討論的議案，可依議案條件篩選。
+- **get_meet_interpellations**：取得特定會議中的質詢資料，可搭配篩選條件。
+
+### 👤 立法委員
+
+- **list_legislators**：列出立法委員，可依屆期、黨籍、選區、委員 ID 與姓名篩選。
+- **get_legislator**：依屆期與姓名取得特定立法委員的詳細資訊。
+- **get_legislator_propose_bills**：取得特定立法委員作為提案人的議案，可依議案條件篩選。
+- **get_legislator_cosign_bills**：取得特定立法委員作為連署人的議案，可依議案條件篩選。
+- **get_legislator_meets**：取得特定立法委員出席的會議，可依會議條件篩選。
+- **get_legislator_interpellations**：取得特定立法委員的質詢資料，可搭配篩選條件。
+
+## 🔗 API 來源
+
+此 MCP 伺服器使用 [立法院 API v2](https://ly.govapi.tw/v2) 作為資料來源，提供台灣立法院議案與議事資料。
+
+## 📦 工具回應格式
+
+MCP 工具呼叫成功時，會回傳立法院 API 的原始 JSON payload。呼叫失敗時，會回傳可由程式判讀的 JSON 錯誤封包：
 
 ```json
 {
@@ -93,22 +101,21 @@ API. Failed tool calls return a machine-checkable JSON error envelope:
 }
 ```
 
-Current error `type` values include `http_status`, `timeout`,
-`network_error`, `invalid_json`, and `unexpected_error`.
+目前的錯誤 `type` 包含 `http_status`、`timeout`、`network_error`、`invalid_json` 與 `unexpected_error`。
 
-## Installation & Usage
+## 🚀 安裝與使用
 
-### Quick Start
+### ⚡ 快速開始
 
-Install and run the server using `uvx`:
+使用 `uvx` 安裝並執行伺服器：
 
 ```bash
 uvx lymcp@latest
 ```
 
-### MCP Client Configuration
+### 🧩 MCP Client 設定
 
-Add the server to your MCP client configuration (e.g., Claude Desktop):
+將此伺服器加入你的 MCP client 設定，例如 Claude Desktop。
 
 #### PyPI
 
@@ -140,7 +147,7 @@ Add the server to your MCP client configuration (e.g., Claude Desktop):
 }
 ```
 
-#### Local Development
+#### 本機開發
 
 ```json
 {
@@ -176,39 +183,38 @@ Add the server to your MCP client configuration (e.g., Claude Desktop):
 }
 ```
 
-## Example Prompts
+## 💬 範例提示
 
-Once connected to the MCP server, you can ask your LLM questions like:
+連上 MCP 伺服器後，可以向 LLM 提出這類問題：
 
-- "列出第11屆的所有法律提案" (List all bills from the 11th term)
-- "查詢立法委員王美花的提案紀錄" (Look up legislator Wang Mei-hua's proposed bills)
-- "以今天的台北日期為準，最近已發生的院會討論了哪些議案？" (Using today's Taipei date, what bills were discussed in the latest occurred plenary meeting?)
-- "下一場已排程的院會是什麼時候？" (When is the next scheduled plenary meeting?)
-- "查詢勞動基準法的修法歷程" (Look up the amendment history of the Labor Standards Act)
-- "第11屆第1會期有哪些委員會會議？" (What committee meetings were held in the 1st session of the 11th term?)
+- 「列出第11屆的所有法律提案」
+- 「查詢立法委員王美花的提案紀錄」
+- 「以今天的台北日期為準，最近已發生的院會討論了哪些議案？」
+- 「下一場已排程的院會是什麼時候？」
+- 「查詢勞動基準法的修法歷程」
+- 「第11屆第1會期有哪些委員會會議？」
 
-For date-sensitive questions, distinguish:
+處理和日期有關的問題時，請區分：
 
-- `latest known`: use the upstream default sort, including future scheduled records.
-- `latest occurred`: only consider records whose relevant date is on or before the reference date.
-- `next scheduled`: only consider records whose relevant date is after the reference date.
+- `latest known`：使用上游預設排序，包含未來已排程的紀錄。
+- `latest occurred`：只考慮相關日期在參考日期當天或之前的紀錄。
+- `next scheduled`：只考慮相關日期晚於參考日期的紀錄。
 
-The server also exposes MCP prompts for common workflows:
-`latest_plenary_meeting_bills`, `law_amendment_history`,
-`legislator_proposal_record`, `legislator_interpellations`, and
-`committee_meeting_lookup`. Read `lymcp://query-semantics` and
-`lymcp://workflow-reference` for compact guidance on date semantics, filters,
-ID fields, and workflow steps.
+伺服器也提供常見工作流程用的 MCP prompts：
+`latest_plenary_meeting_bills`、`law_amendment_history`、
+`legislator_proposal_record`、`legislator_interpellations` 與
+`committee_meeting_lookup`。可閱讀 `lymcp://query-semantics` 與
+`lymcp://workflow-reference`，取得日期語意、篩選條件、ID 欄位與工作流程步驟的精簡指引。
 
-## Development
+## 🛠️ 開發
 
-### Prerequisites
+### ✅ 需求
 
 - Python 3.12+
-- [uv](https://docs.astral.sh/uv/) package manager
-- [just](https://github.com/casey/just) command runner
+- [uv](https://docs.astral.sh/uv/) 套件管理器
+- [just](https://github.com/casey/just) 命令執行器
 
-### Setup
+### ⚙️ 設定
 
 ```bash
 git clone https://github.com/narumiruna/ly-mcp
@@ -216,45 +222,41 @@ cd ly-mcp
 uv sync
 ```
 
-### Using Codex CLI
+### 🤖 使用 Codex CLI
 
-This repository includes `.codex/config.toml` for local Codex CLI development.
-When you start Codex CLI from the repository root, it can use the configured
-`lymcp` MCP server via `uv run lymcp`.
+此 repository 已包含供本機 Codex CLI 開發使用的 `.codex/config.toml`。從 repository root 啟動 Codex CLI 時，可透過 `uv run lymcp` 使用已設定的 `lymcp` MCP server。
 
-### Running the MCP Inspector
+### 🔍 執行 MCP Inspector
 
 ```bash
 just dev
 ```
 
-### Running Tests
+### 🧪 執行測試
 
 ```bash
-# Run the default offline test suite with coverage
+# 執行預設離線測試套件並產生 coverage
 just test
 
-# Run the default offline test suite directly
+# 直接執行預設離線測試套件
 uv run pytest -v -s
 
-# Run live tests against the Legislative Yuan API manually
+# 手動執行會呼叫立法院 API 的 live tests
 just test-live
 ```
 
-The default pytest configuration excludes tests marked `live`, so CI and normal
-local runs use fixture-backed samples from `tests/data`. Refresh those JSON
-samples intentionally when the live API shape changes.
+預設 pytest 設定會排除標記為 `live` 的測試，因此 CI 與一般本機執行會使用 `tests/data` 中的 fixture-backed samples。只有在上游 API 回應形狀改變時，才應有意識地更新這些 JSON samples。
 
-### Code Quality
+### 🧹 程式碼品質
 
 ```bash
-# Run linter
+# 執行 linter
 just lint
 
-# Run type checker
+# 執行 type checker
 just type
 ```
 
-## License
+## 📜 授權
 
 MIT
