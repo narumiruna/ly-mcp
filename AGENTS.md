@@ -10,6 +10,12 @@
 - `tests/data/` stores checked-in JSON fixtures for deterministic tests.
 - `docs/` contains endpoint audits and archived implementation plans.
 
+## Swagger Contract Alignment
+
+- Treat the repository-root `swagger.yaml`, refreshed from the upstream API with `scripts/download-swagger.sh`, as the source of truth for supported endpoints and query parameters.
+- When `swagger.yaml` changes, implement every documented endpoint and query parameter end to end across request models in `src/lymcp/api.py`, MCP tools in `src/lymcp/tools/`, CLI commands in `src/lymcp/commands/`, and agent guidance in `skills/ly/SKILL.md`.
+- Keep `tests/test_swagger_coverage.py` and the relevant API, MCP, CLI, live, README, and endpoint-audit coverage synchronized; verify contract-alignment changes with `just lint`, `just type`, and `just test`.
+
 ## Build, Test, and Development Commands
 
 - `uv sync` installs project and development dependencies.
