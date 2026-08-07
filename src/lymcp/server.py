@@ -2,7 +2,7 @@ import json
 from typing import Annotated
 
 from loguru import logger
-from mcp.server.fastmcp import FastMCP
+from mcp.server import MCPServer
 from pydantic import Field
 
 from lymcp.api import GetBillDocHtmlRequest
@@ -47,7 +47,7 @@ from lymcp.api import ListMeetsRequest
 from lymcp.api import LymcpApiError
 
 # https://github.com/jlowin/fastmcp/issues/81#issuecomment-2714245145
-mcp = FastMCP("立法院 API v2 MCP Server", log_level="ERROR")
+mcp = MCPServer("立法院 API v2 MCP Server", log_level="ERROR")
 
 
 def _serialize_tool_error(action: str, error: Exception) -> str:

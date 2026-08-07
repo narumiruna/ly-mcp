@@ -149,6 +149,8 @@ async def test_discovery_resources_are_registered_and_readable() -> None:
 
     query_semantics = list(await server.mcp.read_resource("lymcp://query-semantics"))
     workflow_reference = list(await server.mcp.read_resource("lymcp://workflow-reference"))
+    assert not isinstance(query_semantics[0], tuple)
+    assert not isinstance(workflow_reference[0], tuple)
     query_semantics_text = query_semantics[0].content
     workflow_reference_text = workflow_reference[0].content
 

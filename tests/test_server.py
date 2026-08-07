@@ -509,7 +509,7 @@ async def test_list_law_contents(server_params: StdioServerParameters) -> None:
             },
         )
 
-        assert result.isError is False
+        assert result.is_error is False
         assert len(result.content) == 1
         assert isinstance(result.content[0], TextContent)
 
@@ -535,7 +535,7 @@ async def test_list_law_contents_with_filters(server_params: StdioServerParamete
             },
         )
 
-        assert result.isError is False
+        assert result.is_error is False
         assert len(result.content) == 1
         assert isinstance(result.content[0], TextContent)
 
@@ -558,7 +558,7 @@ async def test_get_law_content(server_params: StdioServerParameters) -> None:
             },
         )
 
-        assert list_result.isError is False
+        assert list_result.is_error is False
 
         # We can also test with a known format, based on the swagger spec example
         result = await session.call_tool(
@@ -585,7 +585,7 @@ async def test_list_legislators(server_params: StdioServerParameters) -> None:
         # Test basic legislators listing
         result = await session.call_tool("list_legislators", {"page": 1, "limit": 5})
 
-        assert result.isError is False
+        assert result.is_error is False
         assert len(result.content) == 1
         assert isinstance(result.content[0], TextContent)
 
@@ -611,7 +611,7 @@ async def test_list_legislators_with_filters(server_params: StdioServerParameter
             },
         )
 
-        assert result.isError is False
+        assert result.is_error is False
         assert len(result.content) == 1
         assert isinstance(result.content[0], TextContent)
 
