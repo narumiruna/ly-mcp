@@ -26,7 +26,7 @@ ly-mcp 是一個串接台灣立法院 API v2 的 Model Context Protocol (MCP) �
 
 ### 🏢 委員會
 
-- **list_committees**：列出立法院委員會，可搭配篩選條件。
+- **list_committees**：列出立法院委員會，可依整數類別代碼與委員會代號篩選。
 - **get_committee**：取得特定委員會的詳細資訊。
 - **get_committee_meets**：取得委員會會議紀錄與議事內容。
 

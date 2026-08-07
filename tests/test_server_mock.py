@@ -44,7 +44,7 @@ DETAIL_ERROR_CASES = [
 
 
 TOOL_RESPONSE_CASES = [
-    ("get_bill_related_bills", "GetBillRelatedBillsRequest", {"bill_no": "202110213410000", "limit": 1}),
+    ("get_bill_related_bills", "GetBillRelatedBillsRequest", {"bill_no": "202110213410000"}),
     (
         "get_bill_meets",
         "GetBillMeetsRequest",
@@ -62,9 +62,13 @@ TOOL_RESPONSE_CASES = [
         },
     ),
     ("get_bill_doc_html", "GetBillDocHtmlRequest", {"bill_no": "202110213410000"}),
-    ("list_committees", "ListCommitteesRequest", {"limit": 1}),
+    ("list_committees", "ListCommitteesRequest", {"committee_type": 1, "comt_cd": 15, "limit": 1}),
     ("get_committee", "GetCommitteeRequest", {"comt_cd": "16"}),
-    ("get_committee_meets", "GetCommitteeMeetsRequest", {"comt_cd": "16", "term": 11, "limit": 1}),
+    (
+        "get_committee_meets",
+        "GetCommitteeMeetsRequest",
+        {"comt_cd": "16", "term": 11, "committee_code": 23, "limit": 1},
+    ),
     ("list_gazettes", "ListGazettesRequest", {"limit": 1}),
     ("get_gazette", "GetGazetteRequest", {"gazette_id": "1137701"}),
     (
@@ -90,7 +94,7 @@ TOOL_RESPONSE_CASES = [
     (
         "get_legislator_interpellations",
         "GetLegislatorInterpellationsRequest",
-        {"term": 11, "name": "韓國瑜", "limit": 1},
+        {"term": 11, "name": "韓國瑜", "term_query": 10, "limit": 1},
     ),
     ("list_ivods", "ListIvodsRequest", {"term": 11, "video_type": "Clip", "limit": 1}),
     ("get_ivod", "GetIvodRequest", {"ivod_id": "156045"}),
@@ -209,6 +213,12 @@ async def test_aligned_query_parameters_are_exposed_in_tool_schemas() -> None:
         "output_fields",
     }
     assert "gazette_number" in tools["get_gazette_agendas"].input_schema["properties"]
+    assert tools["list_committees"].input_schema["properties"]["committee_type"]["anyOf"][0]["type"] == "integer"
+    assert tools["list_committees"].input_schema["properties"]["comt_cd"]["anyOf"][0]["type"] == "integer"
+    assert tools["get_committee_meets"].input_schema["properties"]["committee_code"]["anyOf"][0]["type"] == "integer"
+    assert "term_query" in tools["get_legislator_interpellations"].input_schema["properties"]
+    assert "page" not in tools["get_bill_related_bills"].input_schema["properties"]
+    assert "limit" not in tools["get_bill_related_bills"].input_schema["properties"]
 
 
 @pytest.mark.asyncio

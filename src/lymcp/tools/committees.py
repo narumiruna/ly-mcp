@@ -10,8 +10,8 @@ from lymcp.tools.support import serialize_tool_error as _serialize_tool_error
 
 
 async def list_committees(
-    committee_type: Annotated[str | None, Field(description="委員會類別")] = None,
-    comt_cd: Annotated[str | None, Field(description="委員會代號")] = None,
+    committee_type: Annotated[int | None, Field(description="委員會類別代碼，例：1（常設委員會）")] = None,
+    comt_cd: Annotated[int | None, Field(description="委員會代號，例：15")] = None,
     page: Annotated[int, Field(description="頁數，預設1")] = 1,
     limit: Annotated[int, Field(description="每頁筆數，預設20，建議不超過100")] = 20,
     output_fields: Annotated[
@@ -22,8 +22,8 @@ async def list_committees(
     列出委員會列表。
 
     Args:
-        committee_type: 委員會類別
-        comt_cd: 委員會代號
+        committee_type: 委員會類別代碼，例：1（常設委員會）
+        comt_cd: 委員會代號，例：15
         page: 頁數，預設1
         limit: 每頁筆數，預設20，建議不超過100
         output_fields: 自訂回傳欄位（如需指定欄位，請填寫欄位名稱列表）
@@ -79,7 +79,7 @@ async def get_committee_meets(
     meeting_type: Annotated[str | None, Field(description="會議種類，例: 院會、委員會")] = None,
     member: Annotated[str | None, Field(description="會議資料.出席委員")] = None,
     date: Annotated[str | None, Field(description="日期，格式：YYYY-MM-DD")] = None,
-    committee_code: Annotated[str | None, Field(description="委員會代號")] = None,
+    committee_code: Annotated[int | None, Field(description="委員會代號")] = None,
     meet_id: Annotated[str | None, Field(description="會議資料.會議編號")] = None,
     bill_no: Annotated[str | None, Field(description="議事網資料.關係文書.議案.議案編號")] = None,
     law_number: Annotated[str | None, Field(description="議事網資料.關係文書.議案.法律編號")] = None,

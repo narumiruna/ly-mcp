@@ -107,9 +107,9 @@ def get_bill(bill_no: str) -> None:
 
 
 @app.command("related")
-def get_bill_related_bills(bill_no: str, page: int = 1, limit: int = 20) -> None:
+def get_bill_related_bills(bill_no: str) -> None:
     """Get related bills."""
-    _run(api.GetBillRelatedBillsRequest(bill_no=bill_no, page=page, limit=limit), "Failed to get related bills")
+    _run(api.GetBillRelatedBillsRequest(bill_no=bill_no), "Failed to get related bills")
 
 
 @app.command("meets")

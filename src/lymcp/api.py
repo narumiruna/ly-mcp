@@ -161,15 +161,11 @@ class GetBillMeetsRequest(BaseModel):
 
 class GetBillRelatedBillsRequest(BaseModel):
     bill_no: str = Field(..., serialization_alias=translate["bill_no"])
-    page: int = 1
-    limit: int = 20
 
     async def do(self) -> dict:
-        params = self.model_dump(exclude_none=True, by_alias=True, exclude={"bill_no"})
-        logger.info("Getting bill related bills for bill_no: {}, params: {}", self.bill_no, params)
+        logger.info("Getting bill related bills for bill_no: {}", self.bill_no)
         return await make_api_request(
             url=f"{BASE_URL}/bills/{self.bill_no}/related_bills",
-            params=params,
         )
 
 
@@ -184,8 +180,8 @@ class GetBillDocHtmlRequest(BaseModel):
 
 
 class ListCommitteesRequest(BaseModel):
-    committee_type: str | None = Field(default=None, serialization_alias=translate["committee_type"])
-    comt_cd: str | None = Field(default=None, serialization_alias=translate["comt_cd"])
+    committee_type: int | None = Field(default=None, serialization_alias=translate["committee_type"])
+    comt_cd: int | None = Field(default=None, serialization_alias=translate["comt_cd"])
     page: int = 1
     limit: int = 20
     output_fields: list[str] = Field(default_factory=list)
@@ -217,7 +213,7 @@ class GetCommitteeMeetsRequest(BaseModel):
     meeting_type: str | None = Field(default=None, serialization_alias=translate["meeting_type"])
     member: str | None = Field(default=None, serialization_alias=translate["member"])
     date: str | None = Field(default=None, serialization_alias=translate["date"])
-    committee_code: str | None = Field(default=None, serialization_alias=translate["committee_code"])
+    committee_code: int | None = Field(default=None, serialization_alias=translate["committee_code"])
     meet_id: str | None = Field(default=None, serialization_alias=translate["meet_id"])
     bill_no: str | None = Field(default=None, serialization_alias=translate["bill_no_nested"])
     law_number: str | None = Field(default=None, serialization_alias=translate["law_number_nested"])

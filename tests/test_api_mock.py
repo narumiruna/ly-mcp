@@ -215,9 +215,9 @@ async def test_request_uses_expected_endpoint_and_returns_fixture(
             },
         ),
         (
-            lambda: api.GetBillRelatedBillsRequest(bill_no="202110213410000", limit=1),
+            lambda: api.GetBillRelatedBillsRequest(bill_no="202110213410000"),
             f"{api.BASE_URL}/bills/202110213410000/related_bills",
-            {"page": 1, "limit": 1},
+            None,
         ),
         (
             lambda: api.GetBillDocHtmlRequest(bill_no="202110213410000"),
@@ -225,9 +225,9 @@ async def test_request_uses_expected_endpoint_and_returns_fixture(
             None,
         ),
         (
-            lambda: api.ListCommitteesRequest(limit=1),
+            lambda: api.ListCommitteesRequest(committee_type=1, comt_cd=15, limit=1),
             f"{api.BASE_URL}/committees",
-            {"page": 1, "limit": 1, "output_fields": []},
+            {"委員會類別": 1, "委員會代號": 15, "page": 1, "limit": 1, "output_fields": []},
         ),
         (
             lambda: api.GetCommitteeRequest(comt_cd="16"),
@@ -235,9 +235,9 @@ async def test_request_uses_expected_endpoint_and_returns_fixture(
             None,
         ),
         (
-            lambda: api.GetCommitteeMeetsRequest(comt_cd="16", term=11, limit=1),
+            lambda: api.GetCommitteeMeetsRequest(comt_cd="16", term=11, committee_code=23, limit=1),
             f"{api.BASE_URL}/committees/16/meets",
-            {"屆": 11, "page": 1, "limit": 1, "output_fields": []},
+            {"屆": 11, "委員會代號": 23, "page": 1, "limit": 1, "output_fields": []},
         ),
         (
             lambda: api.GetGazetteAgendasRequest(
@@ -272,9 +272,9 @@ async def test_request_uses_expected_endpoint_and_returns_fixture(
             None,
         ),
         (
-            lambda: api.GetLegislatorInterpellationsRequest(term=11, name="韓國瑜", limit=1),
+            lambda: api.GetLegislatorInterpellationsRequest(term=11, name="韓國瑜", term_query=10, limit=1),
             f"{api.BASE_URL}/legislators/11/韓國瑜/interpellations",
-            {"page": 1, "limit": 1, "output_fields": []},
+            {"屆": 10, "page": 1, "limit": 1, "output_fields": []},
         ),
         (
             lambda: api.ListIvodsRequest(term=11, video_type="Clip", limit=1),

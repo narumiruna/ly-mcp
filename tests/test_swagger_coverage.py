@@ -7,6 +7,7 @@ from typing import get_args
 from typing import get_origin
 
 import pytest
+import typer
 import yaml
 from pydantic import BaseModel
 
@@ -140,13 +141,29 @@ def sample_value(annotation: Any) -> object:
     return "value"
 
 
+def resolve_cli_command(root: Any, command_path: tuple[str, ...]) -> Any:
+    command = root
+    for command_name in command_path:
+        command = command.commands[command_name]
+    return command
+
+
 @pytest.mark.asyncio
 async def test_swagger_endpoints_match_mcp_tools_and_cli_commands() -> None:
-    tools = await server.mcp.list_tools()
+    tools = {tool.name: tool for tool in await server.mcp.list_tools()}
+    cli_root = typer.main.get_command(cli.app)
+    contract = swagger_contract()
 
     assert set(ENDPOINT_COVERAGE) == swagger_paths()
-    assert {tool for tool, _ in ENDPOINT_COVERAGE.values()} == {tool.name for tool in tools}
+    assert {tool for tool, _ in ENDPOINT_COVERAGE.values()} == set(tools)
     assert {command for _, command in ENDPOINT_COVERAGE.values()} == set(cli.COMMAND_INVENTORY)
+
+    for endpoint, (tool_name, command_path) in ENDPOINT_COVERAGE.items():
+        operation_parameters = contract["paths"][endpoint]["get"].get("parameters", [])
+        cli_command = resolve_cli_command(cli_root, command_path)
+
+        assert len(tools[tool_name].input_schema["properties"]) == len(operation_parameters), endpoint
+        assert len(cli_command.params) == len(operation_parameters), endpoint
 
 
 @pytest.mark.asyncio

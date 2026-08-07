@@ -81,6 +81,7 @@ async def get_legislator_interpellations(
     term: Annotated[int, Field(description="屆，必填，例：11")],
     name: Annotated[str, Field(description="委員姓名，必填，例：韓國瑜")],
     interpellation_member: Annotated[str | None, Field(description="質詢委員姓名，例：羅智強")] = None,
+    term_query: Annotated[int | None, Field(description="查詢條件中的屆，例：10")] = None,
     session: Annotated[int | None, Field(description="會期，例：2")] = None,
     meeting_code: Annotated[str | None, Field(description="會議代碼，例：院會-11-2-6")] = None,
     page: Annotated[int, Field(description="頁數，預設1")] = 1,
@@ -96,6 +97,7 @@ async def get_legislator_interpellations(
         term: 屆期，必填，例：11
         name: 委員姓名，必填，例：韓國瑜
         interpellation_member: 質詢委員姓名，例：羅智強
+        term_query: 查詢條件中的屆，例：10
         session: 會期，例：2
         meeting_code: 會議代碼，例：院會-11-2-6
         page: 頁數，預設1
@@ -113,7 +115,7 @@ async def get_legislator_interpellations(
             term=term,
             name=name,
             interpellation_member=interpellation_member,
-            term_query=term,
+            term_query=term_query,
             session=session,
             meeting_code=meeting_code,
             page=page,

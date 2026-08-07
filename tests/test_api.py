@@ -82,10 +82,12 @@ async def test_bill_doc_html_request_real():
 
 @pytest.mark.asyncio
 async def test_list_committees_request_real():
-    req = api.ListCommitteesRequest(limit=1)
+    req = api.ListCommitteesRequest(committee_type=1, comt_cd=19, limit=1)
     resp = await req.do()
-    # 回傳資料可能在 'committees'、'data'、'results'
-    assert any(k in resp for k in ("committees", "data", "results"))
+
+    assert "1" in resp["filter"]["委員會類別"]
+    assert "19" in resp["filter"]["委員會代號"]
+    assert resp["committees"]
 
 
 @pytest.mark.asyncio
@@ -123,9 +125,10 @@ async def test_committee_meets_request_real():
                 comt_cd = str(comt_cd)
             break
     assert comt_cd
-    req = api.GetCommitteeMeetsRequest(comt_cd=comt_cd, limit=1)
+    req = api.GetCommitteeMeetsRequest(comt_cd=comt_cd, committee_code=int(comt_cd), limit=1)
     resp = await req.do()
-    # 會議資料可能在 'meets'、'data'、'results'
+
+    assert str(comt_cd) in resp["filter"]["委員會代號"]
     assert any(k in resp for k in ("meets", "data", "results"))
 
 
@@ -225,11 +228,12 @@ async def test_get_interpellation_request():
 
 @pytest.mark.asyncio
 async def test_get_legislator_interpellations_request():
-    req = api.GetLegislatorInterpellationsRequest(term=11, name="韓國瑜", limit=1)
+    req = api.GetLegislatorInterpellationsRequest(term=11, name="韓國瑜", term_query=10, limit=1)
     resp = await req.do()
-    # 委員質詢資料應該有回應
-    assert resp is not None
+
     assert isinstance(resp, dict)
+    assert "10" in resp["filter"]["屆"]
+    assert "11" in resp["filter"]["屆"]
 
 
 @pytest.mark.asyncio

@@ -9,8 +9,8 @@ app = typer.Typer(no_args_is_help=True, help="Query committees.")
 
 @app.command("list")
 def list_committees(
-    committee_type: str | None = None,
-    comt_cd: str | None = None,
+    committee_type: int | None = None,
+    comt_cd: int | None = None,
     page: int = 1,
     limit: int = 20,
     fields: str | None = typer.Option(None, "--fields", help="Comma-separated upstream output fields."),
@@ -43,7 +43,7 @@ def get_committee_meets(
     meeting_type: str | None = None,
     member: str | None = None,
     date: str | None = None,
-    committee_code: str | None = None,
+    committee_code: int | None = None,
     meet_id: str | None = None,
     bill_no: str | None = None,
     law_number: str | None = None,

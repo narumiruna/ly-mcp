@@ -204,6 +204,42 @@ def test_nested_bill_and_gazette_filters_reach_requests(monkeypatch: Any) -> Non
             assert calls[0][key] == value
 
 
+def test_contract_aligned_cli_parameters(monkeypatch: Any) -> None:
+    cases = [
+        (
+            ["committees", "list", "--committee-type", "1", "--comt-cd", "15"],
+            "ListCommitteesRequest",
+            {"committee_type": 1, "comt_cd": 15},
+        ),
+        (
+            ["committees", "meets", "16", "--committee-code", "23"],
+            "GetCommitteeMeetsRequest",
+            {"committee_code": 23},
+        ),
+        (
+            ["legislators", "interpellations", "11", "韓國瑜", "--term-query", "10"],
+            "GetLegislatorInterpellationsRequest",
+            {"term": 11, "term_query": 10},
+        ),
+    ]
+
+    for command, request_class_name, expected in cases:
+        calls: list[dict[str, Any]] = []
+        monkeypatch.setattr(cli.api, request_class_name, recording_request(calls))
+
+        result = runner.invoke(cli.app, command)
+
+        assert result.exit_code == 0, result.output
+        assert len(calls) == 1
+        for key, value in expected.items():
+            assert calls[0][key] == value
+
+    related_help = runner.invoke(cli.app, ["bills", "related", "--help"])
+    assert related_help.exit_code == 0
+    assert "--page" not in related_help.stdout
+    assert "--limit" not in related_help.stdout
+
+
 def test_vote_commands_pass_filters_and_identifiers(monkeypatch: Any) -> None:
     cases = [
         (

@@ -63,6 +63,8 @@ The MCP tools expose stable, high-value query fields as first-class parameters. 
 | Laws | Law version filters: `法律編號`, `版本編號`, `日期`, `動作`, `歷程.主提案`, `歷程.進度`, `現行版本` | first-class parameters | Covered by `list_law_versions` and existing nested `get_law_versions`. |
 | Law contents | `法律編號`, `版本編號`, `順序`, `條號`, `現行版`, `版本追蹤` | first-class parameters | Covered by `list_law_contents` and `get_law_version_contents`. |
 | Bill meetings | All 13 query fields on `/bills/{billNo}/meets` | first-class parameters | Meeting, attendee, committee, nested bill/law, pagination, and output-field filters are distinct from the required bill path value. |
+| Legislator interpellations | `屆` on `/legislators/{term}/{name}/interpellations` | first-class parameter | Exposed as `term_query` so it remains independently controllable from the required `term` path value. |
+| Committees | `委員會類別`, `委員會代號` | integer parameters | API models, MCP schemas, and CLI options use the integer types declared by Swagger. |
 | Meetings, IVODs, legislators | Fields represented by current request models | first-class parameters | All query fields declared by the current Swagger contract are serialized. |
 | Any endpoint | Response-only fields not accepted as filters | deferred | Keep accessible through `output_fields`; promote only after `swagger.yaml` or live `supported_filter_fields` confirms filter support. |
 
@@ -70,6 +72,7 @@ The MCP tools expose stable, high-value query fields as first-class parameters. 
 
 - `swagger.yaml` lists 42 endpoints, and the server registers 42 MCP tools.
 - `tests/test_swagger_coverage.py` maps every Swagger path to one MCP tool, one CLI command path, and one request model.
+- Each operation has the same parameter cardinality in Swagger, its MCP schema, and its CLI command; undocumented tool and CLI parameters fail the audit.
 - The Swagger serialization audit verifies all 298 endpoint/query-parameter slots are present in emitted request parameters.
 - `tests/test_api_mock.py` covers URL and parameter serialization for all request classes, including distinct path/query identifiers.
 - `tests/test_server_mock.py` covers tool-to-request wiring and response contracts for all tools.
