@@ -137,11 +137,18 @@ class GetBillRequest(BaseModel):
 class GetBillMeetsRequest(BaseModel):
     bill_no: str = Field(..., serialization_alias=translate["bill_no"])
     term: int | None = Field(default=None, serialization_alias=translate["term"])
+    meeting_code: str | None = Field(default=None, serialization_alias=translate["meeting_code"])
     session: int | None = Field(default=None, serialization_alias=translate["session"])
     meeting_type: str | None = Field(default=None, serialization_alias=translate["meeting_type"])
+    member: str | None = Field(default=None, serialization_alias=translate["member"])
     date: str | None = Field(default=None, serialization_alias=translate["date"])
+    committee_code: int | None = Field(default=None, serialization_alias=translate["committee_code"])
+    meet_id: str | None = Field(default=None, serialization_alias=translate["meet_id"])
+    related_bill_no: str | None = Field(default=None, serialization_alias=translate["bill_no_nested"])
+    law_number: str | None = Field(default=None, serialization_alias=translate["law_number_nested"])
     page: int = 1
     limit: int = 20
+    output_fields: list[str] = Field(default_factory=list)
 
     async def do(self) -> dict:
         params = self.model_dump(exclude_none=True, by_alias=True, exclude={"bill_no"})
@@ -255,6 +262,7 @@ class GetGazetteRequest(BaseModel):
 
 class GetGazetteAgendasRequest(BaseModel):
     gazette_id: str = Field(..., serialization_alias=translate["gazette_id"])
+    gazette_number: str | None = Field(default=None, serialization_alias=translate["gazette_id"])
     volume: int | None = Field(default=None, serialization_alias=translate["volume"])
     issue: int | None = Field(default=None, serialization_alias=translate["issue"])
     booklet: int | None = Field(default=None, serialization_alias=translate["booklet"])

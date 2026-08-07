@@ -188,9 +188,31 @@ async def test_request_uses_expected_endpoint_and_returns_fixture(
     ("factory", "expected_url", "expected_params"),
     [
         (
-            lambda: api.GetBillMeetsRequest(bill_no="202110213410000", term=11, limit=1),
+            lambda: api.GetBillMeetsRequest(
+                bill_no="202110213410000",
+                term=11,
+                meeting_code="院會-11-2-6",
+                member="陳秀寳",
+                committee_code=23,
+                meet_id="2024102368",
+                related_bill_no="202110071090000",
+                law_number="01177",
+                limit=1,
+                output_fields=["會議代碼"],
+            ),
             f"{api.BASE_URL}/bills/202110213410000/meets",
-            {"屆": 11, "page": 1, "limit": 1},
+            {
+                "屆": 11,
+                "會議代碼": "院會-11-2-6",
+                "會議資料.出席委員": "陳秀寳",
+                "委員會代號": 23,
+                "會議資料.會議編號": "2024102368",
+                "議事網資料.關係文書.議案.議案編號": "202110071090000",
+                "議事網資料.關係文書.議案.法律編號": "01177",
+                "page": 1,
+                "limit": 1,
+                "output_fields": ["會議代碼"],
+            },
         ),
         (
             lambda: api.GetBillRelatedBillsRequest(bill_no="202110213410000", limit=1),
@@ -218,9 +240,16 @@ async def test_request_uses_expected_endpoint_and_returns_fixture(
             {"屆": 11, "page": 1, "limit": 1, "output_fields": []},
         ),
         (
-            lambda: api.GetGazetteAgendasRequest(gazette_id="1137701", issue=77, booklet=1, term=11, limit=1),
+            lambda: api.GetGazetteAgendasRequest(
+                gazette_id="1137701",
+                gazette_number="1137702",
+                issue=77,
+                booklet=1,
+                term=11,
+                limit=1,
+            ),
             f"{api.BASE_URL}/gazettes/1137701/agendas",
-            {"期": 77, "冊別": 1, "屆": 11, "page": 1, "limit": 1, "output_fields": []},
+            {"公報編號": "1137702", "期": 77, "冊別": 1, "屆": 11, "page": 1, "limit": 1, "output_fields": []},
         ),
         (
             lambda: api.ListGazetteAgendasRequest(issue=77, booklet=1, term=11, limit=1),

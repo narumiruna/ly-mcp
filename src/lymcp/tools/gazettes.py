@@ -74,7 +74,8 @@ async def get_gazette(
 
 
 async def get_gazette_agendas(
-    gazette_id: Annotated[str, Field(description="公報編號，必填，例：1137701")],
+    gazette_id: Annotated[str, Field(description="路徑中的公報編號，必填，例：1137701")],
+    gazette_number: Annotated[str | None, Field(description="查詢條件中的公報編號，例：1137701")] = None,
     volume: Annotated[int | None, Field(description="卷，例：113")] = None,
     issue: Annotated[int | None, Field(description="期，例：77")] = None,
     booklet: Annotated[int | None, Field(description="冊別，例：1")] = None,
@@ -90,7 +91,8 @@ async def get_gazette_agendas(
     取得特定公報所含的公報目錄列表。
 
     Args:
-        gazette_id: 公報編號，必填，例：1137701
+        gazette_id: 路徑中的公報編號，必填，例：1137701
+        gazette_number: 查詢條件中的公報編號，例：1137701
         volume: 卷，例：113
         issue: 期，例：77
         booklet: 冊別，例：1
@@ -109,6 +111,7 @@ async def get_gazette_agendas(
     try:
         req = GetGazetteAgendasRequest(
             gazette_id=gazette_id,
+            gazette_number=gazette_number,
             volume=volume,
             issue=issue,
             booklet=booklet,

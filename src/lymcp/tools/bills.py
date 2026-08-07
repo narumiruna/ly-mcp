@@ -147,11 +147,20 @@ async def get_bill_related_bills(
 async def get_bill_meets(
     bill_no: Annotated[str, Field(description="議案編號，必填，例: 203110077970000")],
     term: Annotated[int | None, Field(description="屆，例: 11")] = None,
+    meeting_code: Annotated[str | None, Field(description="會議代碼，例: 院會-11-2-6")] = None,
     session: Annotated[int | None, Field(description="會期，例: 2")] = None,
     meeting_type: Annotated[str | None, Field(description="會議種類，例: 院會、委員會")] = None,
+    member: Annotated[str | None, Field(description="出席委員姓名")] = None,
     date: Annotated[str | None, Field(description="會議日期，格式：YYYY-MM-DD，例: 2024-10-25")] = None,
+    committee_code: Annotated[int | None, Field(description="委員會代號，例: 23")] = None,
+    meet_id: Annotated[str | None, Field(description="會議資料中的會議編號")] = None,
+    related_bill_no: Annotated[str | None, Field(description="關係文書中的議案編號")] = None,
+    law_number: Annotated[str | None, Field(description="關係文書中的法律編號")] = None,
     page: Annotated[int, Field(description="頁數，預設1")] = 1,
     limit: Annotated[int, Field(description="每頁筆數，預設20")] = 20,
+    output_fields: Annotated[
+        list[str] | None, Field(description="自訂回傳欄位（如需指定欄位，請填寫欄位名稱列表）")
+    ] = None,
 ) -> str:
     """
     取得特定議案的相關會議列表。
@@ -159,11 +168,18 @@ async def get_bill_meets(
     Args:
         bill_no: 議案編號，必填，例：203110077970000
         term: 屆期篩選，例：11
+        meeting_code: 會議代碼篩選
         session: 會期篩選，例：2
         meeting_type: 會議種類篩選，例：院會、委員會
+        member: 出席委員篩選
         date: 會議日期篩選，格式：YYYY-MM-DD
+        committee_code: 委員會代號篩選
+        meet_id: 會議資料中的會議編號
+        related_bill_no: 關係文書中的議案編號
+        law_number: 關係文書中的法律編號
         page: 頁數，預設1
         limit: 每頁筆數，預設20
+        output_fields: 自訂回傳欄位
 
     Returns:
         str: JSON 格式，包含該議案在各會議中的審議紀錄（會議資訊、審議結果、發言紀錄等）。
@@ -175,11 +191,18 @@ async def get_bill_meets(
         req = GetBillMeetsRequest(
             bill_no=bill_no,
             term=term,
+            meeting_code=meeting_code,
             session=session,
             meeting_type=meeting_type,
+            member=member,
             date=date,
+            committee_code=committee_code,
+            meet_id=meet_id,
+            related_bill_no=related_bill_no,
+            law_number=law_number,
             page=page,
             limit=limit,
+            output_fields=output_fields or [],
         )
         resp = await req.do()
         return json.dumps(resp, ensure_ascii=False, indent=2)

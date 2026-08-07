@@ -46,10 +46,10 @@ async def test_bill_meets_request_real():
     search = api.ListBillRequest(term=11, limit=1)
     search_resp = await search.do()
     bill_no = search_resp["bills"][0]["議案編號"]
-    req = api.GetBillMeetsRequest(bill_no=bill_no)
+    req = api.GetBillMeetsRequest(bill_no=bill_no, term=11, output_fields=["會議代碼"], limit=1)
     resp = await req.do()
-    # 會議資料可能在 'meets'、'data' 或 'bills'
-    assert any(k in resp for k in ("meets", "data", "bills"))
+    assert isinstance(resp, dict)
+    assert "11" in resp["filter"]["屆"]
 
 
 @pytest.mark.asyncio
@@ -158,6 +158,21 @@ async def test_get_gazette_request():
     resp = await req.do()
     # 應該有資料回傳
     assert resp is not None
+
+
+@pytest.mark.asyncio
+async def test_get_gazette_agendas_with_query_number_request():
+    search_resp = await api.ListGazettesRequest(limit=1).do()
+    gazette_id = str(search_resp["gazettes"][0]["公報編號"])
+
+    resp = await api.GetGazetteAgendasRequest(
+        gazette_id=gazette_id,
+        gazette_number=gazette_id,
+        limit=1,
+    ).do()
+
+    assert isinstance(resp, dict)
+    assert gazette_id in resp["filter"]["公報編號"]
 
 
 @pytest.mark.asyncio
