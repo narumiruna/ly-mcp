@@ -45,7 +45,22 @@ DETAIL_ERROR_CASES = [
 
 TOOL_RESPONSE_CASES = [
     ("get_bill_related_bills", "GetBillRelatedBillsRequest", {"bill_no": "202110213410000", "limit": 1}),
-    ("get_bill_meets", "GetBillMeetsRequest", {"bill_no": "202110213410000", "term": 11, "limit": 1}),
+    (
+        "get_bill_meets",
+        "GetBillMeetsRequest",
+        {
+            "bill_no": "202110213410000",
+            "term": 11,
+            "meeting_code": "院會-11-2-6",
+            "member": "陳秀寳",
+            "committee_code": 23,
+            "meet_id": "2024102368",
+            "related_bill_no": "202110071090000",
+            "law_number": "01177",
+            "limit": 1,
+            "output_fields": ["會議代碼"],
+        },
+    ),
     ("get_bill_doc_html", "GetBillDocHtmlRequest", {"bill_no": "202110213410000"}),
     ("list_committees", "ListCommitteesRequest", {"limit": 1}),
     ("get_committee", "GetCommitteeRequest", {"comt_cd": "16"}),
@@ -55,7 +70,14 @@ TOOL_RESPONSE_CASES = [
     (
         "get_gazette_agendas",
         "GetGazetteAgendasRequest",
-        {"gazette_id": "1137701", "issue": 77, "booklet": 1, "term": 11, "limit": 1},
+        {
+            "gazette_id": "1137701",
+            "gazette_number": "1137702",
+            "issue": 77,
+            "booklet": 1,
+            "term": 11,
+            "limit": 1,
+        },
     ),
     (
         "list_gazette_agendas",
@@ -171,6 +193,22 @@ async def test_registered_tools_have_offline_mock_coverage() -> None:
     tools = await server.mcp.list_tools()
 
     assert {tool.name for tool in tools} == OFFLINE_MOCK_TOOL_NAMES
+
+
+@pytest.mark.asyncio
+async def test_aligned_query_parameters_are_exposed_in_tool_schemas() -> None:
+    tools = {tool.name: tool for tool in await server.mcp.list_tools()}
+
+    assert set(tools["get_bill_meets"].input_schema["properties"]) >= {
+        "meeting_code",
+        "member",
+        "committee_code",
+        "meet_id",
+        "related_bill_no",
+        "law_number",
+        "output_fields",
+    }
+    assert "gazette_number" in tools["get_gazette_agendas"].input_schema["properties"]
 
 
 @pytest.mark.asyncio

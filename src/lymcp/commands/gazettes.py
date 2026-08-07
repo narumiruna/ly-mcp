@@ -37,6 +37,7 @@ def get_gazette(gazette_id: str) -> None:
 @app.command("agendas")
 def get_gazette_agendas(
     gazette_id: str,
+    gazette_number: str | None = None,
     volume: int | None = None,
     issue: int | None = None,
     booklet: int | None = None,
@@ -50,6 +51,7 @@ def get_gazette_agendas(
     _run(
         api.GetGazetteAgendasRequest(
             gazette_id=gazette_id,
+            gazette_number=gazette_number,
             volume=volume,
             issue=issue,
             booklet=booklet,

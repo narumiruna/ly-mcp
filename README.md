@@ -21,7 +21,7 @@ ly-mcp 是一個串接台灣立法院 API v2 的 Model Context Protocol (MCP) �
 - **list_bills**：列出議案，可依屆期、會期、類別、提案人等條件篩選。
 - **get_bill**：取得特定議案的完整資訊，回傳完整 JSON。
 - **get_bill_related_bills**：查詢相關議案與其關聯。
-- **get_bill_meets**：取得議案在各會議中的審議紀錄。
+- **get_bill_meets**：取得議案在各會議中的審議紀錄，可依會議、出席委員、委員會及關聯議案或法律篩選，並指定輸出欄位。
 - **get_bill_doc_html**：取得特定議案的 HTML 文件內容。
 
 ### 🏢 委員會
@@ -34,7 +34,7 @@ ly-mcp 是一個串接台灣立法院 API v2 的 Model Context Protocol (MCP) �
 
 - **list_gazettes**：列出立法院公報，可依卷期與公報編號篩選。
 - **get_gazette**：取得特定公報的詳細資訊。
-- **get_gazette_agendas**：取得特定公報中的議程或目錄內容，可依卷、期、冊別等條件篩選。
+- **get_gazette_agendas**：取得特定公報中的議程或目錄內容，可另依公報編號、卷、期、冊別等查詢條件篩選。
 - **list_gazette_agendas**：列出公報目錄，可依卷、期、冊別、屆期與會議日期等條件篩選。
 - **get_gazette_agenda**：取得特定公報目錄項目的詳細資訊。
 
@@ -204,6 +204,8 @@ ly --help
 ly stat
 ly bills list --term 11 --bill-type 法律案 --limit 5
 ly bills get 202110213410000
+ly bills meets 202110213410000 --meeting-code 院會-11-2-6 --fields 會議代碼,日期
+ly gazettes agendas 1137701 --gazette-number 1137701 --issue 77
 ly laws versions 09200015 --limit 5
 ly meets bills 院會-11-2-3 --term 11 --limit 5
 ly legislators propose-bills 11 韓國瑜 --limit 5

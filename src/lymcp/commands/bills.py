@@ -116,22 +116,36 @@ def get_bill_related_bills(bill_no: str, page: int = 1, limit: int = 20) -> None
 def get_bill_meets(
     bill_no: str,
     term: int | None = None,
+    meeting_code: str | None = None,
     session: int | None = None,
     meeting_type: str | None = None,
+    member: str | None = None,
     date: str | None = None,
+    committee_code: int | None = None,
+    meet_id: str | None = None,
+    related_bill_no: str | None = None,
+    law_number: str | None = None,
     page: int = 1,
     limit: int = 20,
+    fields: str | None = typer.Option(None, "--fields", help="Comma-separated upstream output fields."),
 ) -> None:
     """Get bill deliberation records."""
     _run(
         api.GetBillMeetsRequest(
             bill_no=bill_no,
             term=term,
+            meeting_code=meeting_code,
             session=session,
             meeting_type=meeting_type,
+            member=member,
             date=date,
+            committee_code=committee_code,
+            meet_id=meet_id,
+            related_bill_no=related_bill_no,
+            law_number=law_number,
             page=page,
             limit=limit,
+            output_fields=_fields(fields),
         ),
         "Failed to get bill meets",
     )
