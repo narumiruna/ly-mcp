@@ -42,6 +42,8 @@ translate: dict[str, str] = {
     "interpellation_member": "質詢委員",
     "interpellation_id": "質詢編號",
     "video_type": "影片種類",
+    "issue": "期",
+    "booklet": "冊別",
     # Laws API translations
     "law_id": "法律編號",
     "law_category": "類別",
@@ -72,4 +74,12 @@ translate: dict[str, str] = {
     "meeting_id": "會議資料.會議編號",
     "meeting_bills_bill_no": "議事網資料.關係文書.議案.議案編號",
     "meeting_bills_law_no": "議事網資料.關係文書.議案.法律編號",
+    # Votes API translations
+    "vote_type": "表決型態",
+    "vote_time": "表決時間",
+    "voting_member": "投票委員",
+    "agreeing_member": "贊成",
+    "opposing_member": "反對",
+    "abstaining_member": "棄權",
+    "gazette_document_id": "公報文件代碼",
 }

@@ -1,4 +1,5 @@
 import json
+import sys
 from typing import Any
 
 import pytest
@@ -16,6 +17,7 @@ LIST_CONTRACT_CASES = [
     ("list_laws", "ListLawsRequest", "laws_list.json", "laws"),
     ("list_legislators", "ListLegislatorsRequest", "legislators_list.json", "legislators"),
     ("list_meets", "ListMeetsRequest", "meets_list.json", "meets"),
+    ("list_votes", "ListVotesRequest", "votes_list.json", "votes"),
 ]
 
 
@@ -32,6 +34,12 @@ DETAIL_ERROR_CASES = [
         {"law_version_id": "invalid_law_version"},
         f"{api.BASE_URL}/law_versions/invalid_law_version",
     ),
+    (
+        "get_vote",
+        "GetVoteRequest",
+        {"vote_id": "invalid_vote"},
+        f"{api.BASE_URL}/votes/invalid_vote",
+    ),
 ]
 
 
@@ -44,8 +52,16 @@ TOOL_RESPONSE_CASES = [
     ("get_committee_meets", "GetCommitteeMeetsRequest", {"comt_cd": "16", "term": 11, "limit": 1}),
     ("list_gazettes", "ListGazettesRequest", {"limit": 1}),
     ("get_gazette", "GetGazetteRequest", {"gazette_id": "1137701"}),
-    ("get_gazette_agendas", "GetGazetteAgendasRequest", {"gazette_id": "1137701", "term": 11, "limit": 1}),
-    ("list_gazette_agendas", "ListGazetteAgendasRequest", {"term": 11, "limit": 1}),
+    (
+        "get_gazette_agendas",
+        "GetGazetteAgendasRequest",
+        {"gazette_id": "1137701", "issue": 77, "booklet": 1, "term": 11, "limit": 1},
+    ),
+    (
+        "list_gazette_agendas",
+        "ListGazetteAgendasRequest",
+        {"issue": 77, "booklet": 1, "term": 11, "limit": 1},
+    ),
     ("get_gazette_agenda", "GetGazetteAgendaRequest", {"gazette_agenda_id": "1137701_00001"}),
     ("list_interpellations", "ListInterpellationsRequest", {"interpellation_member": "羅智強", "limit": 1}),
     ("get_interpellation", "GetInterpellationRequest", {"interpellation_id": "11-1-1-1"}),
@@ -60,7 +76,11 @@ TOOL_RESPONSE_CASES = [
     ("list_laws", "ListLawsRequest", {"limit": 1}),
     ("get_law", "GetLawRequest", {"law_id": "09200015"}),
     ("get_law_progress", "GetLawProgressRequest", {"law_id": "09200015"}),
-    ("get_law_bills", "GetLawBillsRequest", {"law_id": "09200015", "term": 11, "limit": 1}),
+    (
+        "get_law_bills",
+        "GetLawBillsRequest",
+        {"law_id": "09200015", "term": 11, "proposal_unit_or_member": "民進黨團", "limit": 1},
+    ),
     ("get_law_versions", "GetLawVersionsRequest", {"law_id": "09200015", "limit": 1}),
     ("list_law_versions", "ListLawVersionsRequest", {"law_number": "90481", "limit": 1}),
     ("get_law_version", "GetLawVersionRequest", {"law_version_id": "90481:1944-02-29-制定"}),
@@ -76,12 +96,12 @@ TOOL_RESPONSE_CASES = [
     (
         "get_legislator_propose_bills",
         "GetLegislatorProposeBillsRequest",
-        {"term": 11, "name": "韓國瑜", "limit": 1},
+        {"term": 11, "name": "韓國瑜", "proposal_unit_or_member": "民進黨團", "limit": 1},
     ),
     (
         "get_legislator_cosign_bills",
         "GetLegislatorCosignBillsRequest",
-        {"term": 11, "name": "韓國瑜", "limit": 1},
+        {"term": 11, "name": "韓國瑜", "proposal_unit_or_member": "民進黨團", "limit": 1},
     ),
     (
         "get_legislator_meets",
@@ -90,11 +110,22 @@ TOOL_RESPONSE_CASES = [
     ),
     ("list_meets", "ListMeetsRequest", {"term": 11, "limit": 1}),
     ("get_meet", "GetMeetRequest", {"meet_id": "院會-11-2-3"}),
-    ("get_meet_bills", "GetMeetBillsRequest", {"meet_id": "院會-11-2-3", "term": 11, "limit": 1}),
+    (
+        "get_meet_bills",
+        "GetMeetBillsRequest",
+        {"meet_id": "院會-11-2-3", "term": 11, "proposal_unit_or_member": "民進黨團", "limit": 1},
+    ),
     (
         "get_meet_interpellations",
         "GetMeetInterpellationsRequest",
         {"meet_id": "院會-11-2-3", "term": 11, "limit": 1},
+    ),
+    ("list_votes", "ListVotesRequest", {"term": 11, "voting_member": "黃國昌", "limit": 1}),
+    ("get_vote", "GetVoteRequest", {"vote_id": "1141921_00002_591"}),
+    (
+        "get_vote_meets",
+        "GetVoteMeetsRequest",
+        {"vote_id": "1141921_00002_591", "term": 11, "limit": 1},
     ),
 ]
 
@@ -113,6 +144,7 @@ EXPECTED_PROMPTS = {
     "legislator_proposal_record",
     "legislator_interpellations",
     "committee_meeting_lookup",
+    "legislator_vote_record",
 }
 
 
@@ -122,6 +154,16 @@ class StubRequest:
 
     async def do(self) -> dict[str, Any]:
         return self.response
+
+
+def patch_tool_request(
+    monkeypatch: pytest.MonkeyPatch,
+    tool_name: str,
+    request_class_name: str,
+    replacement: Any,
+) -> None:
+    tool_module = sys.modules[getattr(server, tool_name).__module__]
+    monkeypatch.setattr(tool_module, request_class_name, replacement)
 
 
 @pytest.mark.asyncio
@@ -160,13 +202,14 @@ async def test_discovery_resources_are_registered_and_readable() -> None:
     assert "next scheduled" in query_semantics_text
     assert "Latest Plenary Meeting Bills" in workflow_reference_text
     assert "Law Amendment History" in workflow_reference_text
+    assert "list_votes" in workflow_reference_text
 
 
 @pytest.mark.asyncio
 async def test_get_stat_returns_fixture_json(monkeypatch: pytest.MonkeyPatch) -> None:
     expected_response = load_json_fixture("stat.json")
 
-    monkeypatch.setattr(server, "GetStatRequest", lambda: StubRequest(expected_response))
+    patch_tool_request(monkeypatch, "get_stat", "GetStatRequest", lambda: StubRequest(expected_response))
 
     response_text = await server.get_stat()
 
@@ -183,7 +226,7 @@ async def test_list_bills_returns_fixture_json(monkeypatch: pytest.MonkeyPatch) 
             calls.append(kwargs)
             super().__init__(expected_response)
 
-    monkeypatch.setattr(server, "ListBillRequest", StubListBillRequest)
+    patch_tool_request(monkeypatch, "list_bills", "ListBillRequest", StubListBillRequest)
 
     response_text = await server.list_bills(
         term=11,
@@ -228,7 +271,7 @@ async def test_get_bill_returns_fixture_json(monkeypatch: pytest.MonkeyPatch) ->
             calls.append(kwargs)
             super().__init__(expected_response)
 
-    monkeypatch.setattr(server, "GetBillRequest", StubGetBillRequest)
+    patch_tool_request(monkeypatch, "get_bill", "GetBillRequest", StubGetBillRequest)
 
     response_text = await server.get_bill("202110213410000")
 
@@ -258,7 +301,7 @@ async def test_detail_tool_returns_structured_http_status_error(
                 response_excerpt="not found",
             )
 
-    monkeypatch.setattr(server, request_class_name, StubErrorRequest)
+    patch_tool_request(monkeypatch, tool_name, request_class_name, StubErrorRequest)
 
     response_text = await getattr(server, tool_name)(**call_kwargs)
     response = json.loads(response_text)
@@ -284,7 +327,12 @@ async def test_list_tool_returns_collection_contract(
 ) -> None:
     expected_response = load_json_fixture(fixture_name)
 
-    monkeypatch.setattr(server, request_class_name, lambda **_: StubRequest(expected_response))
+    patch_tool_request(
+        monkeypatch,
+        tool_name,
+        request_class_name,
+        lambda **_: StubRequest(expected_response),
+    )
 
     response_text = await getattr(server, tool_name)(limit=1)
     response = json.loads(response_text)
@@ -302,6 +350,39 @@ async def test_list_tool_returns_collection_contract(
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("tool_name", "request_class_name", "fixture_name", "call_kwargs"),
+    [
+        ("get_vote", "GetVoteRequest", "vote_detail.json", {"vote_id": "1141921_00002_591"}),
+        (
+            "get_vote_meets",
+            "GetVoteMeetsRequest",
+            "vote_meets.json",
+            {"vote_id": "1141921_00002_591", "limit": 1},
+        ),
+    ],
+)
+async def test_vote_tools_return_fixture_contracts(
+    monkeypatch: pytest.MonkeyPatch,
+    tool_name: str,
+    request_class_name: str,
+    fixture_name: str,
+    call_kwargs: dict[str, Any],
+) -> None:
+    expected_response = load_json_fixture(fixture_name)
+    patch_tool_request(
+        monkeypatch,
+        tool_name,
+        request_class_name,
+        lambda **_: StubRequest(expected_response),
+    )
+
+    response = json.loads(await getattr(server, tool_name)(**call_kwargs))
+
+    assert response == expected_response
+
+
+@pytest.mark.asyncio
 @pytest.mark.parametrize(("tool_name", "request_class_name", "call_kwargs"), TOOL_RESPONSE_CASES)
 async def test_tool_returns_request_response(
     monkeypatch: pytest.MonkeyPatch,
@@ -316,7 +397,7 @@ async def test_tool_returns_request_response(
             calls.append(kwargs)
             super().__init__(SAMPLE_RESPONSE)
 
-    monkeypatch.setattr(server, request_class_name, StubToolRequest)
+    patch_tool_request(monkeypatch, tool_name, request_class_name, StubToolRequest)
 
     response_text = await getattr(server, tool_name)(**call_kwargs)
 

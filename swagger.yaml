@@ -128,6 +128,13 @@ paths:
           schema:
             type: 'date'
         -
+          name: '提案單位/提案委員'
+          in: 'query'
+          description: '提案單位或提案委員 [例: 民進黨團]'
+          required: false
+          schema:
+            type: 'string'
+        -
           name: 'page'
           in: 'query'
           description: '頁數'
@@ -659,6 +666,20 @@ paths:
           schema:
             type: 'integer'
         -
+          name: '期'
+          in: 'query'
+          description: '期 [例: 77]'
+          required: false
+          schema:
+            type: 'integer'
+        -
+          name: '冊別'
+          in: 'query'
+          description: '冊別 [例: 1]'
+          required: false
+          schema:
+            type: 'integer'
+        -
           name: '屆'
           in: 'query'
           description: '屆 [例: 11]'
@@ -724,6 +745,20 @@ paths:
           name: '卷'
           in: 'query'
           description: '卷 [例: 113]'
+          required: false
+          schema:
+            type: 'integer'
+        -
+          name: '期'
+          in: 'query'
+          description: '期 [例: 77]'
+          required: false
+          schema:
+            type: 'integer'
+        -
+          name: '冊別'
+          in: 'query'
+          description: '冊別 [例: 1]'
           required: false
           schema:
             type: 'integer'
@@ -1278,6 +1313,13 @@ paths:
           required: false
           schema:
             type: 'date'
+        -
+          name: '提案單位/提案委員'
+          in: 'query'
+          description: '提案單位或提案委員 [例: 民進黨團]'
+          required: false
+          schema:
+            type: 'string'
         -
           name: 'page'
           in: 'query'
@@ -1972,6 +2014,13 @@ paths:
           schema:
             type: 'date'
         -
+          name: '提案單位/提案委員'
+          in: 'query'
+          description: '提案單位或提案委員 [例: 民進黨團]'
+          required: false
+          schema:
+            type: 'string'
+        -
           name: 'page'
           in: 'query'
           description: '頁數'
@@ -2134,6 +2183,13 @@ paths:
           required: false
           schema:
             type: 'date'
+        -
+          name: '提案單位/提案委員'
+          in: 'query'
+          description: '提案單位或提案委員 [例: 民進黨團]'
+          required: false
+          schema:
+            type: 'string'
         -
           name: 'page'
           in: 'query'
@@ -2747,6 +2803,13 @@ paths:
           schema:
             type: 'date'
         -
+          name: '提案單位/提案委員'
+          in: 'query'
+          description: '提案單位或提案委員 [例: 民進黨團]'
+          required: false
+          schema:
+            type: 'string'
+        -
           name: 'page'
           in: 'query'
           description: '頁數'
@@ -2853,6 +2916,253 @@ paths:
           description: '會議內的質詢資料'
         404:
           description: '找不到會議內的質詢資料'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /votes:
+    get:
+      tags:
+        - Vote
+      summary: '取得表決列表'
+      operationId: 'listVotes'
+      parameters:
+        -
+          name: '屆'
+          in: 'query'
+          description: '屆 [例: 11]'
+          required: false
+          schema:
+            type: 'integer'
+        -
+          name: '會議代碼'
+          in: 'query'
+          description: '會議代碼 [例: 院會-11-4-14]'
+          required: false
+          schema:
+            type: 'string'
+        -
+          name: '表決型態'
+          in: 'query'
+          description: '表決型態 [例: 記名表決]'
+          required: false
+          schema:
+            type: 'string'
+        -
+          name: '表決時間'
+          in: 'query'
+          description: '表決時間 [例: 中華民國114年12月19日 上午10時42分02秒]'
+          required: false
+          schema:
+            type: 'string'
+        -
+          name: '投票委員'
+          in: 'query'
+          description: '有參與投票的委員姓名（含贊成、反對、棄權）[例: 黃國昌]'
+          required: false
+          schema:
+            type: 'string'
+        -
+          name: '贊成'
+          in: 'query'
+          description: '贊成的委員姓名 [例: 黃國昌]'
+          required: false
+          schema:
+            type: 'string'
+        -
+          name: '反對'
+          in: 'query'
+          description: '反對的委員姓名 [例: 黃國昌]'
+          required: false
+          schema:
+            type: 'string'
+        -
+          name: '棄權'
+          in: 'query'
+          description: '棄權的委員姓名 [例: 黃國昌]'
+          required: false
+          schema:
+            type: 'string'
+        -
+          name: '公報文件代碼'
+          in: 'query'
+          description: '公報文件代碼 [例: 1150101_00002]'
+          required: false
+          schema:
+            type: 'string'
+        -
+          name: 'page'
+          in: 'query'
+          description: '頁數'
+          required: false
+          schema:
+            type: 'integer'
+          example: 1
+        -
+          name: 'limit'
+          in: 'query'
+          description: '每頁筆數'
+          required: false
+          schema:
+            type: 'integer'
+          example: 20
+        -
+          name: 'output_fields'
+          in: 'query'
+          description: '輸出欄位'
+          required: false
+          schema:
+            type: 'array'
+          example:
+            - 表決代碼
+      responses:
+        200:
+          description: '表決資料'
+        404:
+          description: '找不到表決資料'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /votes/{id}:
+    get:
+      tags:
+        - Vote
+      summary: '取得特定表決資訊'
+      operationId: 'getVote'
+      parameters:
+        -
+          name: 'id'
+          description: '表決代碼'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+          example: '1150101_00002_55'
+      responses:
+        200:
+          description: '表決資料'
+        404:
+          description: '找不到表決資料'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /votes/{id}/meets:
+    get:
+      tags:
+        - Vote
+      summary: '取得表決所屬的會議列表'
+      operationId: 'getVoteMeets'
+      parameters:
+        -
+          name: 'id'
+          description: '表決代碼'
+          in: 'path'
+          required: true
+          schema:
+            type: 'string'
+          example: '1150101_00002_55'
+        -
+          name: '屆'
+          in: 'query'
+          description: '屆 [例: 11]'
+          required: false
+          schema:
+            type: 'integer'
+        -
+          name: '會議代碼'
+          in: 'query'
+          description: '會議代碼 [例: 院會-11-2-6]'
+          required: false
+          schema:
+            type: 'string'
+        -
+          name: '會期'
+          in: 'query'
+          description: '會期 [例: 2]'
+          required: false
+          schema:
+            type: 'integer'
+        -
+          name: '會議種類'
+          in: 'query'
+          description: '會議種類 [例: 院會] (TODO: enum)'
+          required: false
+          schema:
+            type: 'string'
+        -
+          name: '會議資料.出席委員'
+          in: 'query'
+          description: '會議資料.出席委員 [例: 陳秀寳]'
+          required: false
+          schema:
+            type: 'string'
+        -
+          name: '日期'
+          in: 'query'
+          description: '日期 [例: 2024-10-25]'
+          required: false
+          schema:
+            type: 'string'
+        -
+          name: '委員會代號'
+          in: 'query'
+          description: '委員會代號 [例: 23]'
+          required: false
+          schema:
+            type: 'integer'
+        -
+          name: '會議資料.會議編號'
+          in: 'query'
+          description: '會議資料.會議編號 [例: 2024102368]'
+          required: false
+          schema:
+            type: 'string'
+        -
+          name: '議事網資料.關係文書.議案.議案編號'
+          in: 'query'
+          description: '議事網資料.關係文書.議案.議案編號 [例: 202110071090000]'
+          required: false
+          schema:
+            type: 'string'
+        -
+          name: '議事網資料.關係文書.議案.法律編號'
+          in: 'query'
+          description: '議事網資料.laws [例: 01177]'
+          required: false
+          schema:
+            type: 'string'
+        -
+          name: 'page'
+          in: 'query'
+          description: '頁數'
+          required: false
+          schema:
+            type: 'integer'
+          example: 1
+        -
+          name: 'limit'
+          in: 'query'
+          description: '每頁筆數'
+          required: false
+          schema:
+            type: 'integer'
+          example: 20
+        -
+          name: 'output_fields'
+          in: 'query'
+          description: '輸出欄位'
+          required: false
+          schema:
+            type: 'array'
+          example:
+            - 表決代碼
+      responses:
+        200:
+          description: '表決所屬的會議資料'
+        404:
+          description: '找不到表決所屬的會議資料'
           content:
             application/json:
               schema:

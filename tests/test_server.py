@@ -56,6 +56,9 @@ async def test_list_tools(server_params: StdioServerParameters) -> None:
             "get_meet_ivods",
             "get_meet_bills",
             "get_meet_interpellations",
+            "list_votes",
+            "get_vote",
+            "get_vote_meets",
         ]
         for tool_name in expected_bills_tools:
             assert tool_name in tool_names

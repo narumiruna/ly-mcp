@@ -218,14 +218,14 @@ async def test_request_uses_expected_endpoint_and_returns_fixture(
             {"屆": 11, "page": 1, "limit": 1, "output_fields": []},
         ),
         (
-            lambda: api.GetGazetteAgendasRequest(gazette_id="1137701", term=11, limit=1),
+            lambda: api.GetGazetteAgendasRequest(gazette_id="1137701", issue=77, booklet=1, term=11, limit=1),
             f"{api.BASE_URL}/gazettes/1137701/agendas",
-            {"屆": 11, "page": 1, "limit": 1, "output_fields": []},
+            {"期": 77, "冊別": 1, "屆": 11, "page": 1, "limit": 1, "output_fields": []},
         ),
         (
-            lambda: api.ListGazetteAgendasRequest(term=11, limit=1),
+            lambda: api.ListGazetteAgendasRequest(issue=77, booklet=1, term=11, limit=1),
             f"{api.BASE_URL}/gazette_agendas",
-            {"屆": 11, "page": 1, "limit": 1, "output_fields": []},
+            {"期": 77, "冊別": 1, "屆": 11, "page": 1, "limit": 1, "output_fields": []},
         ),
         (
             lambda: api.GetGazetteAgendaRequest(gazette_agenda_id="1137701_00001"),
@@ -268,9 +268,9 @@ async def test_request_uses_expected_endpoint_and_returns_fixture(
             None,
         ),
         (
-            lambda: api.GetLawBillsRequest(law_id="09200015", term=11, limit=1),
+            lambda: api.GetLawBillsRequest(law_id="09200015", term=11, proposal_unit_or_member="民進黨團", limit=1),
             f"{api.BASE_URL}/laws/09200015/bills",
-            {"屆": 11, "page": 1, "limit": 1, "output_fields": []},
+            {"屆": 11, "提案單位/提案委員": "民進黨團", "page": 1, "limit": 1, "output_fields": []},
         ),
         (
             lambda: api.GetLawVersionsRequest(law_id="09200015", limit=1),
@@ -307,14 +307,18 @@ async def test_request_uses_expected_endpoint_and_returns_fixture(
             None,
         ),
         (
-            lambda: api.GetLegislatorProposeBillsRequest(term=11, name="韓國瑜", limit=1),
+            lambda: api.GetLegislatorProposeBillsRequest(
+                term=11, name="韓國瑜", proposal_unit_or_member="民進黨團", limit=1
+            ),
             f"{api.BASE_URL}/legislators/11/韓國瑜/propose_bills",
-            {"page": 1, "limit": 1, "output_fields": []},
+            {"提案單位/提案委員": "民進黨團", "page": 1, "limit": 1, "output_fields": []},
         ),
         (
-            lambda: api.GetLegislatorCosignBillsRequest(term=11, name="韓國瑜", limit=1),
+            lambda: api.GetLegislatorCosignBillsRequest(
+                term=11, name="韓國瑜", proposal_unit_or_member="民進黨團", limit=1
+            ),
             f"{api.BASE_URL}/legislators/11/韓國瑜/cosign_bills",
-            {"page": 1, "limit": 1, "output_fields": []},
+            {"提案單位/提案委員": "民進黨團", "page": 1, "limit": 1, "output_fields": []},
         ),
         (
             lambda: api.GetLegislatorMeetsRequest(term=11, name="韓國瑜", limit=1),
@@ -322,14 +326,82 @@ async def test_request_uses_expected_endpoint_and_returns_fixture(
             {"page": 1, "limit": 1, "output_fields": []},
         ),
         (
-            lambda: api.GetMeetBillsRequest(meet_id="院會-11-2-3", term=11, limit=1),
+            lambda: api.GetMeetBillsRequest(
+                meet_id="院會-11-2-3", term=11, proposal_unit_or_member="民進黨團", limit=1
+            ),
             f"{api.BASE_URL}/meets/院會-11-2-3/bills",
-            {"屆": 11, "page": 1, "limit": 1, "output_fields": []},
+            {"屆": 11, "提案單位/提案委員": "民進黨團", "page": 1, "limit": 1, "output_fields": []},
         ),
         (
             lambda: api.GetMeetInterpellationsRequest(meet_id="院會-11-2-3", term=11, limit=1),
             f"{api.BASE_URL}/meets/院會-11-2-3/interpellations",
             {"屆": 11, "page": 1, "limit": 1, "output_fields": []},
+        ),
+        (
+            lambda: api.ListVotesRequest(
+                term=11,
+                meeting_code="院會-11-4-14",
+                vote_type="記名表決",
+                vote_time="中華民國114年12月19日 上午10時42分02秒",
+                voting_member="黃國昌",
+                agreeing_member="黃國昌",
+                opposing_member="黃國昌",
+                abstaining_member="黃國昌",
+                gazette_document_id="1150101_00002",
+                limit=1,
+            ),
+            f"{api.BASE_URL}/votes",
+            {
+                "屆": 11,
+                "會議代碼": "院會-11-4-14",
+                "表決型態": "記名表決",
+                "表決時間": "中華民國114年12月19日 上午10時42分02秒",
+                "投票委員": "黃國昌",
+                "贊成": "黃國昌",
+                "反對": "黃國昌",
+                "棄權": "黃國昌",
+                "公報文件代碼": "1150101_00002",
+                "page": 1,
+                "limit": 1,
+                "output_fields": [],
+            },
+        ),
+        (
+            lambda: api.GetVoteRequest(vote_id="1150101_00002_55"),
+            f"{api.BASE_URL}/votes/1150101_00002_55",
+            None,
+        ),
+        (
+            lambda: api.GetVoteMeetsRequest(
+                vote_id="1150101_00002_55",
+                term=11,
+                meeting_code="院會-11-2-6",
+                session=2,
+                meeting_type="院會",
+                member="陳秀寳",
+                date="2024-10-25",
+                committee_code=23,
+                meet_id="2024102368",
+                bill_no="202110071090000",
+                law_number="01177",
+                limit=1,
+            ),
+            f"{api.BASE_URL}/votes/1150101_00002_55/meets",
+            {
+                "屆": 11,
+                "會議代碼": "院會-11-2-6",
+                "會期": 2,
+                "會議種類": "院會",
+                "會議資料.出席委員": "陳秀寳",
+                "日期": "2024-10-25",
+                "委員會代號": 23,
+                "會議資料.會議編號": "2024102368",
+                "議事網資料.關係文書.議案.議案編號": "202110071090000",
+                "議事網資料.關係文書.議案.法律編號": "01177",
+                "page": 1,
+                "limit": 1,
+                "output_fields": [],
+            },
         ),
     ],
 )

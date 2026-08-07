@@ -256,6 +256,8 @@ class GetGazetteRequest(BaseModel):
 class GetGazetteAgendasRequest(BaseModel):
     gazette_id: str = Field(..., serialization_alias=translate["gazette_id"])
     volume: int | None = Field(default=None, serialization_alias=translate["volume"])
+    issue: int | None = Field(default=None, serialization_alias=translate["issue"])
+    booklet: int | None = Field(default=None, serialization_alias=translate["booklet"])
     term: int | None = Field(default=None, serialization_alias=translate["term"])
     meeting_date: str | None = Field(default=None, serialization_alias=translate["meeting_date"])
     page: int = 1
@@ -274,6 +276,8 @@ class GetGazetteAgendasRequest(BaseModel):
 class ListGazetteAgendasRequest(BaseModel):
     gazette_id: str | None = Field(default=None, serialization_alias=translate["gazette_id"])
     volume: int | None = Field(default=None, serialization_alias=translate["volume"])
+    issue: int | None = Field(default=None, serialization_alias=translate["issue"])
+    booklet: int | None = Field(default=None, serialization_alias=translate["booklet"])
     term: int | None = Field(default=None, serialization_alias=translate["term"])
     meeting_date: str | None = Field(default=None, serialization_alias=translate["meeting_date"])
     page: int = 1
@@ -461,6 +465,7 @@ class GetLawBillsRequest(BaseModel):
     reference_number: str | None = Field(default=None, serialization_alias=translate["reference_number"])
     article_number: str | None = Field(default=None, serialization_alias=translate["article_number"])
     proposal_date: str | None = Field(default=None, serialization_alias=translate["proposal_date"])
+    proposal_unit_or_member: str | None = Field(default=None, serialization_alias=translate["proposal_unit_or_member"])
     page: int = 1
     limit: int = 20
     output_fields: list[str] = Field(default_factory=list)
@@ -630,6 +635,7 @@ class GetLegislatorProposeBillsRequest(BaseModel):
     reference_number: str | None = Field(default=None, serialization_alias=translate["reference_number"])
     article_number: str | None = Field(default=None, serialization_alias=translate["article_number"])
     proposal_date: str | None = Field(default=None, serialization_alias=translate["proposal_date"])
+    proposal_unit_or_member: str | None = Field(default=None, serialization_alias=translate["proposal_unit_or_member"])
     page: int = 1
     limit: int = 20
     output_fields: list[str] = Field(default_factory=list)
@@ -662,6 +668,7 @@ class GetLegislatorCosignBillsRequest(BaseModel):
     reference_number: str | None = Field(default=None, serialization_alias=translate["reference_number"])
     article_number: str | None = Field(default=None, serialization_alias=translate["article_number"])
     proposal_date: str | None = Field(default=None, serialization_alias=translate["proposal_date"])
+    proposal_unit_or_member: str | None = Field(default=None, serialization_alias=translate["proposal_unit_or_member"])
     page: int = 1
     limit: int = 20
     output_fields: list[str] = Field(default_factory=list)
@@ -753,6 +760,7 @@ class GetMeetBillsRequest(BaseModel):
     reference_number: str | None = Field(default=None, serialization_alias=translate["reference_number"])
     article_number: str | None = Field(default=None, serialization_alias=translate["article_number"])
     proposal_date: str | None = Field(default=None, serialization_alias=translate["proposal_date"])
+    proposal_unit_or_member: str | None = Field(default=None, serialization_alias=translate["proposal_unit_or_member"])
     page: int = 1
     limit: int = 20
     output_fields: list[str] = Field(default_factory=list)
@@ -781,5 +789,63 @@ class GetMeetInterpellationsRequest(BaseModel):
         logger.info("Getting meet interpellations for meet_id: {}, params: {}", self.meet_id, params)
         return await make_api_request(
             url=f"{BASE_URL}/meets/{self.meet_id}/interpellations",
+            params=params,
+        )
+
+
+class ListVotesRequest(BaseModel):
+    term: int | None = Field(default=None, serialization_alias=translate["term"])
+    meeting_code: str | None = Field(default=None, serialization_alias=translate["meeting_code"])
+    vote_type: str | None = Field(default=None, serialization_alias=translate["vote_type"])
+    vote_time: str | None = Field(default=None, serialization_alias=translate["vote_time"])
+    voting_member: str | None = Field(default=None, serialization_alias=translate["voting_member"])
+    agreeing_member: str | None = Field(default=None, serialization_alias=translate["agreeing_member"])
+    opposing_member: str | None = Field(default=None, serialization_alias=translate["opposing_member"])
+    abstaining_member: str | None = Field(default=None, serialization_alias=translate["abstaining_member"])
+    gazette_document_id: str | None = Field(default=None, serialization_alias=translate["gazette_document_id"])
+    page: int = 1
+    limit: int = 20
+    output_fields: list[str] = Field(default_factory=list)
+
+    async def do(self) -> dict:
+        params = self.model_dump(exclude_none=True, by_alias=True)
+        logger.info("Listing votes with parameters: {}", params)
+        return await make_api_request(
+            url=f"{BASE_URL}/votes",
+            params=params,
+        )
+
+
+class GetVoteRequest(BaseModel):
+    vote_id: str
+
+    async def do(self) -> dict:
+        logger.info("Getting vote detail for vote_id: {}", self.vote_id)
+        return await make_api_request(
+            url=f"{BASE_URL}/votes/{self.vote_id}",
+        )
+
+
+class GetVoteMeetsRequest(BaseModel):
+    vote_id: str
+    term: int | None = Field(default=None, serialization_alias=translate["term"])
+    meeting_code: str | None = Field(default=None, serialization_alias=translate["meeting_code"])
+    session: int | None = Field(default=None, serialization_alias=translate["session"])
+    meeting_type: str | None = Field(default=None, serialization_alias=translate["meeting_type"])
+    member: str | None = Field(default=None, serialization_alias=translate["member"])
+    date: str | None = Field(default=None, serialization_alias=translate["date"])
+    committee_code: int | None = Field(default=None, serialization_alias=translate["committee_code"])
+    meet_id: str | None = Field(default=None, serialization_alias=translate["meet_id"])
+    bill_no: str | None = Field(default=None, serialization_alias=translate["bill_no_nested"])
+    law_number: str | None = Field(default=None, serialization_alias=translate["law_number_nested"])
+    page: int = 1
+    limit: int = 20
+    output_fields: list[str] = Field(default_factory=list)
+
+    async def do(self) -> dict:
+        params = self.model_dump(exclude_none=True, by_alias=True, exclude={"vote_id"})
+        logger.info("Getting vote meets for vote_id: {}, params: {}", self.vote_id, params)
+        return await make_api_request(
+            url=f"{BASE_URL}/votes/{self.vote_id}/meets",
             params=params,
         )
