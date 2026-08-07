@@ -45,6 +45,9 @@ This audit maps Legislative Yuan API v2 endpoints from `swagger.yaml` to the MCP
 | `/meets/{id}/ivods` | `get_meet_ivods` | covered |
 | `/meets/{id}/bills` | `get_meet_bills` | covered |
 | `/meets/{id}/interpellations` | `get_meet_interpellations` | covered |
+| `/votes` | `list_votes` | covered |
+| `/votes/{id}` | `get_vote` | covered |
+| `/votes/{id}/meets` | `get_vote_meets` | covered |
 
 ## Filter Field Decisions
 
@@ -52,8 +55,10 @@ The MCP tools expose stable, high-value query fields as first-class parameters. 
 
 | Category | Field | Decision | Notes |
 | --- | --- | --- | --- |
-| Bills | `提案單位/提案委員` | first-class parameter | Added as `proposal_unit_or_member` on `list_bills` because live responses advertise it in `supported_filter_fields`. |
+| Bills | `提案單位/提案委員` | first-class parameter | Exposed as `proposal_unit_or_member` on all five Swagger bill-listing paths. |
 | Bills | Other `supported_filter_fields` already listed in `swagger.yaml` | first-class parameters | Covered by existing bill request models where applicable. |
+| Gazette agendas | `期`, `冊別` | first-class parameters | Exposed as `issue` and `booklet` on both gazette agenda list paths. |
+| Votes | `屆`, `會議代碼`, `表決型態`, `表決時間`, `投票委員`, `贊成`, `反對`, `棄權`, `公報文件代碼` | first-class parameters | Covered by `list_votes`; Vote meeting relations expose all documented meeting filters. |
 | Laws | Law version filters: `法律編號`, `版本編號`, `日期`, `動作`, `歷程.主提案`, `歷程.進度`, `現行版本` | first-class parameters | Covered by `list_law_versions` and existing nested `get_law_versions`. |
 | Law contents | `法律編號`, `版本編號`, `順序`, `條號`, `現行版`, `版本追蹤` | first-class parameters | Covered by `list_law_contents` and `get_law_version_contents`. |
 | Meetings, IVODs, legislators | Fields represented by current request models | first-class parameters | No new missing high-value fields were promoted in this pass. |
@@ -61,9 +66,8 @@ The MCP tools expose stable, high-value query fields as first-class parameters. 
 
 ## Verification
 
-- `rg "^  /" swagger.yaml` lists 39 endpoints.
-- `rg "@mcp.tool" src/lymcp/server.py` lists 39 MCP tools.
-- `tests/test_api_mock.py` covers URL and parameter serialization for all request classes, including top-level Law Version endpoints.
-- `tests/test_server_mock.py` covers tool-to-request wiring for all tools, including Law Version tools.
-- Live smoke verified `list_law_versions`, `get_law_version`, and `get_law_version_contents` with version ID `90481:1944-02-29-制定`.
-- Live smoke verified that the upstream API accepts the bill filter `提案單位/提案委員`.
+- `swagger.yaml` lists 42 endpoints, and the server registers 42 MCP tools.
+- `tests/test_swagger_coverage.py` maps every Swagger path to one MCP tool and one CLI command path.
+- `tests/test_api_mock.py` covers URL and parameter serialization for all request classes, including Vote endpoints.
+- `tests/test_server_mock.py` covers tool-to-request wiring and response contracts for all tools.
+- Live smoke covers Vote list/detail/meeting relations and the nested bill and gazette filters.

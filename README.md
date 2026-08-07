@@ -10,7 +10,7 @@ ly-mcp 是一個串接台灣立法院 API v2 的 Model Context Protocol (MCP) �
 
 ## ✨ 功能
 
-此 MCP 伺服器提供 9 大類、共 39 個工具：
+此 MCP 伺服器提供 10 大類、共 42 個工具：
 
 ### 📊 統計
 
@@ -34,8 +34,8 @@ ly-mcp 是一個串接台灣立法院 API v2 的 Model Context Protocol (MCP) �
 
 - **list_gazettes**：列出立法院公報，可依卷期與公報編號篩選。
 - **get_gazette**：取得特定公報的詳細資訊。
-- **get_gazette_agendas**：取得特定公報中的議程或目錄內容。
-- **list_gazette_agendas**：列出公報目錄，可依屆期、會議日期等條件篩選。
+- **get_gazette_agendas**：取得特定公報中的議程或目錄內容，可依卷、期、冊別等條件篩選。
+- **list_gazette_agendas**：列出公報目錄，可依卷、期、冊別、屆期與會議日期等條件篩選。
 - **get_gazette_agenda**：取得特定公報目錄項目的詳細資訊。
 
 ### 🎙️ 質詢
@@ -79,6 +79,12 @@ ly-mcp 是一個串接台灣立法院 API v2 的 Model Context Protocol (MCP) �
 - **get_legislator_cosign_bills**：取得特定立法委員作為連署人的議案，可依議案條件篩選。
 - **get_legislator_meets**：取得特定立法委員出席的會議，可依會議條件篩選。
 - **get_legislator_interpellations**：取得特定立法委員的質詢資料，可搭配篩選條件。
+
+### 🗳️ 表決
+
+- **list_votes**：列出表決紀錄，可依屆期、會議、表決型態、委員投票立場與公報文件篩選。
+- **get_vote**：依表決代碼取得完整表決內容。
+- **get_vote_meets**：取得特定表決所屬的會議，可搭配會議、委員會與關聯議案條件篩選。
 
 ## 🔗 API 來源
 
@@ -201,6 +207,9 @@ ly bills get 202110213410000
 ly laws versions 09200015 --limit 5
 ly meets bills 院會-11-2-3 --term 11 --limit 5
 ly legislators propose-bills 11 韓國瑜 --limit 5
+ly votes list --term 11 --voting-member 黃國昌 --limit 5
+ly votes get 1141921_00002_591
+ly votes meets 1141921_00002_591 --term 11
 ```
 
 給 agents 使用時，建議用資料領域選 command group：
@@ -211,6 +220,7 @@ ly legislators propose-bills 11 韓國瑜 --limit 5
 - `ly legislators ...` 查立法委員、提案、連署、出席會議與質詢。
 - `ly gazettes ...`、`ly gazette-agendas ...` 查公報與公報目錄。
 - `ly committees ...`、`ly interpellations ...`、`ly ivods ...` 查委員會、質詢與網路電視資料。
+- `ly votes ...` 查表決列表、表決詳情與所屬會議。
 
 常用輸出選項：
 
@@ -235,6 +245,7 @@ ly bills list --term 11 --fields 議案編號,案由,提案日期
 - 「下一場已排程的院會是什麼時候？」
 - 「查詢勞動基準法的修法歷程」
 - 「第11屆第1會期有哪些委員會會議？」
+- 「黃國昌在第11屆參與過哪些表決？各自投了什麼立場？」
 
 處理和日期有關的問題時，請區分：
 
@@ -244,8 +255,8 @@ ly bills list --term 11 --fields 議案編號,案由,提案日期
 
 伺服器也提供常見工作流程用的 MCP prompts：
 `latest_plenary_meeting_bills`、`law_amendment_history`、
-`legislator_proposal_record`、`legislator_interpellations` 與
-`committee_meeting_lookup`。可閱讀 `lymcp://query-semantics` 與
+`legislator_proposal_record`、`legislator_interpellations`、
+`committee_meeting_lookup` 與 `legislator_vote_record`。可閱讀 `lymcp://query-semantics` 與
 `lymcp://workflow-reference`，取得日期語意、篩選條件、ID 欄位與工作流程步驟的精簡指引。
 
 ## 🛠️ 開發

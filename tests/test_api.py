@@ -528,3 +528,42 @@ async def test_get_meet_interpellations_request():
     assert isinstance(resp, dict)
     # 應該有interpellations或相關的質詢資料
     assert any(k in resp for k in ("interpellations", "data", "質詢"))
+
+
+@pytest.mark.asyncio
+async def test_nested_bill_and_gazette_filters_request():
+    bill_response = await api.GetLawBillsRequest(
+        law_id="09200015",
+        proposal_unit_or_member="民進黨團",
+        limit=1,
+    ).do()
+    gazette_response = await api.ListGazetteAgendasRequest(issue=77, booklet=1, limit=1).do()
+
+    assert "民進黨團" in bill_response["filter"]["提案單位/提案委員"]
+    assert "77" in gazette_response["filter"]["期"]
+    assert "1" in gazette_response["filter"]["冊別"]
+
+
+@pytest.mark.asyncio
+async def test_list_votes_request():
+    response = await api.ListVotesRequest(voting_member="黃國昌", limit=1).do()
+
+    assert "黃國昌" in response["filter"]["投票委員"]
+    assert isinstance(response["votes"], list)
+    assert response["votes"]
+
+
+@pytest.mark.asyncio
+async def test_get_vote_request():
+    response = await api.GetVoteRequest(vote_id="1141921_00002_591").do()
+
+    assert "1141921_00002_591" in response["id"]
+    assert isinstance(response["data"], dict)
+
+
+@pytest.mark.asyncio
+async def test_get_vote_meets_request():
+    response = await api.GetVoteMeetsRequest(vote_id="1141921_00002_591", limit=1).do()
+
+    assert isinstance(response["meets"], list)
+    assert response["meets"]
