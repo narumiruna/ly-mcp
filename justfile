@@ -19,6 +19,7 @@ publish:
 
 pi:
     pi \
+        -nc \
         -ns \
         -ne \
         --skill skills/ \
