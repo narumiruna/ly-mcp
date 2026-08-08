@@ -23,5 +23,4 @@ pi:
         -ns \
         -ne \
         -np \
-        --skill skills/ \
-        --skill .agents/skills
+        --skill skills/
