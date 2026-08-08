@@ -16,3 +16,6 @@ dev:
 publish:
     uv build -f wheel
     uv publish
+
+pi:
+    pi -ns -ne --skill skills
