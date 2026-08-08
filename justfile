@@ -18,4 +18,8 @@ publish:
     uv publish
 
 pi:
-    pi -ns -ne --skill skills
+    pi \
+        -ns \
+        -ne \
+        --skill skills/ \
+        --skill .agents/skills
