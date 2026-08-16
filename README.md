@@ -1,5 +1,7 @@
 # 🏛️ ly-mcp
 
+<!-- mcp-name: io.github.narumiruna/ly-mcp -->
+
 [![PyPI version](https://img.shields.io/pypi/v/lymcp)](https://pypi.org/project/lymcp/)
 [![Python](https://img.shields.io/pypi/pyversions/lymcp)](https://pypi.org/project/lymcp/)
 [![CI](https://github.com/narumiruna/ly-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/narumiruna/ly-mcp/actions/workflows/ci.yml)
