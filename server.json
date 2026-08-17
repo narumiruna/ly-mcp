@@ -1,24 +1,24 @@
 {
-  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.narumiruna/ly-mcp",
-  "title": "Legislative Yuan",
-  "description": "Model Context Protocol server for Taiwan Legislative Yuan API v2.",
-  "websiteUrl": "https://github.com/narumiruna/ly-mcp",
-  "repository": {
-    "url": "https://github.com/narumiruna/ly-mcp",
-    "source": "github"
-  },
-  "version": "0.6.1",
-  "packages": [
-    {
-      "registryType": "pypi",
-      "registryBaseUrl": "https://pypi.org",
-      "identifier": "lymcp",
-      "version": "0.6.1",
-      "runtimeHint": "uvx",
-      "transport": {
-        "type": "stdio"
-      }
-    }
-  ]
+	"$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+	"name": "io.github.narumiruna/ly-mcp",
+	"title": "Legislative Yuan",
+	"description": "Model Context Protocol server for Taiwan Legislative Yuan API v2.",
+	"websiteUrl": "https://github.com/narumiruna/ly-mcp",
+	"repository": {
+		"url": "https://github.com/narumiruna/ly-mcp",
+		"source": "github"
+	},
+	"version": "0.6.2",
+	"packages": [
+		{
+			"registryType": "pypi",
+			"registryBaseUrl": "https://pypi.org",
+			"identifier": "lymcp",
+			"version": "0.6.2",
+			"runtimeHint": "uvx",
+			"transport": {
+				"type": "stdio"
+			}
+		}
+	]
 }
