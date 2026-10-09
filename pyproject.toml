@@ -5,13 +5,7 @@ description     = "Model Context Protocol server for Taiwan Legislative Yuan API
 readme          = "README.md"
 requires-python = ">=3.11"
 authors         = [{ name = "narumi", email = "toucans-cutouts0f@icloud.com" }]
-keywords        = [
-  "api",
-  "legislative-yuan",
-  "mcp",
-  "model-context-protocol",
-  "taiwan"
-]
+keywords        = ["api", "legislative-yuan", "mcp", "model-context-protocol", "taiwan"]
 classifiers     = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
@@ -25,8 +19,8 @@ classifiers     = [
 dependencies    = [
   "httpx>=0.28.1",
   "loguru>=0.7.3",
-  "mcp[cli]>=2.0.0",
-  "typer>=0.27.1",
+  "mcp[cli]>=2.3.0",
+  "typer>=0.27.3",
 ]
 
 [project.urls]
