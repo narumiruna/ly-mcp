@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "lymcp": {
+      "command": "uv",
+      "args": ["run", "lymcp"]
+    }
+  }
+}
